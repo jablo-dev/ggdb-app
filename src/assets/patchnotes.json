@@ -1,5 +1,12 @@
 [
     {
+        "version": "4.2.8",
+        "date": "2026-05-24",
+        "changes": [
+            "Added cover-support for clipboard cards."
+        ]
+    },
+    {
         "version": "4.2.7",
         "date": "2026-05-23",
         "changes": [
