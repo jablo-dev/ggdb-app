@@ -306,11 +306,11 @@ export class DetailComponent implements OnInit {
     }
 
     quickAddAndSave(hours: number): void {
+        if (!this.formEditable) {
+            this.toggleEdit();
+        }
         this.addPlaytimeHours(hours);
         this.playtimeDialogVisible = false;
-        if (!this.formEditable) {
-            this.save();
-        }
     }
 
     formatPlaytime(minutes: number): string {
@@ -347,9 +347,13 @@ export class DetailComponent implements OnInit {
     }
 
     selectCover(cover: IgdbCover): void {
+        if (!this.formEditable) {
+            this.toggleEdit();
+        }
         const coverUrl = 'https:' + cover.url.replace('t_thumb', 't_cover_big');
         this.selectedCoverUrl = coverUrl;
         this.form.get('cover')?.setValue(coverUrl);
+        this.form.markAsDirty();
         this.coverDialogVisible = false;
         this.toast.success('Cover selected', `Cover for "${cover.game_name}" selected.`);
     }
