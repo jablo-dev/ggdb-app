@@ -31,7 +31,6 @@
             {{ score }}
         </div>
 
-        <!-- Title Badge in top-left corner -->
         <div
             class="title-badge absolute top-0 left-0 px-3 py-2 font-bold text-lg"
             [ngClass]="{
@@ -40,9 +39,6 @@
             }"
         >
             <span>{{ gameRecord?.name }}</span>
-            <span *ngIf="getRecordTypeLabel(gameRecord?.type)" class="game-type">
-                - {{ getRecordTypeLabel(gameRecord?.type) }}
-            </span>
         </div>
 
         <div class="card-content h-full p-4 relative flex-grow">
@@ -97,12 +93,17 @@
                 </div>
             </div>
 
-            <!-- Favorite star in bottom-right corner -->
-            <i
-                *ngIf="gameRecord?.fav === 1"
-                class="favorite-star pi pi-star-fill absolute bottom-4 right-4 text-yellow-400 text-xl"
-                title="Favorite"
-            ></i>
+            <!-- Favorite star and Type badge in bottom-right corner -->
+            <div class="absolute bottom-4 right-4 flex items-center gap-2">
+                <span *ngIf="getRecordTypeLabel(gameRecord?.type)" class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-xs font-medium">
+                    {{ getRecordTypeLabel(gameRecord?.type) }}
+                </span>
+                <i
+                    *ngIf="gameRecord?.fav === 1"
+                    class="favorite-star pi pi-star-fill text-yellow-400 text-xl"
+                    title="Favorite"
+                ></i>
+            </div>
         </div>
     </div>
 </div>

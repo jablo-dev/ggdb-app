@@ -1,12 +1,13 @@
-<div class="relative flex items-center my-6 col-span-full">
+<div class="relative flex items-center my-6 col-span-full cursor-pointer hover:opacity-80 transition-opacity" (click)="onToggle()">
     <div class="w-[30px] h-px bg-gray-600"></div>
-    <div class="px-4 whitespace-nowrap text-white flex items-baseline gap-2">
+    <div class="px-4 whitespace-nowrap text-white flex items-center gap-2">
         <span class="text-xl text-primary font-semibold">
             {{ year }}
         </span>
         <span class="text-sm text-default font-normal">
             — {{ count }} finished game{{ count === 1 ? '' : 's' }}
         </span>
+        <i class="pi text-xs text-primary ml-1" [ngClass]="isCollapsed ? 'pi-chevron-down' : 'pi-chevron-up'"></i>
     </div>
     <div class="flex-grow h-px bg-gray-600"></div>
 </div>

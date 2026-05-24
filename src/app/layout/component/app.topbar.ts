@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { LoadingService } from '../../service/loading.service';
 import { ProgressBar } from 'primeng/progressbar';
 import { VersionService } from '../../service/version.service';
+import { ScrollService } from '../../service/scroll.service';
 
 @Component({
     selector: 'app-topbar',
@@ -20,6 +21,8 @@ export class AppTopbar {
     isLoading$;
     version: string;
     username: string = '';
+
+    private readonly scrollService = inject(ScrollService);
 
     constructor(
         public layoutService: LayoutService,
@@ -58,14 +61,26 @@ export class AppTopbar {
     }
 
     openOverview() {
+        const scrollContainer = document.querySelector('.layout-main');
+        if (scrollContainer && this.router.url === '/overview') {
+            this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+        }
         this.router.navigate(['/overview']);
     }
 
     openDashboard(): void {
+        const scrollContainer = document.querySelector('.layout-main');
+        if (scrollContainer && this.router.url === '/overview') {
+            this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+        }
         this.router.navigate(['/']);
     }
 
     openProfile(): void {
+        const scrollContainer = document.querySelector('.layout-main');
+        if (scrollContainer && this.router.url === '/overview') {
+            this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+        }
         this.router.navigate(['/profile']);
     }
 

@@ -5,7 +5,7 @@ export interface GameRecord {
     ownerId: number;
     name: string;
     status: string;
-    type: keyof typeof RecordType;
+    type: string;
     location: string;
     createDate: string;
     finishDate: string;
