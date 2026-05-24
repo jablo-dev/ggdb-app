@@ -25,14 +25,20 @@ export class Login {
     password: string = '';
     showPatchnotes = false;
     loginError = false;
-    patchnotes: { version: string; date: string; changes: string[] }[] = [];
+    patchnotes: { version: string; date: string; changes: string[]; major?: boolean }[] = [];
     version: string = '';
+    isLatestMajor: boolean = false;
 
     features = [
         {
             icon: 'pi pi-list',
             title: 'Track Your Games',
             description: "Keep a comprehensive record of all the games you've completed. Never forget what you've played and when you finished it."
+        },
+        {
+            icon: 'pi pi-history',
+            title: 'Backlog Management',
+            description: 'Track games you are currently playing or plan to start soon. Manage your gaming queue and stay organized.'
         },
         {
             icon: 'pi pi-star',
@@ -53,11 +59,6 @@ export class Login {
             icon: 'pi pi-calendar',
             title: 'Timeline View',
             description: 'See your gaming journey organized by year and date, creating a visual timeline of your gaming experiences.'
-        },
-        {
-            icon: 'pi pi-replay',
-            title: 'Replay Tracking',
-            description: "Mark games you've replayed and track your replay value ratings to identify the games worth revisiting."
         }
     ];
 
@@ -73,7 +74,12 @@ export class Login {
 
     loadPatchnotes() {
         this.http.get<any[]>('assets/patchnotes.json').subscribe({
-            next: (data) => (this.patchnotes = data),
+            next: (data) => {
+                this.patchnotes = data;
+                if (this.patchnotes.length > 0 && this.patchnotes[0].major) {
+                    this.isLatestMajor = true;
+                }
+            },
             error: (err) => console.error('Failed to load patchnotes:', err)
         });
     }
