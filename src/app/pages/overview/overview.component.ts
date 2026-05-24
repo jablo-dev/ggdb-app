@@ -61,6 +61,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
     timelineRecords: any[] = [];
     allTimelineRecords: any[] = [];
     collapsedYears: { [year: number]: boolean } = {};
+    sortField: string = 'finishDate';
+    sortOrder: number = -1;
+
+    resetSorting(): void {
+        this.sortField = 'finishDate';
+        this.sortOrder = -1;
+        this.filterRecords();
+    }
 
     private _searchTerm = '';
 
@@ -115,13 +123,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
         if (!username) return;
 
         this.dataService.getAllRecords(username).subscribe((records) => {
-            records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
             this.allRecords = records;
-            this.groupedGameRecords = this.groupRecordsByYear(records);
-            this.updateVisibleTable();
-            this.updateVisibleCards();
-            this.allTimelineRecords = this.prepareTimelineData(records);
-            this.updateVisibleTimeline();
+            this.filterRecords();
 
             // Restore scroll position
             setTimeout(() => {
@@ -148,31 +151,61 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
     onSearchEnter(): void {
-        const term = this.searchTerm.trim().toLowerCase();
-        let filtered = term.length === 0
-            ? this.allRecords
-            : this.allRecords.filter((r) => r.name.toLowerCase().includes(term));
+        this.filterRecords();
+    }
 
-        if (this.showFavoritesOnly) {
-            filtered = filtered.filter((r) => r.fav === 1);
+    sort(field: string): void {
+        if (this.sortField === field) {
+            this.toggleSortOrder();
+        } else {
+            this.sortField = field;
+            this.sortOrder = 1;
+            this.filterRecords();
         }
+    }
 
-        this.groupedGameRecords = this.groupRecordsByYear(filtered);
-        this.updateVisibleTable();
-        this.updateVisibleCards();
-        this.allTimelineRecords = this.prepareTimelineData(filtered);
-        this.updateVisibleTimeline();
+    toggleSortOrder(): void {
+        this.sortOrder = this.sortOrder === 1 ? -1 : 1;
+        this.filterRecords();
     }
 
     filterRecords(): void {
         const term = this._searchTerm.trim().toLowerCase();
         let filtered = term.length === 0
-            ? this.allRecords
+            ? [...this.allRecords]
             : this.allRecords.filter((r) => r.name.toLowerCase().includes(term));
 
         if (this.showFavoritesOnly) {
             filtered = filtered.filter((r) => r.fav === 1);
         }
+
+        // Apply sorting
+        filtered.sort((a, b) => {
+            let valA: any;
+            let valB: any;
+
+            switch (this.sortField) {
+                case 'score':
+                    valA = this.dataDisplay.getTotalScore(a);
+                    valB = this.dataDisplay.getTotalScore(b);
+                    break;
+                case 'finishDate':
+                    valA = new Date(a.finishDate).getTime();
+                    valB = new Date(b.finishDate).getTime();
+                    break;
+                case 'platform':
+                    valA = this.dataDisplay.getPlatformLabel(a.location).toLowerCase();
+                    valB = this.dataDisplay.getPlatformLabel(b.location).toLowerCase();
+                    break;
+                default:
+                    valA = (a as any)[this.sortField];
+                    valB = (b as any)[this.sortField];
+            }
+
+            if (valA < valB) return -1 * this.sortOrder;
+            if (valA > valB) return 1 * this.sortOrder;
+            return 0;
+        });
 
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
         this.updateVisibleTable();
@@ -202,12 +235,24 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
         for (const record of records) {
             const year = new Date(record.finishDate).getFullYear();
-            const insertSplitter = year !== lastYear;
+
+            // Only show year headers if we're sorting by date (descending is default)
+            const showHeaders = this.sortField === 'finishDate';
+            const insertSplitter = showHeaders && year !== lastYear;
+
+            if (insertSplitter) {
+                result.push({
+                    year: year,
+                    gameRecord: record,
+                    yearCount: counts[year],
+                    id: record.id * -1000000 // Ensure unique ID for year header
+                });
+            }
 
             result.push({
-                year: insertSplitter ? year : null,
+                year: null,
                 gameRecord: record,
-                yearCount: insertSplitter ? counts[year] : null,
+                yearCount: null,
                 id: record.id
             });
 
@@ -294,23 +339,42 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     private updateVisibleTable(): void {
         let currentYearCollapsed = false;
+        let lastYearInGroup: number | null = null;
+
         this.visibleTableRecords = this.groupedGameRecords.filter(group => {
             if (group.year !== null) {
+                lastYearInGroup = group.year;
                 currentYearCollapsed = this.isYearCollapsed(group.year);
                 return true;
             }
-            return !currentYearCollapsed;
+
+            // If we're not sorting by date, grouping is disabled in groupedGameRecords,
+            // so lastYearInGroup will be null and we show all records.
+            // If sorting by date, we check the collapse state of the most recent header.
+            if (this.sortField === 'finishDate' && lastYearInGroup !== null) {
+                return !currentYearCollapsed;
+            }
+
+            return true;
         });
     }
 
     private updateVisibleCards(): void {
         let currentYearCollapsed = false;
+        let lastYearInGroup: number | null = null;
+
         this.visibleCardRecords = this.groupedGameRecords.filter(group => {
             if (group.year !== null) {
+                lastYearInGroup = group.year;
                 currentYearCollapsed = this.isYearCollapsed(group.year);
                 return true;
             }
-            return !currentYearCollapsed;
+
+            if (this.sortField === 'finishDate' && lastYearInGroup !== null) {
+                return !currentYearCollapsed;
+            }
+
+            return true;
         });
     }
 

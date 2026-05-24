@@ -14,6 +14,47 @@
                     [outlined]="!showFavoritesOnly"
                 ></p-button>
                 <p-button icon="pi pi-info-circle" label="Info" severity="secondary" (click)="showLegend = true"></p-button>
+
+                <div *ngIf="displayMode !== 'Timeline'" class="flex items-center">
+                    <div class="h-8 w-px bg-surface-300 dark:bg-surface-600 mx-1"></div>
+
+                    <span class="text-sm font-semibold opacity-60 ml-1 mr-2">Sort: </span>
+                    <div class="flex items-center gap-1">
+                        <p-button
+                            [label]="'Score'"
+                            [icon]="sortField === 'score' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
+                            severity="secondary"
+                            [outlined]="sortField !== 'score'"
+                            (click)="sort('score')"
+                            size="small"
+                        ></p-button>
+                        <p-button
+                            [label]="'Finished'"
+                            [icon]="sortField === 'finishDate' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
+                            severity="secondary"
+                            [outlined]="sortField !== 'finishDate'"
+                            (click)="sort('finishDate')"
+                            size="small"
+                        ></p-button>
+                        <p-button
+                            [label]="'Platform'"
+                            [icon]="sortField === 'platform' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
+                            severity="secondary"
+                            [outlined]="sortField !== 'platform'"
+                            (click)="sort('platform')"
+                            size="small"
+                        ></p-button>
+                        <p-button
+                            icon="pi pi-filter-slash"
+                            severity="secondary"
+                            [text]="true"
+                            (click)="resetSorting()"
+                            size="small"
+                            pTooltip="Reset Sorting"
+                            tooltipPosition="bottom"
+                        ></p-button>
+                    </div>
+                </div>
             </div>
         </ng-template>
 
@@ -90,11 +131,26 @@
         <p-table #dt [value]="visibleTableRecords" dataKey="id" scrollable="true" scrollHeight="flex" styleClass="custom-scroll sticky-header p-datatable-sm w-full border-none">
             <ng-template pTemplate="header">
                 <tr class="text-base font-bold">
-                    <th class="w-[80px] py-4 text-center text-primary">Score</th>
+                    <th class="w-[80px] py-4 text-center text-primary cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('score')">
+                        <div class="flex items-center justify-center gap-2">
+                            Score
+                            <i class="pi text-xs" [ngClass]="sortField === 'score' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
+                        </div>
+                    </th>
                     <th class="w-[100px] py-4"></th>
                     <th class="py-4 text-primary">Game</th>
-                    <th class="w-[180px] py-4 text-primary">Finished</th>
-                    <th class="w-[250px] py-4 text-primary text-center">Platform</th>
+                    <th class="w-[180px] py-4 text-primary cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('finishDate')">
+                        <div class="flex items-center gap-2">
+                            Finished
+                            <i class="pi text-xs" [ngClass]="sortField === 'finishDate' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
+                        </div>
+                    </th>
+                    <th class="w-[250px] py-4 text-primary text-center cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('platform')">
+                        <div class="flex items-center justify-center gap-2">
+                            Platform
+                            <i class="pi text-xs" [ngClass]="sortField === 'platform' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
+                        </div>
+                    </th>
                     <th class="w-[100px] py-4 text-primary text-center">Status</th>
                 </tr>
             </ng-template>
