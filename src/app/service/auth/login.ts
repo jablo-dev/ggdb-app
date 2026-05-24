@@ -16,7 +16,7 @@ import { VersionService } from '../version.service';
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, Dialog, NgForOf, CommonModule],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, NgForOf, CommonModule],
     templateUrl: './login.html',
     styleUrl: './login.scss'
 })
