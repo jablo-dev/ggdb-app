@@ -5,7 +5,7 @@
 /* Ensure the scrollbar is visible if needed on the left side */
 .overflow-y-auto {
     scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) transparent;
+    scrollbar-color: var(--p-primary-color) transparent;
 }
 
 .overflow-y-auto::-webkit-scrollbar {
@@ -13,6 +13,6 @@
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color);
+    background-color: var(--p-primary-color);
     border-radius: 10px;
 }
