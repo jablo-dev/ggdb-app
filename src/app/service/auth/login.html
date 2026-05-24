@@ -1,0 +1,172 @@
+﻿<div class="flex flex-col md:flex-row min-h-screen">
+    <!-- Left Half: Application Info (Scrollable) -->
+    <div class="hidden md:flex md:w-1/2 bg-surface-50 dark:bg-surface-950 overflow-y-auto h-screen border-r border-surface-200 dark:border-surface-800 relative">
+        <div class="p-12 w-full min-h-full flex flex-col items-center">
+            <div class="max-w-2xl mx-auto relative w-full my-auto py-8">
+
+                <!-- Default View -->
+                <div *ngIf="!showPatchnotes" class="py-4 animate-fadeinup">
+                    <div class="flex items-end gap-3 mb-3">
+                        <svg id="Ebene_2" class="w-14 h-14" data-name="Ebene 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260.69 260.69">
+                            <g id="Ebene_1-2" data-name="Ebene 1">
+                                <g>
+                                    <path class="fill-primary" d="M79.71,257.28l-33.97-19.62c-12.16-7.02-16.34-22.62-9.32-34.78l31.6-54.73c.42-.72.17-1.65-.55-2.06l-54.73-31.6C.57,107.47-3.61,91.86,3.41,79.71l19.62-33.97c7.02-12.16,22.62-16.34,34.78-9.32l54.73,31.6c.72.42,1.65.17,2.06-.55l31.6-54.73c7.02-12.16,22.62-16.34,34.78-9.32l33.97,19.62c12.16,7.02,16.34,22.62,9.32,34.78l-31.6,54.73c-.42.72-.17,1.65.55,2.06l54.73,31.6c12.16,7.02,16.34,22.62,9.32,34.78l-19.62,33.97c-7.02,12.16-22.62,16.34-34.78,9.32l-54.73-31.6c-.72-.42-1.65-.17-2.06.55l-31.6,54.73c-7.02,12.16-22.62,16.34-34.78,9.32ZM52.8,45.07c-7.38-4.26-16.86-1.72-21.12,5.66l-19.62,33.97c-4.26,7.38-1.72,16.86,5.66,21.12l54.73,31.6c5.5,3.17,7.39,10.23,4.21,15.72l-31.6,54.73c-4.26,7.38-1.72,16.86,5.66,21.12l33.97,19.62c7.38,4.26,16.86,1.72,21.12-5.66l31.6-54.73c3.17-5.5,10.23-7.39,15.72-4.21l54.73,31.6c7.38,4.26,16.86,1.72,21.12-5.66l19.62-33.97c4.26-7.38,1.72-16.86-5.66-21.12l-54.73-31.6c-5.5-3.17-7.39-10.23-4.21-15.72l31.6-54.73c4.26-7.38,1.72-16.86-5.66-21.12l-33.97-19.62c-7.38-4.26-16.86-1.72-21.12,5.66l-31.6,54.73c-3.17,5.5-10.23,7.39-15.72,4.21l-54.73-31.6Z" />
+                                    <path class="fill-primary" d="M110.91,164.01c-18.56-10.72-24.95-34.54-14.23-53.1s34.54-24.95,53.1-14.23,24.95,34.54,14.23,53.1-34.54,24.95-53.1,14.23ZM144.78,105.34c-13.79-7.96-31.48-3.22-39.44,10.57s-3.22,31.48,10.57,39.44,31.48,3.22,39.44-10.57,3.22-31.48-10.57-39.44Z" />
+                                    <path class="fill-primary" d="M171.29,81.3l-18.95-10.94c-4.52-2.61-7.22-7.29-7.22-12.51,0-5.22,2.7-9.9,7.22-12.51l18.95-10.94c4.52-2.61,9.92-2.61,14.44,0,4.52,2.61,7.22,7.29,7.22,12.51v21.88c0,5.22-2.7,9.9-7.22,12.51-4.52,2.61-9.92,2.61-14.44,0ZM180.74,43.06c-.67-.39-2.44-1.16-4.44,0l-18.95,10.94c-2.01,1.16-2.22,3.08-2.22,3.85,0,.77.22,2.69,2.22,3.85l18.95,10.94c2.01,1.16,3.78.39,4.44,0,.67-.39,2.22-1.53,2.22-3.85v-21.88c0-2.32-1.55-3.46-2.22-3.85Z" />
+                                    <path class="fill-primary" d="M74.86,226.44h0c-4.52-2.61-7.22-7.29-7.22-12.51v-21.88c0-5.22,2.7-9.9,7.22-12.51,4.52-2.61,9.92-2.61,14.44,0l18.95,10.94c4.52,2.61,7.22,7.29,7.22,12.51,0,5.22-2.7,9.9-7.22,12.51l-18.95,10.94c-4.52,2.61-9.92,2.61-14.44,0ZM84.31,188.21c-2.01-1.16-3.78-.39-4.44,0-.67.39-2.22,1.53-2.22,3.85v21.88c0,2.32,1.55,3.46,2.22,3.85h0c.67.39,2.44,1.16,4.44,0l18.95-10.94c2.01-1.16,2.22-3.08,2.22-3.85,0-.77-.22-2.69-2.22-3.85l-18.95-10.94Z" />
+                                    <path class="fill-primary" d="M50.61,113.65c-2.15-1.24-3.97-3.05-5.28-5.31l-10.94-18.95c-2.61-4.52-2.61-9.92,0-14.44,2.61-4.52,7.29-7.22,12.51-7.22h21.88c5.22,0,9.9,2.7,12.51,7.22,2.61,4.52,2.61,9.92,0,14.44l-10.94,18.95c-2.61,4.52-7.29,7.22-12.51,7.22-2.61,0-5.09-.68-7.23-1.92ZM43.06,84.39l10.94,18.95c1.16,2.01,3.08,2.22,3.85,2.22.77,0,2.69-.22,3.85-2.22l10.94-18.95c1.16-2.01.39-3.78,0-4.44s-1.53-2.22-3.85-2.22h-21.88c-2.32,0-3.46,1.55-3.85,2.22-.39.67-1.16,2.44,0,4.44h0Z" />
+                                    <path class="fill-primary" d="M184.43,190.91c-2.15-1.24-3.97-3.05-5.28-5.31-2.61-4.52-2.61-9.92,0-14.44l10.94-18.95c2.61-4.52,7.29-7.22,12.51-7.22,5.22,0,9.9,2.7,12.51,7.22l10.94,18.95c2.61,4.52,2.61,9.92,0,14.44-2.61,4.52-7.29,7.22-12.51,7.22h-21.88c-2.61,0-5.09-.68-7.23-1.92ZM204.86,155.58c-.89-.51-1.78-.59-2.25-.59-.77,0-2.69.22-3.85,2.22l-10.94,18.95c-1.16,2.01-.39,3.78,0,4.44.39.67,1.53,2.22,3.85,2.22h21.88c2.32,0,3.46-1.55,3.85-2.22.39-.67,1.16-2.44,0-4.44l-10.94-18.95c-.45-.79-1.03-1.3-1.6-1.63Z" />
+                                </g>
+                            </g>
+                        </svg>
+
+                        <div class="flex items-baseline gap-1.5">
+                            <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-0 leading-none">GoodGamesDB</h1>
+                            <span class="text-[10px] text-muted-color font-medium opacity-70">v{{ version }}</span>
+                        </div>
+                    </div>
+                    <h2 class="text-2xl font-semibold mb-2 text-primary">Track Your Gaming Journey</h2>
+                    <p class="text-base mb-4 text-muted-color">
+                        Keep a comprehensive record of every game you complete, rate them across multiple categories,
+                        and build your personal gaming database.
+                    </p>
+
+                    <div class="grid grid-cols-1 gap-2">
+                        <div *ngFor="let feature of features"
+                             class="flex gap-3 p-3 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm border border-transparent">
+                            <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <i [class]="feature.icon + ' text-base text-primary'"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold mb-0.5 text-surface-900 dark:text-surface-0">{{ feature.title }}</h3>
+                                <p class="text-sm text-muted-color">{{ feature.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-4 rounded-2xl bg-surface-0 dark:bg-surface-900 shadow-sm border-2 border-primary shadow-lg relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-primary text-primary-contrast text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
+                            Invite Only
+                        </div>
+                        <h2 class="text-xl font-bold mb-1 text-surface-900 dark:text-surface-0">Ready to Start Tracking?</h2>
+                        <p class="text-base text-muted-color mb-4">Join other gamers building their personal playthrough databases</p>
+
+                        <div class="pt-4 border-t border-surface-200 dark:border-surface-800">
+                            <p class="text-sm text-surface-700 dark:text-surface-200 font-semibold italic">
+                                The app is currently a <span class="text-primary">private invite-only beta</span>. If you want access you need to mail me to
+                                <a href="mailto:mail&#64;jablo.dev" class="underline hover:text-primary transition-colors font-bold">mail&#64;jablo.dev</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patch Notes View -->
+                <div *ngIf="showPatchnotes" class="animate-fadeinup">
+                    <div class="flex items-center justify-between mb-8 sticky top-0 bg-surface-50 dark:bg-surface-950 z-10 py-2 border-b border-surface-200 dark:border-surface-800 -mx-4 px-4">
+                        <h2 class="text-3xl font-bold text-surface-900 dark:text-surface-0">Patch Notes</h2>
+                        <button
+                            pButton
+                            icon="pi pi-arrow-left"
+                            label="Return"
+                            class="p-button-outlined p-button-sm"
+                            (click)="showPatchnotes = false"
+                        ></button>
+                    </div>
+
+                    <div class="flex flex-col gap-6 mt-8">
+                        <div *ngFor="let note of patchnotes" class="p-4 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm border border-surface-200 dark:border-surface-800">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg font-bold text-primary">{{ note.version }}</span>
+                                <span *ngIf="note.major" class="bg-primary text-primary-contrast text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Major Update!</span>
+                                <div class="flex-grow"></div>
+                                <span class="text-muted-color text-xs">{{ formatDate(note.date) }}</span>
+                            </div>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li *ngFor="let item of note.changes" class="text-sm text-surface-700 dark:text-surface-300">{{ item }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Extra padding at the bottom to ensure the last item isn't cut off -->
+                    <div class="h-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Half: Login Form (Non-scrollable) -->
+    <div class="flex-1 md:w-1/2 flex items-center justify-center bg-surface-0 dark:bg-surface-900 overflow-hidden relative">
+        <!-- Background Decorations -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[80px] animate-pulse"></div>
+            <div class="absolute -bottom-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] rounded-full bg-primary/5 blur-[120px]"></div>
+
+            <!-- Gaming-like floating icons -->
+            <div class="absolute top-[15%] left-[10%] text-primary/10 text-6xl animate-float-slow">
+                <i class="pi pi-map"></i>
+            </div>
+            <div class="absolute top-[60%] left-[15%] text-primary/10 text-4xl animate-float" style="animation-delay: -2s">
+                <i class="pi pi-play"></i>
+            </div>
+            <div class="absolute top-[25%] right-[15%] text-primary/10 text-5xl animate-float-slow" style="animation-delay: -5s">
+                <i class="pi pi-bolt"></i>
+            </div>
+            <div class="absolute bottom-[20%] right-[10%] text-primary/10 text-7xl animate-float" style="animation-delay: -3s">
+                <i class="pi pi-trophy"></i>
+            </div>
+            <div class="absolute bottom-[40%] left-[40%] text-primary/5 text-8xl animate-float-slow" style="animation-delay: -7s">
+                <i class="pi pi-objects-column"></i>
+            </div>
+        </div>
+
+        <app-floating-configurator />
+
+        <div class="w-full max-w-[30rem] px-8 py-12 relative z-10 animate-fadeinup">
+            <div class="bg-surface-0/40 dark:bg-surface-950/40 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+                <!-- Glossy overlay -->
+                <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
+                        <i class="pi pi-user text-3xl text-primary"></i>
+                    </div>
+                    <div class="text-surface-900 dark:text-surface-0 text-3xl font-bold mb-2">Welcome Back</div>
+                    <span class="text-muted-color font-medium">Please enter your details</span>
+                </div>
+
+                <div>
+                    <div class="flex flex-col gap-2 mb-4">
+                        <label for="user" class="text-sm font-semibold text-surface-900 dark:text-surface-0">Username</label>
+                        <input pInputText id="user" type="text" placeholder="Enter your username" class="w-full" [(ngModel)]="email" />
+                    </div>
+
+                    <div class="flex flex-col gap-2 mb-8">
+                        <label for="password1" class="text-sm font-semibold text-surface-900 dark:text-surface-0">Password</label>
+                        <p-password id="password1" [(ngModel)]="password" placeholder="Enter your password" [toggleMask]="true" styleClass="w-full" [fluid]="true" [feedback]="false"> </p-password>
+                    </div>
+
+                    <p-button label="Sign In" styleClass="w-full mb-4 shadow-lg shadow-primary/20" (onClick)="login()"> </p-button>
+
+                    <p-button label="Request Invite" [plain]="true" [text]="true" styleClass="w-full p-button-secondary" (onClick)="join()"> </p-button>
+
+                    <div *ngIf="loginError" class="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-center text-red-500 text-sm animate-shake">
+                        Invalid username or password
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-surface-200 dark:border-surface-800 text-center flex flex-col items-center gap-2">
+                        <span *ngIf="isLatestMajor" class="bg-primary text-primary-contrast text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-blink">Major Update!</span>
+                        <button
+                            pButton
+                            icon="pi pi-receipt"
+                            class="p-button-rounded p-button-text p-button-sm p-button-secondary"
+                            pTooltip="Patch Notes"
+                            tooltipPosition="top"
+                            pButtonLabel=""
+                            (click)="showPatchnotes = true"
+                        >View Patch Notes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

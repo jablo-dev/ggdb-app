@@ -226,12 +226,25 @@ export class ClipboardService {
             const year = finishDate.getFullYear();
             let footerText = `#${countInYear} of ${year} | ${dateString}`;
 
-            if (record.mainQuestDone === 1) {
+            if (record.canceled === 1) {
+                footerText += ' | CANCELED';
+            } else if (record.mainQuestDone === 1) {
                 footerText += ' | Main Quest finished';
+            }
+
+            if (record.backlogItem === 1) {
+                footerText += ' | Backlog';
             }
 
             if (record.replay === 1) {
                 footerText += ' | Replay';
+            }
+
+            if (record.playtime) {
+                const h = Math.floor(record.playtime / 60);
+                const m = record.playtime % 60;
+                const playtimeStr = h === 0 ? `${m}m` : (m === 0 ? `${h}h` : `${h}h ${m}m`);
+                footerText += ` | Playtime: ${playtimeStr}`;
             }
 
             ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';

@@ -51,6 +51,7 @@ export class DataDisplayService {
     getPlatformLabel(location: string): string {
         switch (location) {
             case 'STEAM': return 'Steam';
+            case 'BATTLE_NET': return 'Battle.net';
 
             case 'PLAYSTATION_1': return 'PlayStation 1';
             case 'PLAYSTATION_2': return 'PlayStation 2';
@@ -67,6 +68,7 @@ export class DataDisplayService {
             case 'XBOX_GAME_PASS': return 'Xbox Game Pass';
 
             case 'NINTENDO_CONSOLE': return 'Nintendo Switch';
+            case 'NINTENDO_CONSOLE2': return 'Nintendo Switch 2';
             case 'WII': return 'Nintendo Wii';
             case 'WII_U': return 'Nintendo Wii U';
             case 'NINTENDO_3DS': return 'Nintendo 3DS';
@@ -97,6 +99,7 @@ export class DataDisplayService {
     getPlatformIconClass(location: string): string {
         switch (location) {
             case 'STEAM': return 'bi bi-steam';
+            case 'BATTLE_NET': return 'bi bi-unity'; // Using unity as placeholder for launcher if no battle.net icon
 
             case 'PLAYSTATION':
             case 'PLAYSTATION_1':
@@ -112,7 +115,8 @@ export class DataDisplayService {
             case 'XBOX_ORIGINAL':
             case 'XBOX_GAME_PASS': return 'bi bi-xbox';
 
-            case 'NINTENDO_CONSOLE': return 'bi bi-nintendo-switch';
+            case 'NINTENDO_CONSOLE':
+            case 'NINTENDO_CONSOLE2': return 'bi bi-nintendo-switch';
 
             case 'EPIC_GAMES':
             case 'EA_PLAY':

@@ -1,10 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 // PrimeNG Modules
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { DatePickerModule } from 'primeng/datepicker';
 import { TextareaModule } from 'primeng/textarea';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -21,6 +22,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RecordType } from '../../enum/type.enum';
 import { Locations } from '../../enum/location.enum';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LayoutService } from '../../layout/service/layout.service';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { ToastService } from '../../service/toast.service';
@@ -33,12 +35,13 @@ import { IgdbService, IgdbCover } from '../../service/igdb.service';
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, Toolbar, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, Toolbar, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule],
     providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
 })
 export class DetailComponent implements OnInit {
+    private source: string | null = null;
     statService: StatService = inject(StatService);
     form!: FormGroup;
     formEditable = false;
@@ -47,12 +50,17 @@ export class DetailComponent implements OnInit {
     recordTypes = Object.values(RecordType);
     locationTypes = Object.values(Locations);
 
+    layoutService: LayoutService = inject(LayoutService);
+
     scoreFields: string[] = ['scoreGameplay', 'scorePresentation', 'scoreNarrative', 'scoreQuality', 'scoreSound', 'scoreContent', 'scorePacing', 'scoreBalance', 'scoreUIUX', 'scoreImpression'];
 
     coverDialogVisible = false;
     coverSearchLoading = false;
     coverResults: IgdbCover[] = [];
     selectedCoverUrl: string | null = null;
+
+    playtimeDialogVisible = false;
+    customHoursToAdd = 1;
 
     scoreFieldComments: Record<string, string> = {
         scoreGameplay: 'How engaging and responsive was the core gameplay loop?',
@@ -93,6 +101,7 @@ export class DetailComponent implements OnInit {
     ngOnInit(): void {
         this.route.queryParams.subscribe((params) => {
             const recordParam = params['record'];
+            this.source = params['source'] || null;
             if (recordParam === 'new') {
                 this.formEditable = true;
                 this.initForm();
@@ -110,24 +119,53 @@ export class DetailComponent implements OnInit {
         });
     }
 
+    get playtimeEnabled(): boolean {
+        return this.layoutService.layoutConfig().playtimeEnabled ?? false;
+    }
+
     initForm(record?: GameRecord): void {
+        const isBacklog = this.source === 'backlog' || record?.backlogItem === 1;
+
         this.form = this.fb.group({
             id: [record?.id ?? 0],
             ownerId: [record?.ownerId ?? 0],
             name: [record?.name ?? '', Validators.required],
             status: [record?.status ?? ''],
             type: [record?.type ?? '', Validators.required],
-            location: [record?.location ? Locations[record.location as keyof typeof Locations] : '', Validators.required],
+            location: [record?.location ? (Locations[record.location as keyof typeof Locations] || record.location) : '', Validators.required],
             createDate: [record?.createDate ? this.parseStringToDate(record.createDate) : ''],
-            finishDate: [record?.finishDate ? this.parseStringToDate(record.finishDate) : '', Validators.required],
+            finishDate: [record?.finishDate ? this.parseStringToDate(record.finishDate) : '', isBacklog ? [] : [Validators.required]],
             note: [record?.note ?? ''],
-            replayValue: [record?.replayValue ?? 1, Validators.required],
+            replayValue: [record?.replayValue ?? 1, isBacklog ? [] : [Validators.required]],
             mainQuestDone: [record?.mainQuestDone === 1],
             fav: [record?.fav === 1],
             replay: [record?.replay === 1],
+            backlogItem: [isBacklog],
+            canceled: [record?.canceled === 1],
             cover: [record?.cover ?? ''],
+            playtime: [record?.playtime ?? 0],
             ...Object.fromEntries(this.scoreFields.map((field) => [field, record?.[field as keyof GameRecord] ?? 1])),
             ...Object.fromEntries(this.scoreFields.map((field) => [`${field}Enabled`, record ? record[field as keyof GameRecord] !== 0 : true]))
+        });
+
+        if (this.source === 'backlog' && !record?.id) {
+            this.form.get('backlogItem')?.disable();
+        }
+
+        // Subscribe to backlogItem changes to update validation
+        this.form.get('backlogItem')?.valueChanges.subscribe((backlog) => {
+            const finishDateControl = this.form.get('finishDate');
+            const replayValueControl = this.form.get('replayValue');
+
+            if (backlog) {
+                finishDateControl?.clearValidators();
+                replayValueControl?.clearValidators();
+            } else {
+                finishDateControl?.setValidators([Validators.required]);
+                replayValueControl?.setValidators([Validators.required]);
+            }
+            finishDateControl?.updateValueAndValidity();
+            replayValueControl?.updateValueAndValidity();
         });
 
         this.scoreFields.forEach((field) => {
@@ -150,11 +188,14 @@ export class DetailComponent implements OnInit {
     }
 
     get totalScore(): number {
+        const rawValue = this.form.getRawValue();
         const rawRecord: GameRecord = {
-            ...this.form.value,
-            mainQuestDone: this.form.value.mainQuestDone ? 1 : 0,
-            fav: this.form.value.fav ? 1 : 0,
-            replay: this.form.value.replay ? 1 : 0
+            ...rawValue,
+            mainQuestDone: rawValue.mainQuestDone ? 1 : 0,
+            fav: rawValue.fav ? 1 : 0,
+            replay: rawValue.replay ? 1 : 0,
+            backlogItem: rawValue.backlogItem ? 1 : 0,
+            canceled: rawValue.canceled ? 1 : 0
         };
         return this.statService.getTotalScore(rawRecord);
     }
@@ -164,10 +205,21 @@ export class DetailComponent implements OnInit {
 
         if (this.formEditable) {
             this.form.enable();
+            if (this.source === 'backlog' && !this.form.get('id')?.value) {
+                this.form.get('backlogItem')?.disable();
+            }
         } else {
             this.form.disable();
             this.initForm(this.form.value);
         }
+    }
+
+    finishGame(): void {
+        this.formEditable = true;
+        this.form.enable();
+        this.form.get('backlogItem')?.enable();
+        this.form.patchValue({ backlogItem: false });
+        // The valueChanges subscription in initForm will handle validators
     }
 
     save(): void {
@@ -176,21 +228,24 @@ export class DetailComponent implements OnInit {
             return;
         }
 
-        const raw = this.form.value;
+        const raw = this.form.getRawValue();
         const payload = {
             id: raw.id,
             name: raw.name,
             status: raw.status,
             type: raw.type,
-            location: this.getEnumKeyFromValue(Locations, raw.location),
+            location: this.getEnumKeyFromValue(Locations, raw.location) || raw.location,
             createDate: raw.createDate ? this.formatDateToString(raw.createDate) : '',
             finishDate: raw.finishDate ? this.formatDateToString(raw.finishDate) : '',
             note: raw.note,
             replay: raw.replay ? 1 : 0,
             mainQuestDone: raw.mainQuestDone ? 1 : 0,
             fav: raw.fav ? 1 : 0,
+            backlogItem: raw.backlogItem ? 1 : 0,
+            canceled: raw.canceled ? 1 : 0,
             replayValue: raw.replayValue,
             cover: raw.cover,
+            playtime: raw.playtime,
             ...Object.fromEntries(this.scoreFields.map((field) => [field, raw[field]]))
         };
 
@@ -220,7 +275,7 @@ export class DetailComponent implements OnInit {
 
     confirmDelete(): void {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete this entry-card?',
+            message: 'Are you sure you want to delete this playthrough?',
             header: 'Confirm Deletion',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
@@ -275,6 +330,33 @@ export class DetailComponent implements OnInit {
         this.router.navigate(['/overview'], {});
     }
 
+    addPlaytimeHours(hours: number): void {
+        const currentMinutes = this.form.get('playtime')?.value || 0;
+        this.form.get('playtime')?.setValue(currentMinutes + Math.round(hours * 60));
+        this.form.markAsDirty();
+    }
+
+    showPlaytimeDialog(): void {
+        this.customHoursToAdd = 1;
+        this.playtimeDialogVisible = true;
+    }
+
+    quickAddAndSave(hours: number): void {
+        if (!this.formEditable) {
+            this.toggleEdit();
+        }
+        this.addPlaytimeHours(hours);
+        this.playtimeDialogVisible = false;
+    }
+
+    formatPlaytime(minutes: number): string {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        if (h === 0) return `${m}m`;
+        if (m === 0) return `${h}h`;
+        return `${h}h ${m}m`;
+    }
+
     openCoverDialog(): void {
         const name = this.form.get('name')?.value;
         if (!name) {
@@ -301,9 +383,13 @@ export class DetailComponent implements OnInit {
     }
 
     selectCover(cover: IgdbCover): void {
+        if (!this.formEditable) {
+            this.toggleEdit();
+        }
         const coverUrl = 'https:' + cover.url.replace('t_thumb', 't_cover_big');
         this.selectedCoverUrl = coverUrl;
         this.form.get('cover')?.setValue(coverUrl);
+        this.form.markAsDirty();
         this.coverDialogVisible = false;
         this.toast.success('Cover selected', `Cover for "${cover.game_name}" selected.`);
     }

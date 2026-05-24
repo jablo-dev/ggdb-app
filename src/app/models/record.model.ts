@@ -25,4 +25,7 @@ export interface GameRecord {
     scoreUIUX: number;
     scoreImpression: number;
     cover?: string;
+    playtime: number;
+    backlogItem?: number;
+    canceled?: number;
 }

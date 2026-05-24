@@ -8,7 +8,9 @@ import Lara from '@primeng/themes/lara';
 import Nora from '@primeng/themes/nora';
 import { PrimeNG } from 'primeng/config';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { LayoutService } from '../../layout/service/layout.service';
+import { DataService } from '../../service/data.service';
 
 const presets = {
     Aura,
@@ -39,7 +41,7 @@ declare type SurfacesType = {
 @Component({
     selector: 'app-profile-configurator',
     standalone: true,
-    imports: [CommonModule, FormsModule, SelectButtonModule],
+    imports: [CommonModule, FormsModule, SelectButtonModule, ToggleSwitchModule],
     template: `
         <div class="flex flex-col gap-6">
             <!-- <div>
@@ -99,6 +101,7 @@ export class ProfileConfiguratorComponent {
     layoutService: LayoutService = inject(LayoutService);
     platformId = inject(PLATFORM_ID);
     primeng = inject(PrimeNG);
+    dataService = inject(DataService);
 
     presets = Object.keys(presets);
 

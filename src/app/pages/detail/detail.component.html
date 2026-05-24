@@ -24,7 +24,7 @@
                     pButton
                     type="button"
                     icon="pi pi-save"
-                    pTooltip="Create Entry"
+                    pTooltip="Create Playthrough"
                     tooltipPosition="top"
                     label="Save"
                     (click)="save()"
@@ -117,11 +117,24 @@
                     label="Cover"
                     (click)="openCoverDialog()"
                 ></button>
+
+                <!-- Finish Game -->
+                <button
+                    *ngIf="form.get('id')?.value && form.get('backlogItem')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-check-circle"
+                    class="p-button-success"
+                    pTooltip="Finish this game and move from backlog"
+                    tooltipPosition="top"
+                    label="Game finished!"
+                    (click) = "finishGame()"
+                ></button>
             </div>
         </ng-template>
 
         <!-- Right: Final score preview -->
-        <ng-template pTemplate="end">
+        <ng-template pTemplate="end" *ngIf="!form.get('backlogItem')?.value">
             <div class="w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex items-center gap-3">
                 <!-- Label -->
                 <label class="font-semibold opacity-80 whitespace-nowrap">Score preview</label>
@@ -152,51 +165,39 @@
     <!-- Form section -->
     <form *ngIf="form" [formGroup]="form">
         <div class="flex flex-col gap-4 mt-2">
-            <!-- Record Info - Full Width at Top -->
-            <div class="w-full">
-                <p-fieldset legend="Record Information">
-                    <div class="relative">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div class="flex flex-col gap-1">
-                                <label for="name" class="text-sm font-medium">Name *</label>
-                                <input id="name" pInputText formControlName="name" />
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <label for="type" class="text-sm font-medium">Type *</label>
-                                <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <label for="location" class="text-sm font-medium">Location *</label>
-                                <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location"></p-select>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
-                                <p-datepicker id="finishDate" formControlName="finishDate" showIcon class="w-full" [fluid]="true" dateFormat="dd/mm/yy"></p-datepicker>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-                            <div class="flex flex-col gap-1">
-                                <label for="note" class="text-sm font-medium">Note</label>
-                                <textarea pTextarea id="note" formControlName="note" rows="4" placeholder="Add note" class="resize-none"></textarea>
-                            </div>
-
-                            <div class="flex items-start gap-4 mt-6">
-                                <div class="flex flex-col gap-3 justify-start flex-grow">
-                                    <div class="flex items-center gap-2">
-                                        <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
-                                        <label class="text-sm">Main Quest / Story / Campaign finished</label>
+            <!-- Top Section: Record Info and Playtime Tracker -->
+            <div class="flex flex-col lg:flex-row gap-4">
+                <!-- Record Info -->
+                <div [ngClass]="playtimeEnabled ? 'w-full lg:w-[70%]' : 'w-full'">
+                    <p-fieldset legend="Record Information">
+                        <div class="flex flex-col lg:flex-row gap-6">
+                            <!-- Left side: Main Fields -->
+                            <div class="flex-grow flex flex-col gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="flex flex-col gap-1">
+                                        <label for="name" class="text-sm font-medium">Name *</label>
+                                        <input id="name" pInputText formControlName="name" />
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <p-toggleSwitch formControlName="fav"></p-toggleSwitch>
-                                        <label class="text-sm">Favorite</label>
+                                    <div class="flex flex-col gap-1">
+                                        <label for="type" class="text-sm font-medium">Type *</label>
+                                        <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
                                     </div>
-                                    <div class="flex items-center gap-2">
-                                        <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
-                                        <label class="text-sm">Replay</label>
+                                    <div class="flex flex-col gap-1">
+                                        <label for="location" class="text-sm font-medium">Location *</label>
+                                        <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location"></p-select>
                                     </div>
+                                    <div class="flex flex-col gap-1" *ngIf="!form.get('backlogItem')?.value">
+                                        <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
+                                        <p-datepicker id="finishDate" formControlName="finishDate" showIcon class="w-full" [fluid]="true" dateFormat="dd/mm/yy"></p-datepicker>
+                                    </div>
+                                    <div class="flex flex-col gap-1 md:col-span-2">
+                                        <label for="note" class="text-sm font-medium">Note</label>
+                                        <input id="note" pInputText formControlName="note" placeholder="Add note" />
+                                    </div>
+                                </div>
 
-                                    <div class="flex flex-col gap-1 mt-1 max-w-[200px]">
+                                <div class="flex items-center flex-wrap gap-4 mt-2">
+                                    <div class="flex flex-col gap-1 w-full max-w-[200px]" *ngIf="!form.get('backlogItem')?.value">
                                         <label for="replayValue" class="text-sm font-medium">Replay Value *</label>
                                         <p-select
                                             id="replayValue"
@@ -207,20 +208,74 @@
                                             placeholder="Select replay value"
                                         ></p-select>
                                     </div>
-                                </div>
 
-                                <!-- Cover Preview - Bottom Right -->
+                                    <div class="flex flex-wrap gap-x-6 gap-y-3 pt-5">
+                                        <div class="flex items-center gap-2" *ngIf="!form.get('backlogItem')?.value">
+                                            <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
+                                            <label class="text-sm whitespace-nowrap">Main Quest finished</label>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <p-toggleSwitch formControlName="fav"></p-toggleSwitch>
+                                            <label class="text-sm">Favorite</label>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
+                                            <label class="text-sm">Replay</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right side: Cover -->
+                            <div class="flex flex-row gap-6">
+                                <!-- Cover Image -->
                                 <div class="flex-shrink-0" *ngIf="form.get('cover')?.value">
-                                     <img [src]="form.get('cover')?.value" class="w-24 md:w-32 rounded shadow-lg object-cover border border-white/10" style="aspect-ratio: 3/4" />
+                                    <img [src]="form.get('cover')?.value" class="w-24 md:w-32 rounded shadow-lg object-cover border border-white/10" style="aspect-ratio: 3/4" />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </p-fieldset>
+                    </p-fieldset>
+                </div>
+
+                <!-- Playtime Tracker -->
+                <div class="w-full lg:w-[30%]" *ngIf="playtimeEnabled">
+                    <p-fieldset legend="Playtime Tracker" class="h-full">
+                        <div class="flex flex-col gap-4">
+                            <div class="flex flex-col gap-1 w-full">
+                                <label for="playtime" class="text-sm font-semibold flex items-center gap-2">
+                                    <i class="pi pi-clock text-primary"></i>
+                                    Total Playtime
+                                </label>
+                                <div class="flex flex-col gap-4">
+                                    <div class="flex items-center gap-2">
+                                        <p-inputNumber id="playtime" formControlName="playtime" [min]="0" placeholder="Minutes" class="flex-grow" suffix=" min" [readonly]="!formEditable"></p-inputNumber>
+                                        <p-button
+                                            *ngIf="!formEditable"
+                                            icon="pi pi-plus"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            pTooltip="Add Time"
+                                            (click)="showPlaytimeDialog()"
+                                        ></p-button>
+                                    </div>
+                                    <div class="text-2xl font-bold text-primary text-center py-2">
+                                        {{ formatPlaytime(form.get('playtime')?.value || 0) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 justify-center" *ngIf="formEditable">
+                                <button pButton type="button" label="+1h" class="p-button-outlined p-button-sm" (click)="addPlaytimeHours(1)"></button>
+                                <button pButton type="button" label="+5h" class="p-button-outlined p-button-sm" (click)="addPlaytimeHours(5)"></button>
+                                <button pButton type="button" label="+10h" class="p-button-outlined p-button-sm" (click)="addPlaytimeHours(10)"></button>
+                            </div>
+                        </div>
+                    </p-fieldset>
+                </div>
             </div>
 
             <!-- Score Categories - 3 per row (excluding impression) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" *ngIf="!form.get('backlogItem')?.value">
                 <ng-container *ngFor="let field of scoreFields">
                     <p-fieldset *ngIf="field !== 'scoreImpression'" [legend]="field.replace('score', '')">
                         <div class="flex items-center justify-between mb-2">
@@ -238,7 +293,7 @@
             </div>
 
             <!-- Impression - Full Width at Bottom -->
-            <div class="w-full">
+            <div class="w-full" *ngIf="!form.get('backlogItem')?.value">
                 <p-fieldset legend="Impression" class="impression-fieldset">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-sm opacity-80">{{ scoreFieldComments['scoreImpression'] }}</span>
@@ -293,6 +348,37 @@
                 style="aspect-ratio: 3/4"
             />
             <span class="text-xs text-center opacity-80 line-clamp-2">{{ cover.game_name }}</span>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Quick Add Playtime Dialog -->
+<p-dialog
+    header="Add Playtime"
+    [(visible)]="playtimeDialogVisible"
+    [modal]="true"
+    [style]="{ width: '350px' }"
+    [draggable]="false"
+    [resizable]="false"
+>
+    <div class="flex flex-col gap-4 py-2">
+        <div class="text-center text-muted-color mb-2">
+            Add hours to your total playtime for <strong>{{ form.get('name')?.value }}</strong>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+            <button pButton type="button" label="+1h" class="p-button-outlined" (click)="quickAddAndSave(1)"></button>
+            <button pButton type="button" label="+2h" class="p-button-outlined" (click)="quickAddAndSave(2)"></button>
+            <button pButton type="button" label="+3h" class="p-button-outlined" (click)="quickAddAndSave(3)"></button>
+            <button pButton type="button" label="+5h" class="p-button-outlined" (click)="quickAddAndSave(5)"></button>
+            <button pButton type="button" label="+10h" class="p-button-outlined" (click)="quickAddAndSave(10)"></button>
+            <button pButton type="button" label="+20h" class="p-button-outlined" (click)="quickAddAndSave(20)"></button>
+        </div>
+        <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
+            <label class="text-sm font-medium">Custom Hours</label>
+            <div class="flex gap-2">
+                <p-inputNumber [(ngModel)]="customHoursToAdd" [min]="1" [showButtons]="true" class="flex-grow" suffix=" hrs"></p-inputNumber>
+                <button pButton icon="pi pi-plus" (click)="quickAddAndSave(customHoursToAdd)"></button>
+            </div>
         </div>
     </div>
 </p-dialog>

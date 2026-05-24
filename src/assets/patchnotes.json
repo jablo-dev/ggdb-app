@@ -1,5 +1,19 @@
 [
     {
+        "version": "4.3.0",
+        "date": "2026-05-24",
+        "major": true,
+        "changes": [
+            "Revamped landing page and login.",
+            "Added Backlog feature to track games you are currently playing or plan to start soon (this feature will be expanded in future updates).",
+            "Added time tracking option in profile. If enabled, you can track time in backlog items and new playthroughs.",
+            "Added timeline view to see more specifically when you finished games.",
+            "Reworked table view and added sorting options for scores, platforms, and finish dates.",
+            "Improved styling of playthrough forms and cards to display new data.",
+            "Reworked topbar navigation to make it more intuitive."
+        ]
+    },
+    {
         "version": "4.2.8",
         "date": "2026-05-24",
         "changes": [

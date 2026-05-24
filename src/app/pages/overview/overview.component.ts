@@ -175,6 +175,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
             ? [...this.allRecords]
             : this.allRecords.filter((r) => r.name.toLowerCase().includes(term));
 
+        // Filter out backlog items from the overview
+        filtered = filtered.filter((r) => r.backlogItem !== 1);
+
         if (this.showFavoritesOnly) {
             filtered = filtered.filter((r) => r.fav === 1);
         }
@@ -220,7 +223,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
     openAdd(): void {
-        this.router.navigate(['/detail'], { queryParams: { record: 'new' } });
+        this.router.navigate(['/detail'], {
+            queryParams: { record: 'new', source: 'overview' }
+        });
     }
 
     private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {
@@ -400,7 +405,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
             }
         }
         this.router.navigate(['/detail'], {
-            queryParams: { record: record.id }
+            queryParams: { record: record.id, source: 'overview' }
         });
     }
 

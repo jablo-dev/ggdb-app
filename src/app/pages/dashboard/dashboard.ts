@@ -31,7 +31,7 @@ export class Dashboard implements OnInit {
     ngOnInit(): void {
         this.username = this.dataService.getUsername();
         this.dataService.getAllRecords(this.username).subscribe((records: GameRecord[]) => {
-            this.records = records;
+            this.records = records.filter(r => r.backlogItem !== 1);
             this.bestGame = this.getHighestRatedGame();
         });
     }

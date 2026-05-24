@@ -44,6 +44,16 @@ export class AppTopbar {
                 if (response.success && response.user) {
                     // Use the properly capitalized username from the API response
                     this.username = response.user.username;
+
+                    // Load user settings into layout service
+                    if (response.user.playtimeEnabled !== undefined) {
+                        const playtimeEnabled = response.user.playtimeEnabled === 1;
+                        this.layoutService.layoutConfig.update(state => ({
+                            ...state,
+                            playtimeEnabled
+                        }));
+                        localStorage.setItem('playtimeEnabled', playtimeEnabled.toString());
+                    }
                 } else {
                     // Fallback to the username from login service
                     this.username = rawUsername;
@@ -57,7 +67,26 @@ export class AppTopbar {
     }
 
     isActive(path: string): boolean {
-        return this.router.url === path;
+        const url = this.router.url;
+
+        if (path === '/') {
+            return url === '/' || url.startsWith('/?');
+        }
+
+        if (url.startsWith('/detail')) {
+            const urlTree = this.router.parseUrl(url);
+            const source = urlTree.queryParamMap.get('source');
+
+            if (path === '/overview' && (!source || source === 'overview')) {
+                return true;
+            }
+
+            if (path === '/backlog' && source === 'backlog') {
+                return true;
+            }
+        }
+
+        return url.startsWith(path);
     }
 
     openOverview() {
@@ -66,6 +95,14 @@ export class AppTopbar {
             this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
         }
         this.router.navigate(['/overview']);
+    }
+
+    openBacklog() {
+        const scrollContainer = document.querySelector('.layout-main');
+        if (scrollContainer && this.router.url === '/overview') {
+            this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+        }
+        this.router.navigate(['/backlog']);
     }
 
     openDashboard(): void {

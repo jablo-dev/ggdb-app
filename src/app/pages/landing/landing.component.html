@@ -11,7 +11,7 @@
                 </h2>
                 <p class="hero-subtitle">
                     Keep a comprehensive record of every game you complete, rate them across multiple categories,
-                    and build your personal gaming database.
+                    and build your personal playthrough database.
                 </p>
                 <div class="hero-buttons">
                     <button pButton
@@ -36,12 +36,12 @@
                 <div class="hero-card-preview">
                     <div class="preview-card">
                         <div class="score-badge">95</div>
-                        
+
                         <div class="card-content">
                             <div class="game-title">
                                 The Witcher 3: Wild Hunt - Complete Edition
                             </div>
-                            
+
                             <div class="info-grid">
                                 <div class="left-column">
                                     <div class="info-item">
@@ -57,13 +57,13 @@
                                     <!-- Empty for this example, but would show platform/replay -->
                                 </div>
                             </div>
-                            
+
                             <div class="card-note">
                                 <i class="pi pi-file-edit"></i>
                                 <span>Incredible open world with amazing side quests. The DLCs are masterpieces.</span>
                             </div>
                         </div>
-                        
+
                         <i class="pi pi-star-fill favorite-star"></i>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                 <div class="step">
                     <div class="step-number">3</div>
                     <h3>Track & Analyze</h3>
-                    <p>View your gaming timeline, discover patterns, and build your personal gaming database.</p>
+                    <p>View your gaming timeline, discover patterns, and build your personal playthrough database.</p>
                 </div>
             </div>
         </div>
@@ -121,13 +121,23 @@
 
     <!-- CTA Section -->
     <section class="cta-section">
-        <div class="cta-container">
+        <div class="cta-container relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-primary text-primary-contrast text-xs font-bold px-4 py-1.5 uppercase tracking-widest">
+                Private Beta
+            </div>
             <h2>Ready to Start Tracking?</h2>
-            <p>Join other gamers building their personal gaming databases</p>
+            <p>Join other gamers building their personal playthrough databases</p>
+            <div class="mt-6 mb-8 p-4 bg-surface-100 dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700">
+                <p class="text-sm font-semibold italic text-surface-700 dark:text-surface-200">
+                    The app is currently a <span class="text-primary font-bold">private invite-only beta</span>.
+                    If you want access you need to mail me to
+                    <a href="mailto:mail&#64;jablo.dev" class="underline hover:text-primary transition-colors font-bold">mail&#64;jablo.dev</a>
+                </p>
+            </div>
             <button pButton
                     class="cta-button"
-                    label="Start Your Journey"
-                    icon="pi pi-arrow-right"
+                    label="Request Invite"
+                    icon="pi pi-envelope"
                     iconPos="right"
                     (click)="navigateToAuth()">
             </button>
