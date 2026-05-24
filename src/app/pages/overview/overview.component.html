@@ -38,13 +38,13 @@
 
     <ng-container *ngIf="displayMode === 'Cards'">
         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ng-container *ngFor="let item of groupedGameRecords">
+            <ng-container *ngFor="let item of visibleCardRecords">
                 <ng-container *ngIf="item.year !== null">
                     <div class="col-span-full">
-                        <app-yearly-line-break [year]="item.year" [count]="item.yearCount"></app-yearly-line-break>
+                        <app-yearly-line-break [year]="item.year" [count]="item.yearCount" [isCollapsed]="isYearCollapsed(item.year)" (toggle)="toggleYearCollapse(item.year)"></app-yearly-line-break>
                     </div>
                 </ng-container>
-                <app-entry-card class="h-full" [gameRecord]="item.gameRecord"></app-entry-card>
+                <app-entry-card *ngIf="item.year === null" class="h-full" [gameRecord]="item.gameRecord"></app-entry-card>
             </ng-container>
         </div>
     </ng-container>

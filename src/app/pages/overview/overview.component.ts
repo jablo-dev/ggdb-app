@@ -52,6 +52,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     groupedGameRecords: GameRecordGroup[] = [];
     visibleTableRecords: GameRecordGroup[] = [];
+    visibleCardRecords: GameRecordGroup[] = [];
     allRecords: GameRecord[] = [];
     showLegend = false;
     displayMode: 'Cards' | 'Table' | 'Timeline' = 'Cards';
@@ -118,6 +119,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
             this.allRecords = records;
             this.groupedGameRecords = this.groupRecordsByYear(records);
             this.updateVisibleTable();
+            this.updateVisibleCards();
             this.allTimelineRecords = this.prepareTimelineData(records);
             this.updateVisibleTimeline();
 
@@ -157,6 +159,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
         this.updateVisibleTable();
+        this.updateVisibleCards();
         this.allTimelineRecords = this.prepareTimelineData(filtered);
         this.updateVisibleTimeline();
     }
@@ -173,6 +176,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
         this.updateVisibleTable();
+        this.updateVisibleCards();
         this.allTimelineRecords = this.prepareTimelineData(filtered);
         this.updateVisibleTimeline();
     }
@@ -278,6 +282,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.collapsedYears[year] = !this.collapsedYears[year];
         this.updateVisibleTimeline();
         this.updateVisibleTable();
+        this.updateVisibleCards();
     }
 
     private updateVisibleTimeline(): void {
@@ -290,6 +295,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private updateVisibleTable(): void {
         let currentYearCollapsed = false;
         this.visibleTableRecords = this.groupedGameRecords.filter(group => {
+            if (group.year !== null) {
+                currentYearCollapsed = this.isYearCollapsed(group.year);
+                return true;
+            }
+            return !currentYearCollapsed;
+        });
+    }
+
+    private updateVisibleCards(): void {
+        let currentYearCollapsed = false;
+        this.visibleCardRecords = this.groupedGameRecords.filter(group => {
             if (group.year !== null) {
                 currentYearCollapsed = this.isYearCollapsed(group.year);
                 return true;
