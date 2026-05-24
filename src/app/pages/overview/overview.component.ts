@@ -16,6 +16,7 @@ import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { LoadingService } from '../../service/loading.service';
 import { Table, TableModule } from 'primeng/table';
+import { TimelineModule } from 'primeng/timeline';
 import { DataDisplayService } from '../../service/data-display.service';
 import { RecordType } from '../../enum/type.enum';
 
@@ -32,7 +33,7 @@ interface GameRecordGroup {
     imports: [
         CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent,
         FormsModule, Toolbar, InputText, ReactiveFormsModule, IconField, InputIcon,
-        Dialog, Button, TableModule
+        Dialog, Button, TableModule, TimelineModule
     ],
     templateUrl: './overview.component.html',
     styleUrl: './overview.component.scss'
@@ -50,9 +51,10 @@ export class OverviewComponent implements OnInit {
     groupedGameRecords: GameRecordGroup[] = [];
     allRecords: GameRecord[] = [];
     showLegend = false;
-    displayMode: 'Cards' | 'Table' = 'Cards';
+    displayMode: 'Cards' | 'Table' | 'Timeline' = 'Cards';
     expandedRows: { [id: number]: boolean } = {};
     showFavoritesOnly = false;
+    timelineRecords: any[] = [];
 
     private _searchTerm = '';
 
@@ -110,11 +112,12 @@ export class OverviewComponent implements OnInit {
             records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
             this.allRecords = records;
             this.groupedGameRecords = this.groupRecordsByYear(records);
+            this.timelineRecords = this.prepareTimelineData(records);
         });
 
         const savedMode = localStorage.getItem('ggdb_display_mode');
-        if (savedMode === 'Table' || savedMode === 'Cards') {
-            this.displayMode = savedMode;
+        if (savedMode === 'Table' || savedMode === 'Cards' || savedMode === 'Timeline') {
+            this.displayMode = savedMode as 'Cards' | 'Table' | 'Timeline';
         }
     }
 
@@ -129,6 +132,7 @@ export class OverviewComponent implements OnInit {
         }
 
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
+        this.timelineRecords = this.prepareTimelineData(filtered);
     }
 
     filterRecords(): void {
@@ -142,6 +146,7 @@ export class OverviewComponent implements OnInit {
         }
 
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
+        this.timelineRecords = this.prepareTimelineData(filtered);
     }
 
     toggleFavoritesFilter(): void {
@@ -180,7 +185,45 @@ export class OverviewComponent implements OnInit {
         return result;
     }
 
-    setDisplayMode(mode: 'Cards' | 'Table') {
+    private prepareTimelineData(records: GameRecord[]): any[] {
+        if (records.length === 0) return [];
+
+        const timeline: any[] = [];
+        const sortedRecords = [...records].sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
+
+        const firstDate = new Date(sortedRecords[sortedRecords.length - 1].finishDate);
+        const lastDate = new Date(sortedRecords[0].finishDate);
+
+        let current = new Date(lastDate.getFullYear(), lastDate.getMonth(), 1);
+        const end = new Date(firstDate.getFullYear(), firstDate.getMonth(), 1);
+
+        while (current >= end) {
+            const year = current.getFullYear();
+            const month = current.getMonth();
+
+            const monthRecords = sortedRecords.filter(r => {
+                const d = new Date(r.finishDate);
+                return d.getFullYear() === year && d.getMonth() === month;
+            });
+
+            const isYearHighlight = month === 0;
+
+            if (monthRecords.length > 0 || isYearHighlight) {
+                timeline.push({
+                    date: new Date(current),
+                    monthRecords,
+                    isYearHighlight,
+                    year
+                });
+            }
+
+            current.setMonth(current.getMonth() - 1);
+        }
+
+        return timeline;
+    }
+
+    setDisplayMode(mode: 'Cards' | 'Table' | 'Timeline') {
         this.displayMode = mode;
         localStorage.setItem('ggdb_display_mode', mode);
     }

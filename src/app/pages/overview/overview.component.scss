@@ -30,3 +30,34 @@
         grid-template-columns: repeat(6, minmax(0, 1fr));
     }
 }
+
+:ng-deep {
+    .custom-timeline {
+        .p-timeline-event-opposite {
+            flex: 0 0 150px;
+        }
+
+        .p-timeline-event-content {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .p-timeline-event-marker {
+            margin-top: 10px;
+        }
+
+        .p-timeline-event-connector {
+            background-color: var(--p-primary-color);
+            opacity: 0.3;
+        }
+
+        // Adjust for mobile
+        @media screen and (max-width: 768px) {
+            .p-timeline-event-opposite {
+                display: none;
+            }
+            .p-timeline-event-content {
+                width: 100%;
+            }
+        }
+    }
+}
