@@ -49,12 +49,15 @@ export class OverviewComponent implements OnInit {
     readonly dataDisplay = inject(DataDisplayService);
 
     groupedGameRecords: GameRecordGroup[] = [];
+    visibleTableRecords: GameRecordGroup[] = [];
     allRecords: GameRecord[] = [];
     showLegend = false;
     displayMode: 'Cards' | 'Table' | 'Timeline' = 'Cards';
     expandedRows: { [id: number]: boolean } = {};
     showFavoritesOnly = false;
     timelineRecords: any[] = [];
+    allTimelineRecords: any[] = [];
+    collapsedYears: { [year: number]: boolean } = {};
 
     private _searchTerm = '';
 
@@ -112,7 +115,9 @@ export class OverviewComponent implements OnInit {
             records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
             this.allRecords = records;
             this.groupedGameRecords = this.groupRecordsByYear(records);
-            this.timelineRecords = this.prepareTimelineData(records);
+            this.updateVisibleTable();
+            this.allTimelineRecords = this.prepareTimelineData(records);
+            this.updateVisibleTimeline();
         });
 
         const savedMode = localStorage.getItem('ggdb_display_mode');
@@ -132,7 +137,9 @@ export class OverviewComponent implements OnInit {
         }
 
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
-        this.timelineRecords = this.prepareTimelineData(filtered);
+        this.updateVisibleTable();
+        this.allTimelineRecords = this.prepareTimelineData(filtered);
+        this.updateVisibleTimeline();
     }
 
     filterRecords(): void {
@@ -146,7 +153,9 @@ export class OverviewComponent implements OnInit {
         }
 
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
-        this.timelineRecords = this.prepareTimelineData(filtered);
+        this.updateVisibleTable();
+        this.allTimelineRecords = this.prepareTimelineData(filtered);
+        this.updateVisibleTimeline();
     }
 
     toggleFavoritesFilter(): void {
@@ -188,8 +197,10 @@ export class OverviewComponent implements OnInit {
     private prepareTimelineData(records: GameRecord[]): any[] {
         if (records.length === 0) return [];
 
-        const timeline: any[] = [];
+        const groupedByYear: { [year: number]: any[] } = {};
         const sortedRecords = [...records].sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
+
+        if (sortedRecords.length === 0) return [];
 
         const firstDate = new Date(sortedRecords[sortedRecords.length - 1].finishDate);
         const lastDate = new Date(sortedRecords[0].finishDate);
@@ -206,13 +217,14 @@ export class OverviewComponent implements OnInit {
                 return d.getFullYear() === year && d.getMonth() === month;
             });
 
-            const isYearHighlight = month === 0;
-
-            if (monthRecords.length > 0 || isYearHighlight) {
-                timeline.push({
+            if (monthRecords.length > 0 || month === 0) {
+                if (!groupedByYear[year]) {
+                    groupedByYear[year] = [];
+                }
+                groupedByYear[year].push({
                     date: new Date(current),
                     monthRecords,
-                    isYearHighlight,
+                    isYearHighlight: month === 0,
                     year
                 });
             }
@@ -220,7 +232,55 @@ export class OverviewComponent implements OnInit {
             current.setMonth(current.getMonth() - 1);
         }
 
+        const timeline: any[] = [];
+        const years = Object.keys(groupedByYear).map(Number).sort((a, b) => b - a);
+
+        for (const year of years) {
+            // Add a special record for the year header
+            timeline.push({
+                isYearHeader: true,
+                year: year,
+                date: new Date(year, 11, 31) // For sorting/display consistency
+            });
+
+            // Add all months for this year
+            for (const monthData of groupedByYear[year]) {
+                timeline.push({
+                    ...monthData,
+                    isYearHeader: false
+                });
+            }
+        }
+
         return timeline;
+    }
+
+    toggleYearCollapse(year: number): void {
+        this.collapsedYears[year] = !this.collapsedYears[year];
+        this.updateVisibleTimeline();
+        this.updateVisibleTable();
+    }
+
+    private updateVisibleTimeline(): void {
+        this.timelineRecords = this.allTimelineRecords.filter(event => {
+            if (event.isYearHeader) return true;
+            return !this.isYearCollapsed(event.year);
+        });
+    }
+
+    private updateVisibleTable(): void {
+        let currentYearCollapsed = false;
+        this.visibleTableRecords = this.groupedGameRecords.filter(group => {
+            if (group.year !== null) {
+                currentYearCollapsed = this.isYearCollapsed(group.year);
+                return true;
+            }
+            return !currentYearCollapsed;
+        });
+    }
+
+    isYearCollapsed(year: number): boolean {
+        return !!this.collapsedYears[year];
     }
 
     setDisplayMode(mode: 'Cards' | 'Table' | 'Timeline') {
