@@ -3,6 +3,9 @@
     <div *ngIf="gameRecord?.cover && !imageError" class="cover-image-container flex-shrink-0 relative">
         <img [src]="gameRecord?.cover" class="h-full w-full object-cover" [alt]="gameRecord?.name" (error)="imageError = true">
         <div class="cover-overlay absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+
+        <!-- Playtime Badge Overlay -->
+        <!-- Playtime Badge Overlay REMOVED from image as it is now next to score -->
     </div>
 
     <div class="card-content-wrapper relative flex-grow overflow-hidden flex flex-col">
@@ -31,6 +34,8 @@
             {{ score }}
         </div>
 
+        <!-- Playtime Badge (moved to bottom right) -->
+
         <div
             class="title-badge absolute top-0 left-0 px-3 py-2 font-bold text-lg"
             [ngClass]="{
@@ -40,6 +45,8 @@
         >
             <span>{{ gameRecord?.name }}</span>
         </div>
+
+        <!-- Type badges below title REMOVED as requested to move to bottom next to playtime -->
 
         <div class="card-content h-full p-4 relative flex-grow">
             <!-- Title section removed as it's now in the badge -->
@@ -52,10 +59,25 @@
                     </div>
 
                     <!-- Story completion status -->
-                    <div class="completion-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.mainQuestDone === 1">
+                    <div class="completion-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.mainQuestDone === 1 && gameRecord?.canceled !== 1">
                         <i class="pi pi-book text-primary"></i>
                         <span class="text-base">Story completed</span>
                     </div>
+
+                    <!-- Canceled status -->
+                    <div class="completion-section flex items-center gap-2 text-red-400" *ngIf="gameRecord?.canceled === 1">
+                        <i class="pi pi-times-circle text-red-500"></i>
+                        <span class="text-base font-semibold">Canceled</span>
+                    </div>
+
+                    <!-- Backlog status -->
+                    <div class="completion-section flex items-center gap-2 text-orange-400" *ngIf="gameRecord?.backlogItem === 1">
+                        <i class="pi pi-bookmark text-orange-500"></i>
+                        <span class="text-base font-semibold">Backlog</span>
+                    </div>
+
+                    <!-- Playtime (fallback when no cover) -->
+                    <!-- Playtime (fallback when no cover) REMOVED as it is now always next to score -->
                 </div>
 
                 <!-- Right column -->
@@ -93,16 +115,28 @@
                 </div>
             </div>
 
-            <!-- Favorite star and Type badge in bottom-right corner -->
-            <div class="absolute bottom-4 right-4 flex items-center gap-2">
-                <span *ngIf="getRecordTypeLabel(gameRecord?.type)" class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-xs font-medium">
-                    {{ getRecordTypeLabel(gameRecord?.type) }}
+            <!-- Bottom-right corner: {type} {favorite} {playtime} -->
+            <div class="absolute bottom-3 right-3 flex items-center gap-2">
+                <!-- Type Badge -->
+                <span *ngIf="gameRecord?.type && gameRecord?.type !== 'Full Release' && gameRecord?.type !== 'FULL'" class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                    {{ gameRecord?.type }}
                 </span>
+
+                <!-- Favorite Star -->
                 <i
                     *ngIf="gameRecord?.fav === 1"
-                    class="favorite-star pi pi-star-fill text-yellow-400 text-xl"
+                    class="favorite-star pi pi-star-fill text-yellow-400 text-lg"
                     title="Favorite"
                 ></i>
+
+                <!-- Playtime Badge -->
+                <div
+                    *ngIf="playtimeEnabled && gameRecord?.playtime"
+                    class="playtime-badge px-2 py-1 rounded-md font-bold text-sm flex items-center gap-1.5"
+                >
+                    <i class="pi pi-clock text-xs"></i>
+                    <span>{{ (gameRecord?.playtime || 0) / 60 | number:'1.0-1' }}h</span>
+                </div>
             </div>
         </div>
     </div>

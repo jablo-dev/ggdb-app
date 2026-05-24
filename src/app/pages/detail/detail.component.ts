@@ -1,10 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 // PrimeNG Modules
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { DatePickerModule } from 'primeng/datepicker';
 import { TextareaModule } from 'primeng/textarea';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -21,6 +22,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RecordType } from '../../enum/type.enum';
 import { Locations } from '../../enum/location.enum';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LayoutService } from '../../layout/service/layout.service';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { ToastService } from '../../service/toast.service';
@@ -33,7 +35,7 @@ import { IgdbService, IgdbCover } from '../../service/igdb.service';
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, Toolbar, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, Toolbar, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule],
     providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
@@ -47,12 +49,17 @@ export class DetailComponent implements OnInit {
     recordTypes = Object.values(RecordType);
     locationTypes = Object.values(Locations);
 
+    layoutService: LayoutService = inject(LayoutService);
+
     scoreFields: string[] = ['scoreGameplay', 'scorePresentation', 'scoreNarrative', 'scoreQuality', 'scoreSound', 'scoreContent', 'scorePacing', 'scoreBalance', 'scoreUIUX', 'scoreImpression'];
 
     coverDialogVisible = false;
     coverSearchLoading = false;
     coverResults: IgdbCover[] = [];
     selectedCoverUrl: string | null = null;
+
+    playtimeDialogVisible = false;
+    customHoursToAdd = 1;
 
     scoreFieldComments: Record<string, string> = {
         scoreGameplay: 'How engaging and responsive was the core gameplay loop?',
@@ -110,6 +117,10 @@ export class DetailComponent implements OnInit {
         });
     }
 
+    get playtimeEnabled(): boolean {
+        return this.layoutService.layoutConfig().playtimeEnabled ?? false;
+    }
+
     initForm(record?: GameRecord): void {
         this.form = this.fb.group({
             id: [record?.id ?? 0],
@@ -125,7 +136,10 @@ export class DetailComponent implements OnInit {
             mainQuestDone: [record?.mainQuestDone === 1],
             fav: [record?.fav === 1],
             replay: [record?.replay === 1],
+            backlogItem: [record?.backlogItem === 1],
+            canceled: [record?.canceled === 1],
             cover: [record?.cover ?? ''],
+            playtime: [record?.playtime ?? 0],
             ...Object.fromEntries(this.scoreFields.map((field) => [field, record?.[field as keyof GameRecord] ?? 1])),
             ...Object.fromEntries(this.scoreFields.map((field) => [`${field}Enabled`, record ? record[field as keyof GameRecord] !== 0 : true]))
         });
@@ -154,7 +168,9 @@ export class DetailComponent implements OnInit {
             ...this.form.value,
             mainQuestDone: this.form.value.mainQuestDone ? 1 : 0,
             fav: this.form.value.fav ? 1 : 0,
-            replay: this.form.value.replay ? 1 : 0
+            replay: this.form.value.replay ? 1 : 0,
+            backlogItem: this.form.value.backlogItem ? 1 : 0,
+            canceled: this.form.value.canceled ? 1 : 0
         };
         return this.statService.getTotalScore(rawRecord);
     }
@@ -189,8 +205,11 @@ export class DetailComponent implements OnInit {
             replay: raw.replay ? 1 : 0,
             mainQuestDone: raw.mainQuestDone ? 1 : 0,
             fav: raw.fav ? 1 : 0,
+            backlogItem: raw.backlogItem ? 1 : 0,
+            canceled: raw.canceled ? 1 : 0,
             replayValue: raw.replayValue,
             cover: raw.cover,
+            playtime: raw.playtime,
             ...Object.fromEntries(this.scoreFields.map((field) => [field, raw[field]]))
         };
 
@@ -273,6 +292,33 @@ export class DetailComponent implements OnInit {
 
     returnToOverview() {
         this.router.navigate(['/overview'], {});
+    }
+
+    addPlaytimeHours(hours: number): void {
+        const currentMinutes = this.form.get('playtime')?.value || 0;
+        this.form.get('playtime')?.setValue(currentMinutes + Math.round(hours * 60));
+        this.form.markAsDirty();
+    }
+
+    showPlaytimeDialog(): void {
+        this.customHoursToAdd = 1;
+        this.playtimeDialogVisible = true;
+    }
+
+    quickAddAndSave(hours: number): void {
+        this.addPlaytimeHours(hours);
+        this.playtimeDialogVisible = false;
+        if (!this.formEditable) {
+            this.save();
+        }
+    }
+
+    formatPlaytime(minutes: number): string {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        if (h === 0) return `${m}m`;
+        if (m === 0) return `${h}h`;
+        return `${h}h ${m}m`;
     }
 
     openCoverDialog(): void {

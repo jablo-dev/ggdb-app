@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { User } from '../models/user.model';
 import { GameRecord } from '../models/record.model';
 import { ToastService } from './toast.service';
-import { Router } from '@angular/router';
 import { LoadingService } from './loading.service';
+import { LayoutService } from '../layout/service/layout.service';
 
 @Injectable({
     providedIn: 'root'
@@ -25,7 +26,8 @@ export class DataService {
         public loginService: LoginService,
         private toast: ToastService,
         private router: Router,
-        private loadingService: LoadingService
+        private loadingService: LoadingService,
+        private layoutService: LayoutService
     ) {}
 
     login(user: User): Observable<any> {
@@ -49,6 +51,16 @@ export class DataService {
                 if (success) {
                     const username = requestBody.username;
                     this.loginService.setUsername(username);
+
+                    // Load user settings into layout service
+                    if (response.user && response.user.playtimeEnabled !== undefined) {
+                        const playtimeEnabled = response.user.playtimeEnabled === 1;
+                        this.layoutService.layoutConfig.update(state => ({
+                            ...state,
+                            playtimeEnabled
+                        }));
+                        localStorage.setItem('playtimeEnabled', playtimeEnabled.toString());
+                    }
 
                     // Delay toast after route navigation
                     setTimeout(() => {
@@ -90,13 +102,16 @@ export class DataService {
             return of(this.records);
         }
         const url = `${this.apiUrl}?action=read&username=${username.toLowerCase()}`;
-        return this.http.get<GameRecord[]>(url, {
+        return this.http.get<any>(url, {
             withCredentials: true
         }).pipe(
-            tap(records => {
-                this.records = records;
+            tap(response => {
+                // Handle both array and object responses (with numeric keys)
+                const records = Array.isArray(response) ? response : Object.values(response);
+                this.records = records as GameRecord[];
                 this.recordsLoaded = true;
             }),
+            tap(() => {}), // Keep same structure if needed
             catchError(() => of([]))
         );
     }
@@ -197,5 +212,20 @@ export class DataService {
     forceRefreshRecords(username: string): Observable<GameRecord[]> {
         this.recordsLoaded = false;
         return this.getAllRecords(username);
+    }
+
+    updateUserSetting(username: string, settings: any): Observable<any> {
+        const url = `${this.apiUrl}?action=updateUserSetting&username=${username.toLowerCase()}`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+        return this.http.post<any>(url, JSON.stringify(settings), {
+            headers,
+            withCredentials: true
+        }).pipe(
+            catchError(error => {
+                this.toast.error('Update failed', 'Something went wrong while updating settings.');
+                return of({ success: false });
+            })
+        );
     }
 }

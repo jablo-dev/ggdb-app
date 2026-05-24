@@ -29,6 +29,7 @@
         flex-direction: column;
         position: relative;
         padding-top: 3.5rem !important;
+        z-index: 1;
     }
 
     .score-badge {
@@ -70,6 +71,18 @@
                 0 3px 6px rgba(0, 0, 0, 0.4),
                 1px 0 3px rgba(255, 255, 255, 0.15);
         }
+    }
+
+    .playtime-badge {
+        background: var(--surface-100);
+        color: var(--text-color);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 4;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        opacity: 0.9;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
     }
 
     .title-badge {

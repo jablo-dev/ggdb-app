@@ -6,6 +6,7 @@ export interface layoutConfig {
     primary?: string;
     surface?: string | undefined | null;
     darkTheme?: boolean;
+    playtimeEnabled?: boolean;
     menuMode?: string;
 }
 
@@ -31,6 +32,7 @@ export class LayoutService {
         primary: 'emerald',
         surface: null,
         darkTheme: true,
+        playtimeEnabled: false,
         menuMode: 'overlay'
     };
 

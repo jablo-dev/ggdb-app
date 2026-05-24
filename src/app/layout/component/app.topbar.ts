@@ -44,6 +44,16 @@ export class AppTopbar {
                 if (response.success && response.user) {
                     // Use the properly capitalized username from the API response
                     this.username = response.user.username;
+
+                    // Load user settings into layout service
+                    if (response.user.playtimeEnabled !== undefined) {
+                        const playtimeEnabled = response.user.playtimeEnabled === 1;
+                        this.layoutService.layoutConfig.update(state => ({
+                            ...state,
+                            playtimeEnabled
+                        }));
+                        localStorage.setItem('playtimeEnabled', playtimeEnabled.toString());
+                    }
                 } else {
                     // Fallback to the username from login service
                     this.username = rawUsername;
