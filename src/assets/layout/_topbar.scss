@@ -199,6 +199,8 @@
 
 .dark {
     .user-status-glow {
+        animation: user-border-glow-dark 2s infinite ease-in-out;
+
         @keyframes user-border-glow-dark {
             0%,
             100% {
@@ -208,7 +210,6 @@
                 border-left-color: var(--primary-color);
             }
         }
-        animation: user-border-glow-dark 2s infinite ease-in-out;
     }
 }
 
