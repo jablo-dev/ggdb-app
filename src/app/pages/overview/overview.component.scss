@@ -88,12 +88,14 @@
 
 :ng-deep {
     .custom-timeline {
-        .p-timeline-event-opposite {
-            flex: 0 0 150px;
-        }
-
         .p-timeline-event-content {
             padding: 0 1.5rem 1.5rem 1.5rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .p-timeline-event-opposite {
+            flex: 0 0 150px;
         }
 
         .p-timeline-event-marker {
@@ -103,6 +105,20 @@
         .p-timeline-event-connector {
             background-color: var(--p-primary-color);
             opacity: 0.3;
+        }
+
+        .p-timeline-event:nth-child(even) {
+            .p-timeline-event-content {
+                display: flex;
+                justify-content: flex-end;
+                text-align: right;
+
+                > div {
+                    width: 100%;
+                    max-width: 500px;
+                    text-align: left;
+                }
+            }
         }
 
         .p-timeline-event-marker:has(.pi-chevron-up),
@@ -117,6 +133,15 @@
             }
             .p-timeline-event-content {
                 width: 100%;
+                max-width: none;
+            }
+            .p-timeline-event:nth-child(even) {
+                .p-timeline-event-content {
+                    justify-content: flex-start;
+                    > div {
+                        max-width: none;
+                    }
+                }
             }
         }
     }

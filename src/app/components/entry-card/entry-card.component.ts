@@ -30,8 +30,11 @@ export class EntryCardComponent {
         }
     }
 
-    getRecordTypeLabel(type: keyof typeof RecordType | undefined): string {
-        return type && type !== 'FULL' ? RecordType[type] : '';
+    getRecordTypeLabel(type: string | undefined): string {
+        if (!type || type === 'Full Release' || type === 'FULL') {
+            return '';
+        }
+        return type;
     }
 
     getScoreRange(score: number): string {

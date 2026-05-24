@@ -63,8 +63,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     private _searchTerm = '';
 
-    resolveTypeLabel(type: keyof typeof RecordType): string {
-        return RecordType[type] ?? type;
+    resolveTypeLabel(type: string): string {
+        return type ?? '';
     }
 
     get searchTerm(): string {

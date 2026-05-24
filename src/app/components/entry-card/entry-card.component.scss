@@ -115,14 +115,6 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-
-        .game-type {
-            color: var(--text-color-secondary);
-            font-weight: 400;
-            font-size: 0.8rem;
-            flex-shrink: 0;
-            margin-left: 0.25rem;
-        }
     }
 
     .cover-image-container {
@@ -139,22 +131,6 @@
 
     &:hover .cover-image-container img {
         transform: scale(1.05);
-    }
-
-    .game-title-section {
-        .game-title {
-            color: var(--primary-color);
-            font-size: 1.25rem;
-            font-weight: 700;
-            // line-height: 1.3;
-            margin: 0;
-
-            .game-type {
-                color: var(--text-color-secondary);
-                font-weight: 400;
-                font-size: 0.875rem;
-            }
-        }
     }
 
     .info-grid-section {
@@ -251,10 +227,6 @@
             font-size: 0.875rem;
 
             .platform-icon {
-                font-size: 0.75rem;
-            }
-
-            .game-type {
                 font-size: 0.75rem;
             }
         }
