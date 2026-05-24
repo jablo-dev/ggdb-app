@@ -39,24 +39,32 @@
         </a>
     </div>
 
-    <div class="layout-topbar-actions">
+    <div class="layout-topbar-actions ml-auto">
         <!-- Desktop version: show logged in info and navigation -->
         <div class="layout-topbar-menu hidden lg:block">
             <div class="layout-topbar-menu-content">
-                <span class="text-muted-color text-sm flex items-center px-3 py-2 font-bold">Logged in as &nbsp;<span style="color: var(--primary-color)">{{ username }}</span></span>
-                <button type="button" class="layout-topbar-action" (click)="openDashboard()">
+                <div class="user-status-glow flex items-center mr-4 px-3 py-1 border-l-4 border-surface-400 dark:border-surface-600 bg-surface-100 dark:bg-surface-800 rounded-r-md skew-x-[-10deg]">
+                    <div class="skew-x-[10deg] flex items-center">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] uppercase tracking-widest text-muted-color font-bold opacity-70 leading-none">Authorized User</span>
+                            <span class="font-bold text-surface-900 dark:text-surface-0 tracking-tighter">{{ username }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layout-topbar-action" (click)="openDashboard()" [class.active]="isActive('/')">
                     <i class="pi pi-home"></i>
-                    <span>Home</span>
+                    <span>Dashboard</span>
                 </button>
-                <button type="button" class="layout-topbar-action" (click)="openOverview()">
+                <button type="button" class="layout-topbar-action" (click)="openOverview()" [class.active]="isActive('/overview')">
                     <i class="pi pi-database"></i>
-                    <span>Entries</span>
+                    <span>Playthroughs</span>
                 </button>
-                <button type="button" class="layout-topbar-action" (click)="openBacklog()">
+                <button type="button" class="layout-topbar-action" (click)="openBacklog()" [class.active]="isActive('/backlog')">
                     <i class="pi pi-book"></i>
                     <span>Backlog</span>
                 </button>
-                <button type="button" class="layout-topbar-action" (click)="openProfile()">
+                <button type="button" class="layout-topbar-action" (click)="openProfile()" [class.active]="isActive('/profile')">
                     <i class="pi pi-user"></i>
                     <span>Profile</span>
                 </button>
@@ -67,16 +75,20 @@
             </div>
         </div>
 
-        <!-- Mobile/Tablet version: centered navigation buttons without logged in info -->
-        <div class="layout-topbar-menu-mobile flex lg:hidden justify-center flex-1">
+        <!-- Mobile/Tablet version: navigation buttons and user info -->
+        <div class="layout-topbar-menu-mobile flex lg:hidden justify-end flex-1">
             <div class="flex items-center gap-1">
+                <div class="user-status-glow flex items-center mr-2 px-2 py-1 border-l-2 border-surface-400 dark:border-surface-600 bg-surface-100 dark:bg-surface-800 rounded-r skew-x-[-10deg]">
+                    <span class="text-xs font-bold text-surface-900 dark:text-surface-0 tracking-tighter skew-x-[10deg]">{{ username }}</span>
+                </div>
+
                 <button type="button" class="layout-topbar-action-mobile" (click)="openDashboard()" [class.active]="isActive('/')">
                     <i class="pi pi-home"></i>
-                    <span class="hidden sm:inline">Home</span>
+                    <span class="hidden sm:inline">Dashboard</span>
                 </button>
                 <button type="button" class="layout-topbar-action-mobile" (click)="openOverview()" [class.active]="isActive('/overview')">
                     <i class="pi pi-database"></i>
-                    <span class="hidden sm:inline">Entries</span>
+                    <span class="hidden sm:inline">Playthroughs</span>
                 </button>
                 <button type="button" class="layout-topbar-action-mobile" (click)="openBacklog()" [class.active]="isActive('/backlog')">
                     <i class="pi pi-book"></i>

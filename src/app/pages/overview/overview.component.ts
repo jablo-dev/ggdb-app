@@ -223,7 +223,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
     openAdd(): void {
-        this.router.navigate(['/detail'], { queryParams: { record: 'new' } });
+        this.router.navigate(['/detail'], {
+            queryParams: { record: 'new', source: 'overview' }
+        });
     }
 
     private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {
@@ -403,7 +405,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
             }
         }
         this.router.navigate(['/detail'], {
-            queryParams: { record: record.id }
+            queryParams: { record: record.id, source: 'overview' }
         });
     }
 

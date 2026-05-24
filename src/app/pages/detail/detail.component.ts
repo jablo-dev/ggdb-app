@@ -275,7 +275,7 @@ export class DetailComponent implements OnInit {
 
     confirmDelete(): void {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete this entry-card?',
+            message: 'Are you sure you want to delete this playthrough?',
             header: 'Confirm Deletion',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {

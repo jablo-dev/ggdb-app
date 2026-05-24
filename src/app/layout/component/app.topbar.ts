@@ -67,7 +67,26 @@ export class AppTopbar {
     }
 
     isActive(path: string): boolean {
-        return this.router.url === path;
+        const url = this.router.url;
+
+        if (path === '/') {
+            return url === '/' || url.startsWith('/?');
+        }
+
+        if (url.startsWith('/detail')) {
+            const urlTree = this.router.parseUrl(url);
+            const source = urlTree.queryParamMap.get('source');
+
+            if (path === '/overview' && (!source || source === 'overview')) {
+                return true;
+            }
+
+            if (path === '/backlog' && source === 'backlog') {
+                return true;
+            }
+        }
+
+        return url.startsWith(path);
     }
 
     openOverview() {

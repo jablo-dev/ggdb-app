@@ -69,7 +69,7 @@ export class EntryCardComponent {
                 this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
             }
             this.router.navigate(['/detail'], {
-                queryParams: { record: this.gameRecord.id }
+                queryParams: { record: this.gameRecord.id, source: 'overview' }
             });
         }
     }
