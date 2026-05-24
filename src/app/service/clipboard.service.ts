@@ -17,7 +17,7 @@ export class ClipboardService {
             }
 
             const countInYear = this.getCountInYear(record);
-            const canvas = this.createCard(record, totalScore, countInYear);
+            const canvas = await this.createCard(record, totalScore, countInYear);
             const blob = await this.canvasToBlob(canvas);
 
             if (!blob || blob.size === 0) {
@@ -36,9 +36,9 @@ export class ClipboardService {
         }
     }
 
-    private downloadCard(record: GameRecord, totalScore: number): void {
+    private async downloadCard(record: GameRecord, totalScore: number): Promise<void> {
         const countInYear = this.getCountInYear(record);
-        const canvas = this.createCard(record, totalScore, countInYear);
+        const canvas = await this.createCard(record, totalScore, countInYear);
         const link = document.createElement('a');
 
         const safeName = (record.name || 'game-card')
@@ -53,12 +53,12 @@ export class ClipboardService {
         document.body.removeChild(link);
     }
 
-    private createCard(record: GameRecord, totalScore: number, countInYear: number): HTMLCanvasElement {
+    private async createCard(record: GameRecord, totalScore: number, countInYear: number): Promise<HTMLCanvasElement> {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
 
-        const width = 500;
-        const height = 250;
+        const width = 650;
+        const height = 280;
 
         const devicePixelRatio = window.devicePixelRatio || 1;
 
@@ -73,15 +73,41 @@ export class ClipboardService {
         const primaryColor = this.getPrimaryColor();
         const surfaceColors = this.getSurfaceColors();
 
+        // Background
         ctx.fillStyle = surfaceColors.dark;
-        ctx.fillRect(0, 0, width, height);
+        this.drawRoundedRect(ctx, 0, 0, width, height, 12, surfaceColors.dark);
+
+        let contentStartX = 20;
+
+        // Draw Cover Image if available
+        if (record.cover) {
+            try {
+                const img = await this.loadImage(record.cover);
+                const coverWidth = 180;
+                const coverHeight = height;
+
+                ctx.save();
+                this.drawRoundedRect(ctx, 0, 0, coverWidth, coverHeight, 12);
+                ctx.clip();
+                ctx.drawImage(img, 0, 0, coverWidth, coverHeight);
+
+                // Add a subtle overlay like in the UI
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.fillRect(0, 0, coverWidth, coverHeight);
+                ctx.restore();
+
+                contentStartX = coverWidth + 20;
+            } catch (e) {
+                console.error('Failed to load cover image for canvas:', e);
+            }
+        }
 
         ctx.fillStyle = primaryColor;
-        ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+        ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'left';
         const title = record.name || 'Unknown Game';
 
-        const maxTitleWidth = 400;
+        const maxTitleWidth = width - contentStartX - 100; // Leave space for score
         let displayTitle = title;
         const titleMetrics = ctx.measureText(title);
         if (titleMetrics.width > maxTitleWidth) {
@@ -91,43 +117,45 @@ export class ClipboardService {
             displayTitle += '...';
         }
 
-        ctx.fillText(displayTitle, 30, 40);
+        ctx.fillText(displayTitle, contentStartX, 40);
 
-        ctx.font = 'bold 36px system-ui, -apple-system, sans-serif';
+        // Score Badge (top right)
+        const scoreStr = totalScore.toString();
+        ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+        const scoreWidth = ctx.measureText(scoreStr).width + 20;
 
-        let scoreColor: string;
-        if (totalScore >= 95) {
-            scoreColor = '#FFD700';
-        } else if (totalScore >= 90) {
-            scoreColor = '#C0C0C0';
-        } else if (totalScore >= 85) {
-            scoreColor = '#e49a6e';
-        } else {
-            scoreColor = '#ffffff';
-        }
-
-        // Draw a big semi-transparent background number for "sexiness"
         ctx.save();
-        ctx.font = 'bold 120px system-ui, -apple-system, sans-serif';
-        ctx.fillStyle = primaryColor;
-        ctx.globalAlpha = 0.05;
+        if (totalScore >= 85) {
+            let gradient: CanvasGradient;
+            if (totalScore >= 95) {
+                gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                gradient.addColorStop(0, '#FFD700');
+                gradient.addColorStop(0.5, '#FFA500');
+                gradient.addColorStop(1, '#FF8C00');
+            } else if (totalScore >= 90) {
+                gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                gradient.addColorStop(0, '#E8E8E8');
+                gradient.addColorStop(0.5, '#C0C0C0');
+                gradient.addColorStop(1, '#A8A8A8');
+            } else {
+                gradient = ctx.createRadialGradient(width - scoreWidth/2 - 10, 25, 5, width - scoreWidth/2 - 10, 25, 30);
+                gradient.addColorStop(0, '#e49a6e');
+                gradient.addColorStop(1, '#b4693e');
+            }
+            this.drawRoundedRect(ctx, width - scoreWidth - 10, 10, scoreWidth, 32, 6, null, false);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.fillStyle = '#000000';
+        } else {
+            ctx.fillStyle = '#ffffff';
+        }
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(totalScore.toString(), width / 2 + 150, height / 2);
-
-        // Add a slight border in primary color
-        ctx.strokeStyle = primaryColor;
-        ctx.lineWidth = 3;
-        ctx.globalAlpha = 0.15;
-        ctx.strokeText(totalScore.toString(), width / 2 + 150, height / 2);
+        ctx.fillText(scoreStr, width - scoreWidth / 2 - 10, 27);
         ctx.restore();
 
         // Reset text baseline for other drawings
         ctx.textBaseline = 'alphabetic';
-
-        ctx.font = '14px system-ui, -apple-system, sans-serif';
-        ctx.fillStyle = '#d1d5db';
-        ctx.textAlign = 'left';
 
         const allScoreFields = [
             { key: 'scoreGameplay', label: 'Gameplay' },
@@ -142,11 +170,10 @@ export class ClipboardService {
             { key: 'scoreImpression', label: 'Impression' }
         ];
 
-        const rightAreaStartX = 30;
-        const col1X = rightAreaStartX;
-        const col2X = rightAreaStartX + 150;
-        let startY = 70;
-        const rowHeight = 18;
+        const col1X = contentStartX;
+        const col2X = contentStartX + 160;
+        let startY = 80;
+        const rowHeight = 22;
 
         allScoreFields.forEach((field, index) => {
             const score = record[field.key as keyof GameRecord] as number || 0;
@@ -155,17 +182,17 @@ export class ClipboardService {
             const currentY = startY + Math.floor(index / 2) * rowHeight;
 
             ctx.fillStyle = '#9ca3af';
-            ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+            ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
             ctx.fillText(`${field.label}:`, x, currentY);
 
             if (score === 0) {
                 ctx.fillStyle = '#6b7280';
-                ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
-                ctx.fillText('-', x + 100, currentY);
+                ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+                ctx.fillText('-', x + 110, currentY);
             } else {
                 ctx.fillStyle = primaryColor;
-                ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
-                ctx.fillText(score.toString(), x + 100, currentY);
+                ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+                ctx.fillText(score.toString(), x + 110, currentY);
             }
         });
 
@@ -173,17 +200,20 @@ export class ClipboardService {
         const replayValue = record.replayValue || 1;
         const replayLabel = replayValueLabels[replayValue - 1] || 'Unknown';
 
-        ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+        ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
         ctx.fillStyle = '#9ca3af';
         ctx.textAlign = 'left';
-        ctx.fillText(`Total score:`, 30, height - 70);
+
+        const footerStartY = height - 55;
+
+        ctx.fillText(`Total score:`, contentStartX, footerStartY);
         ctx.fillStyle = primaryColor;
-        ctx.fillText(`${totalScore}`, 30 + ctx.measureText('Total score: ').width, height - 70);
+        ctx.fillText(`${totalScore}`, contentStartX + ctx.measureText('Total score: ').width, footerStartY);
 
         ctx.fillStyle = '#9ca3af';
-        ctx.fillText(`Replay value:`, 30, height - 52);
+        ctx.fillText(`Replay value:`, contentStartX, footerStartY + 18);
         ctx.fillStyle = primaryColor;
-        ctx.fillText(`${replayLabel}`, 30 + ctx.measureText('Replay value: ').width, height - 52);
+        ctx.fillText(`${replayLabel}`, contentStartX + ctx.measureText('Replay value: ').width, footerStartY + 18);
 
         if (record.finishDate) {
             const finishDate = new Date(record.finishDate);
@@ -207,16 +237,26 @@ export class ClipboardService {
             ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
             ctx.fillStyle = '#6b7280';
             ctx.textAlign = 'left';
-            ctx.fillText(footerText, 30, height - 15);
+            ctx.fillText(footerText, contentStartX, height - 15);
         }
 
         const version = this.versionService.getVersion();
         ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
         ctx.fillStyle = '#4b5563';
         ctx.textAlign = 'right';
-        ctx.fillText(`GG.DB ${version}`, width - 30, height - 15);
+        ctx.fillText(`GG.DB ${version}`, width - 20, height - 15);
 
         return canvas;
+    }
+
+    private loadImage(url: string): Promise<HTMLImageElement> {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => resolve(img);
+            img.onerror = (e) => reject(e);
+            img.src = url;
+        });
     }
 
     private getCountInYear(record: GameRecord): number {
