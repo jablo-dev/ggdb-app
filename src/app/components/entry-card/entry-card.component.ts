@@ -1,10 +1,11 @@
-import { Component, inject, Input, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnDestroy, SimpleChanges } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { GameRecord } from '../../models/record.model';
 import { DatePipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { RecordType } from '../../enum/type.enum';
 import { Router } from '@angular/router';
 import { DataDisplayService } from '../../service/data-display.service';
+import { ScrollService } from '../../service/scroll.service';
 
 @Component({
     selector: 'app-entry-card',
@@ -17,6 +18,7 @@ export class EntryCardComponent {
     @Input() gameRecord: GameRecord | undefined;
     router = inject(Router);
     display = inject(DataDisplayService);
+    scrollService = inject(ScrollService);
     imageError: boolean = false;
 
     score: number = 0;
@@ -41,6 +43,10 @@ export class EntryCardComponent {
 
     goToDetail(): void {
         if (this.gameRecord) {
+            const scrollContainer = document.querySelector('.layout-main');
+            if (scrollContainer) {
+                this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+            }
             this.router.navigate(['/detail'], {
                 queryParams: { record: this.gameRecord.id }
             });

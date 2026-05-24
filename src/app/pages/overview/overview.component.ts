@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { CardModule } from 'primeng/card';
@@ -19,6 +19,7 @@ import { Table, TableModule } from 'primeng/table';
 import { TimelineModule } from 'primeng/timeline';
 import { DataDisplayService } from '../../service/data-display.service';
 import { RecordType } from '../../enum/type.enum';
+import { ScrollService } from '../../service/scroll.service';
 
 interface GameRecordGroup {
     year: number | null;
@@ -38,7 +39,7 @@ interface GameRecordGroup {
     templateUrl: './overview.component.html',
     styleUrl: './overview.component.scss'
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit, OnDestroy {
     @ViewChild('dt') table!: Table;
 
     private readonly dataService = inject(DataService);
@@ -46,6 +47,7 @@ export class OverviewComponent implements OnInit {
     private readonly toast = inject(ToastService);
     private readonly router = inject(Router);
     private readonly loadingService = inject(LoadingService);
+    private readonly scrollService = inject(ScrollService);
     readonly dataDisplay = inject(DataDisplayService);
 
     groupedGameRecords: GameRecordGroup[] = [];
@@ -118,6 +120,23 @@ export class OverviewComponent implements OnInit {
             this.updateVisibleTable();
             this.allTimelineRecords = this.prepareTimelineData(records);
             this.updateVisibleTimeline();
+
+            // Restore scroll position
+            setTimeout(() => {
+                if (this.displayMode === 'Table' && this.table) {
+                    const savedPosition = this.scrollService.getScrollPosition('overview_table');
+                    const scrollableElement = this.table.el.nativeElement.querySelector('.p-datatable-viewport');
+                    if (scrollableElement) {
+                        scrollableElement.scrollTop = savedPosition;
+                    }
+                } else {
+                    const scrollContainer = document.querySelector('.layout-main');
+                    if (scrollContainer) {
+                        const savedPosition = this.scrollService.getScrollPosition('overview');
+                        scrollContainer.scrollTop = savedPosition;
+                    }
+                }
+            }, 0);
         });
 
         const savedMode = localStorage.getItem('ggdb_display_mode');
@@ -289,8 +308,33 @@ export class OverviewComponent implements OnInit {
     }
 
     goToDetail(record: GameRecord): void {
+        if (this.displayMode === 'Table' && this.table) {
+            const scrollableElement = this.table.el.nativeElement.querySelector('.p-datatable-viewport');
+            if (scrollableElement) {
+                this.scrollService.setScrollPosition('overview_table', scrollableElement.scrollTop);
+            }
+        } else {
+            const scrollContainer = document.querySelector('.layout-main');
+            if (scrollContainer) {
+                this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+            }
+        }
         this.router.navigate(['/detail'], {
             queryParams: { record: record.id }
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.displayMode === 'Table' && this.table) {
+            const scrollableElement = this.table.el.nativeElement.querySelector('.p-datatable-viewport');
+            if (scrollableElement) {
+                this.scrollService.setScrollPosition('overview_table', scrollableElement.scrollTop);
+            }
+        } else {
+            const scrollContainer = document.querySelector('.layout-main');
+            if (scrollContainer) {
+                this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+            }
+        }
     }
 }
