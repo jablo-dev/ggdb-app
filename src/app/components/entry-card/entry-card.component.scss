@@ -1,0 +1,268 @@
+.entry-card-container {
+    background: var(--surface-card);
+    border-radius: 0.75rem;
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+    height: 180px;
+
+    &:hover {
+        filter: brightness(1.5);
+        box-shadow:
+            0 15px 25px -3px rgba(0, 0, 0, 0.15),
+            0 6px 10px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-content-wrapper {
+        background: inherit;
+        border-radius: inherit;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .card-content {
+        background: inherit;
+        border-radius: inherit;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        padding-top: 3.5rem !important;
+    }
+
+    .score-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.5rem 0.75rem;
+        // font-weight: 700;
+        font-size: 1.15rem;
+        // line-height: 1;
+        min-width: 60px;
+        text-align: center;
+        z-index: 5;
+        border-top-right-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+        border-top-left-radius: 0;
+
+        &.tier-score {
+            color: #000;
+            font-weight: 800;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            border-right: 2px solid rgba(255, 255, 255, 0.3);
+            border-bottom: none;
+            border-left: none;
+            box-shadow:
+                0 3px 6px rgba(0, 0, 0, 0.4),
+                1px 0 3px rgba(255, 255, 255, 0.15);
+        }
+
+        &.normal-score {
+            background: transparent;
+            color: var(--text-color);
+            font-weight: 800;
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            border-right: 2px solid rgba(255, 255, 255, 0.3);
+            border-bottom: none;
+            border-left: none;
+            box-shadow:
+                0 3px 6px rgba(0, 0, 0, 0.4),
+                1px 0 3px rgba(255, 255, 255, 0.15);
+        }
+    }
+
+    .title-badge {
+        font-weight: 800;
+        font-size: 1rem;
+        // line-height: 1.2;
+        max-width: 75%;
+        text-align: left;
+        transition: all 0.2s ease-in-out;
+        z-index: 5;
+        border-top-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
+
+        background: var(--surface-100);
+        color: var(--text-color);
+        border-top: 2px solid rgba(255, 255, 255, 0.3);
+        border-left: 2px solid rgba(255, 255, 255, 0.3);
+        border-bottom: none;
+        border-right: none;
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.4),
+            -1px 0 3px rgba(255, 255, 255, 0.15);
+
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &.long-title {
+            font-size: 0.85rem;
+        }
+
+        &.no-border {
+            border: none;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .game-type {
+            color: var(--text-color-secondary);
+            font-weight: 400;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            margin-left: 0.25rem;
+        }
+    }
+
+    .cover-image-container {
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        width: 135px; // 180px * 3/4
+        height: 100%;
+
+        img {
+            transition: transform 0.5s ease;
+            object-fit: cover; // Still use cover to fill the 3:4 box perfectly
+        }
+    }
+
+    &:hover .cover-image-container img {
+        transform: scale(1.05);
+    }
+
+    .game-title-section {
+        .game-title {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            font-weight: 700;
+            // line-height: 1.3;
+            margin: 0;
+
+            .game-type {
+                color: var(--text-color-secondary);
+                font-weight: 400;
+                font-size: 0.875rem;
+            }
+        }
+    }
+
+    .info-grid-section {
+        .left-column,
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .date-section {
+            color: var(--text-color);
+            font-size: 0.875rem;
+
+            .pi-calendar {
+                color: var(--primary-color);
+            }
+        }
+
+        .platform-section {
+            color: var(--text-color);
+            font-size: 0.875rem;
+
+            .platform-icon {
+                color: var(--primary-color);
+                font-size: 0.875rem;
+            }
+        }
+
+        .completion-section {
+            color: var(--text-color);
+            font-size: 0.875rem;
+
+            .pi-check {
+                color: var(--primary-color);
+            }
+        }
+
+        .replay-section {
+            color: var(--text-color);
+            font-size: 0.875rem;
+
+            .pi-refresh {
+                color: var(--primary-color);
+            }
+        }
+    }
+
+    .note-section {
+        color: var(--text-color);
+        font-size: 0.875rem;
+        flex-grow: 1;
+
+        .pi-file-edit {
+            color: var(--primary-color);
+        }
+
+        p {
+            margin: 0;
+            line-height: 1.5;
+        }
+    }
+
+    .favorite-star {
+        color: #f6e05e;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        transition: transform 0.2s ease-in-out;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+
+    @media (max-width: 768px) {
+        height: 140px;
+
+        .cover-image-container {
+            width: 105px; // 140px * 3/4
+        }
+
+        .card-content {
+            padding: 0.75rem;
+        }
+
+        .score-badge {
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.875rem;
+            padding: 0.3rem 0.5rem;
+            min-width: 35px;
+        }
+
+        .game-title {
+            font-size: 0.875rem;
+
+            .platform-icon {
+                font-size: 0.75rem;
+            }
+
+            .game-type {
+                font-size: 0.75rem;
+            }
+        }
+
+        .date-section,
+        .completion-section,
+        .note-section {
+            font-size: 0.75rem;
+        }
+    }
+}

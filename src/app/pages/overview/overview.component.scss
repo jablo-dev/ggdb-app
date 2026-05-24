@@ -1,0 +1,32 @@
+::ng-deep .sticky-header .p-datatable-scrollable-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--surface-a);
+    height: 60px;
+    border-bottom: 2px solid var(--p-primary-color);
+}
+
+.table-container {
+    height: calc(100vh - 220px);
+    overflow: hidden;
+    border-bottom: 2px solid var(--p-primary-color);
+}
+
+@media (min-width: 1200px) {
+    .grid.grid-cols-1.sm\\:grid-cols-1.md\\:grid-cols-2.xl\\:grid-cols-3 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1500px) {
+    .grid.grid-cols-1.sm\\:grid-cols-1.md\\:grid-cols-2.xl\\:grid-cols-3 {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1800px) {
+    .grid.grid-cols-1.sm\\:grid-cols-1.md\\:grid-cols-2.xl\\:grid-cols-3 {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}

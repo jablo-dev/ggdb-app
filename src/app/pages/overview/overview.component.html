@@ -1,0 +1,228 @@
+<div class="p-4" [ngClass]="{ 'no-scroll': displayMode === 'Table' }">
+    <div class="max-w-none mx-auto">
+        <div class="fixed top-16 left-0 right-0 z-10 bg-[var(--surface-ground)] px-4 py-4">
+            <div class="max-w-none mx-auto">
+                <p-toolbar class="mb-4">
+        <ng-template pTemplate="start">
+            <div class="flex items-center gap-2">
+                <p-button icon="pi pi-plus-circle" label="Add" (click)="openAdd()"></p-button>
+                <p-button
+                    [icon]="showFavoritesOnly ? 'pi pi-star-fill' : 'pi pi-star'"
+                    label="Filter"
+                    severity="secondary"
+                    (click)="toggleFavoritesFilter()"
+                    [outlined]="!showFavoritesOnly"
+                ></p-button>
+                <p-button icon="pi pi-info-circle" label="Info" severity="secondary" (click)="showLegend = true"></p-button>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="end">
+            <div class="flex items-center gap-2">
+                <p-button icon="pi pi-th-large" [outlined]="displayMode === 'Table'" (click)="setDisplayMode('Cards')" label="Cards"></p-button>
+                <p-button icon="pi pi-table" [outlined]="displayMode === 'Cards'" (click)="setDisplayMode('Table')" label="Table"></p-button>
+
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-search" />
+                    <input type="text" pInputText placeholder="Search games..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-40 sm:w-60 lg:w-80" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+    </p-toolbar>
+            </div>
+        </div>
+
+        <!-- Content with top margin to account for fixed toolbar -->
+        <div class="pt-8">
+            <div class="max-w-none mx-auto">
+
+    <ng-container *ngIf="displayMode === 'Cards'; else tableView">
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <ng-container *ngFor="let item of groupedGameRecords">
+                <ng-container *ngIf="item.year !== null">
+                    <div class="col-span-full">
+                        <app-yearly-line-break [year]="item.year" [count]="item.yearCount"></app-yearly-line-break>
+                    </div>
+                </ng-container>
+                <app-entry-card class="h-full" [gameRecord]="item.gameRecord"></app-entry-card>
+            </ng-container>
+        </div>
+    </ng-container>
+
+    <ng-template #tableView>
+        <div class="table-container mt-8">
+            <p-table #dt [value]="groupedGameRecords" dataKey="id" scrollable="true" scrollHeight="flex" styleClass="custom-scroll sticky-header">
+                <ng-template pTemplate="header">
+                    <tr class="text-lg font-bold">
+                        <th class="w-[60px] py-3 text-right text-primary">Score</th>
+                        <th class="py-3 text-primary">Name</th>
+                        <th class="w-[150px] py-3 text-nowrap text-primary">Finished</th>
+                        <th class="w-[300px] py-3 text-primary">Platform</th>
+                        <th class="w-[200px] py-3 text-primary">Type</th>
+                        <th class="w-[50px] py-3 text-nowrap text-primary">MQ</th>
+                        <th class="w-[50px] py-3 text-nowrap text-primary">Replay</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-group>
+                    <tr *ngIf="group.year !== null">
+                        <td colspan="7" class="h-[1.25rem] text-lg px-3 bg-primary/10 text-primary font-semibold">
+                            {{ group.year }}
+                            <span class="ml-[35px]">{{ group.yearCount }} games finished</span>
+                        </td>
+                    </tr>
+
+                    <tr (click)="goToDetail(group.gameRecord)" class="cursor-pointer hover:brightness-125 transition-colors">
+                        <td class="text-right pr-3">
+                            <span class="flex items-center justify-end gap-2 text-[1.25rem] font-extrabold leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                                <i
+                                    *ngIf="dataDisplay.isTierScore(dataDisplay.getTotalScore(group.gameRecord))"
+                                    class="bi bi-stars text-[1.4rem] bg-clip-text text-transparent"
+                                    [ngStyle]="{
+                                        background: dataDisplay.getTierGradient(dataDisplay.getTotalScore(group.gameRecord)),
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent'
+                                    }"
+                                ></i>
+
+                                <span
+                                    *ngIf="dataDisplay.isTierScore(dataDisplay.getTotalScore(group.gameRecord)); else normalScore"
+                                    class="bg-clip-text text-transparent"
+                                    [ngStyle]="{
+                                        background: dataDisplay.getTierGradient(dataDisplay.getTotalScore(group.gameRecord)),
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent'
+                                    }"
+                                >
+                                    {{ dataDisplay.getTotalScore(group.gameRecord) }}
+                                </span>
+
+                                <ng-template #normalScore>
+                                    <span class="text-[1.25rem] font-extrabold leading-none">
+                                        {{ dataDisplay.getTotalScore(group.gameRecord) }}
+                                    </span>
+                                </ng-template>
+                            </span>
+                        </td>
+
+                        <td>{{ group.gameRecord.name }}</td>
+                        <td>{{ group.gameRecord.finishDate | date: 'MMMM yyyy' }}</td>
+                        <td>
+                            <span class="flex items-center gap-2">
+                                <i [ngClass]="dataDisplay.getPlatformIconClass(group.gameRecord.location)" class="text-primary"></i>
+                                {{ dataDisplay.getPlatformLabel(group.gameRecord.location) }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="flex items-center gap-2">
+                                {{ resolveTypeLabel(group.gameRecord.type) }}
+                            </span>
+                        </td>
+                        <td>
+                            <i
+                                *ngIf="group.gameRecord.mainQuestDone === 1; else notDone"
+                                class="pi pi-check-circle text-primary"
+                                title="MQ"
+                            ></i>
+                            <ng-template #notDone>
+                                <i class="pi pi-times-circle text-red-400" title="Story not completed"></i>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <i
+                                *ngIf="group.gameRecord.replay"
+                                class="pi pi-check-circle text-primary"
+                                title="Replay"
+                            ></i>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="4">No games found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div><br /><br /><br /></div>
+
+<p-dialog header="Icon Legend" [(visible)]="showLegend" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
+    <div class="flex flex-col gap-4 text-sm">
+        <div>
+            <h3 class="text-base font-semibold mb-2">Platforms</h3>
+            <div class="grid grid-cols-2 gap-y-2">
+                <div class="flex items-center gap-2">
+                    <i class="bi bi-steam text-primary"></i>
+                    <span>Steam</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="bi bi-playstation text-primary"></i>
+                    <span>PlayStation</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="bi bi-xbox text-primary"></i>
+                    <span>Xbox</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="bi bi-nintendo-switch text-primary"></i>
+                    <span>Nintendo Console</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="bi bi-disc text-primary"></i>
+                    <span>Other location (no icon available)</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="text-base font-semibold mb-2">Game Progress</h3>
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-calendar text-primary"></i>
+                    <span><strong>Date:</strong> Month and year the game was finished.</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-check-square text-primary"></i>
+                    <span><strong>Story completed:</strong> The main quest, story, or campaign is finished.</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-clipboard text-primary"></i>
+                    <span><strong>Note:</strong> Custom note with personal info or highlights.</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="text-base font-semibold mb-2">Replay</h3>
+            <div class="flex items-center gap-2">
+                <i class="bi bi-fire text-green-400"></i>
+                <span><strong>Replay:</strong> The game was played again after completion.</span>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="text-base font-semibold mb-2">Score & Tiers</h3>
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                    <i class="bi bi-stars text-yellow-400"></i>
+                    <span><strong>Tier Score:</strong> Shown when total score is 85 or higher.</span>
+                </div>
+                <div>
+                    <ul class="list-disc list-inside ml-6">
+                        <li><strong>85–89:</strong> Bronze tier</li>
+                        <li><strong>90–94:</strong> Silver tier</li>
+                        <li><strong>95–100:</strong> Gold tier</li>
+                    </ul>
+                    <p class="mt-1 text-gray-400 text-xs">The score is scaled from 1–10 ratings per category and normalized to a 10–100 scale.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>

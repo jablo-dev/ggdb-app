@@ -1,0 +1,136 @@
+<div class="landing-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="app-brand-title">
+                    GoodGamesDB
+                </h1>
+                <h2 class="hero-title">
+                    Track Your Gaming Journey
+                </h2>
+                <p class="hero-subtitle">
+                    Keep a comprehensive record of every game you complete, rate them across multiple categories,
+                    and build your personal gaming database.
+                </p>
+                <div class="hero-buttons">
+                    <button pButton
+                            class="get-started-btn"
+                            label="Get Started"
+                            icon="pi pi-arrow-right"
+                            iconPos="right"
+                            (click)="navigateToAuth()">
+                    </button>
+                    <button pButton
+                            class="learn-more-btn"
+                            label="Learn More"
+                            icon="pi pi-chevron-down"
+                            iconPos="right"
+                            severity="secondary"
+                            [outlined]="true"
+                            (click)="scrollToFeatures()">
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-card-preview">
+                    <div class="preview-card">
+                        <div class="score-badge">95</div>
+                        
+                        <div class="card-content">
+                            <div class="game-title">
+                                The Witcher 3: Wild Hunt - Complete Edition
+                            </div>
+                            
+                            <div class="info-grid">
+                                <div class="left-column">
+                                    <div class="info-item">
+                                        <i class="pi pi-calendar"></i>
+                                        <span>December 2024</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <i class="pi pi-check"></i>
+                                        <span>Story completed</span>
+                                    </div>
+                                </div>
+                                <div class="right-column">
+                                    <!-- Empty for this example, but would show platform/replay -->
+                                </div>
+                            </div>
+                            
+                            <div class="card-note">
+                                <i class="pi pi-file-edit"></i>
+                                <span>Incredible open world with amazing side quests. The DLCs are masterpieces.</span>
+                            </div>
+                        </div>
+                        
+                        <i class="pi pi-star-fill favorite-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="features-container">
+            <div class="section-header">
+                <h2>Everything You Need to Track Your Games</h2>
+                <p>Comprehensive tools to manage your gaming library and build lasting memories</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card" *ngFor="let feature of features">
+                    <div class="feature-icon">
+                        <i [class]="feature.icon"></i>
+                    </div>
+                    <h3>{{ feature.title }}</h3>
+                    <p>{{ feature.description }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section">
+        <div class="how-it-works-container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Simple steps to start tracking your gaming journey</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Add Your Game</h3>
+                    <p>Enter the game you just completed with basic information like name, platform, and completion date.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Rate & Review</h3>
+                    <p>Score the game across multiple categories and add personal notes about your experience.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Track & Analyze</h3>
+                    <p>View your gaming timeline, discover patterns, and build your personal gaming database.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2>Ready to Start Tracking?</h2>
+            <p>Join other gamers building their personal gaming databases</p>
+            <button pButton
+                    class="cta-button"
+                    label="Start Your Journey"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    (click)="navigateToAuth()">
+            </button>
+        </div>
+    </section>
+</div>

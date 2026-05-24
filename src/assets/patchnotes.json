@@ -1,0 +1,110 @@
+[
+    {
+        "version": "4.2.7",
+        "date": "2026-05-23",
+        "changes": [
+            "Your recorded playthroughs now display official game cover art, making them easier to recognize and more enjoyable to browse.",
+            "Automatically fetch and suggest high-quality cover images from IGDB for your games—no manual uploads needed!",
+            "Older playthroughs will continue to work seamlessly, whether they include covers or not.",
+            "Polished the visual style of clipboard cards to improve clarity and aesthetics.",
+            "Added more stats to the dashboard, for example distribution of medals and average score per year.",
+            "Fixed a lot of minor bugs and added performance improvements."
+        ]
+    },
+    {
+        "version": "4.2.5",
+        "date": "2025-10-07",
+        "changes": [
+            "You can mark records as favorite now to highlight them.",
+            "You can filter your overview by favorite records."
+        ]
+    },
+        {
+        "version": "4.2.4",
+        "date": "2025-08-03",
+        "changes": [
+            "Fixed issue where the finish date was not saved correctly"
+        ]
+    },
+    {
+        "version": "4.2.3",
+        "date": "2025-07-30",
+        "changes": [
+            "Added filter for dropdown of locations",
+            "Improved detail view with new design",
+            "Several improvements to layout",
+            "Several improvements to table/smartphone layout"
+        ]
+    },
+    {
+        "version": "4.2.2",
+        "date": "2025-07-29",
+        "changes": [
+            "Improved design of clipboard card"
+        ]
+    },
+        {
+        "version": "4.2.1",
+        "date": "2025-07-29",
+        "changes": [
+            "Added copy to clipboard functionality for game records"
+        ]
+    },
+    {
+        "version": "4.2.0",
+        "date": "2025-07-29",
+        "changes": [
+            "Added profile settings to its own page as first part of new user settings",
+            "Added more diverse stats: current year average rating, previous year average rating, year with highest average rating, latest highest rated game with improved formatting",
+            "Improved backend communication"
+        ]
+    },
+    {
+        "version": "4.1.1",
+        "date": "2025-05-15",
+        "changes": [
+            "Improved table view"
+        ]
+    },
+    {
+        "version": "4.1.0",
+        "date": "2025-05-14",
+        "changes": [
+            "Added new table-view for game records as alternative for card-view"
+        ]
+    },
+    {
+        "version": "4.0.4",
+        "date": "2025-04-21",
+        "changes": [
+            "Added several new locations for retro platforms"
+        ]
+    },
+    {
+        "version": "4.0.2",
+        "date": "2025-04-21",
+        "changes": [
+            "Score system adjusted: reachedPoints / (countedCategories * 10) * 100",
+            "Added toolbar to detail view for unified design",
+            "Several design improvements"
+        ]
+    },
+    {
+        "version": "4.0.1",
+        "date": "2025-04-20",
+        "changes": [
+            "Color settings will be saved",
+            "Added toolbar to the entry overview",
+            "Added search functionality to the entry overview",
+            "Moved info popup to the new toolbar",
+            "Added patch notes functionality"
+        ]
+    },
+    {
+        "version": "4.0.0",
+        "date": "2025-04-01",
+        "changes": [
+            "Released as private beta"
+        ]
+    }
+]

@@ -1,0 +1,298 @@
+<div class="p-4">
+    <div class="max-w-none mx-auto">
+        <div class="fixed top-16 left-0 right-0 z-10 bg-[var(--surface-ground)] px-4 py-4">
+            <div class="max-w-none mx-auto">
+                <p-toolbar class="mb-4">
+        <!-- Left: Buttons -->
+        <ng-template pTemplate="start">
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Return -->
+                <button
+                    *ngIf="!formEditable || !form.get('id')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-arrow-left"
+                    class="p-button-secondary"
+                    pTooltip="Return"
+                    tooltipPosition="top"
+                    (click)="returnToOverview()"
+                ></button>
+
+                <!-- Save New -->
+                <button
+                    *ngIf="formEditable && !form.get('id')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-save"
+                    pTooltip="Create Entry"
+                    tooltipPosition="top"
+                    label="Save"
+                    (click)="save()"
+                    [disabled]="form.invalid"
+                ></button>
+
+                <!-- Reset -->
+                <button
+                    *ngIf="formEditable && !form.get('id')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-refresh"
+                    class="p-button-secondary"
+                    pTooltip="Reset"
+                    label="Reset"
+                    tooltipPosition="top"
+                    (click)="reset()"
+                ></button>
+
+                <!-- Edit -->
+                <button
+                    *ngIf="!formEditable && form.get('id')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-file-edit"
+                    class="p-button-secondary"
+                    pTooltip="Edit"
+                    tooltipPosition="top"
+                    (click)="toggleEdit()"
+                ></button>
+
+                <!-- Copy to Clipboard -->
+                <button
+                    *ngIf="!formEditable && form.get('id')?.value"
+                    pButton
+                    type="button"
+                    [icon]="isGeneratingCard ? 'pi pi-spin pi-spinner' : 'pi pi-copy'"
+                    class="p-button-secondary"
+                    pTooltip="{{ isGeneratingCard ? 'Generating card...' : 'Copy card to clipboard' }}"
+                    tooltipPosition="top"
+                    (click)="copyCardToClipboard()"
+                    [disabled]="isGeneratingCard"
+                ></button>
+
+                <!-- Save Changes -->
+                <button
+                    *ngIf="formEditable && form.get('id')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-check"
+                    pTooltip="Save Changes"
+                    tooltipPosition="top"
+                    (click)="save()"
+                    [disabled]="form.invalid"
+                ></button>
+
+                <!-- Cancel -->
+                <button
+                    *ngIf="formEditable && form.get('id')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-times"
+                    class="p-button-secondary"
+                    pTooltip="Cancel Editing"
+                    tooltipPosition="top"
+                    (click)="toggleEdit()"
+                ></button>
+
+                <!-- Delete -->
+                <button
+                    *ngIf="formEditable && form.get('id')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-trash"
+                    class="p-button-danger"
+                    pTooltip="Delete"
+                    tooltipPosition="top"
+                    (click)="confirmDelete()"
+                ></button>
+
+                <!-- Select Cover Image -->
+                <button
+                    *ngIf="formEditable"
+                    pButton
+                    type="button"
+                    icon="pi pi-image"
+                    class="p-button-secondary"
+                    pTooltip="Select Cover Image"
+                    tooltipPosition="top"
+                    label="Cover"
+                    (click)="openCoverDialog()"
+                ></button>
+            </div>
+        </ng-template>
+
+        <!-- Right: Final score preview -->
+        <ng-template pTemplate="end">
+            <div class="w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex items-center gap-3">
+                <!-- Label -->
+                <label class="font-semibold opacity-80 whitespace-nowrap">Score preview</label>
+
+                <!-- Progress bar -->
+                <div class="relative flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                        class="absolute top-0 left-0 h-full bg-[var(--primary-color)] transition-all duration-300"
+                        [style.width.%]="totalScore"
+                    ></div>
+                </div>
+
+                <!-- Score value -->
+                <div class="font-semibold  whitespace-nowrap min-w-[50px] text-right">
+                    {{ totalScore }}/100
+                </div>
+            </div>
+        </ng-template>
+    </p-toolbar>
+            </div>
+        </div>
+
+        <!-- Content with top margin to account for fixed toolbar -->
+        <div class="pt-8">
+            <div class="max-w-none mx-auto">
+    <div class="mb-4"></div>
+
+    <!-- Form section -->
+    <form *ngIf="form" [formGroup]="form">
+        <div class="flex flex-col gap-4 mt-2">
+            <!-- Record Info - Full Width at Top -->
+            <div class="w-full">
+                <p-fieldset legend="Record Information">
+                    <div class="relative">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <label for="name" class="text-sm font-medium">Name *</label>
+                                <input id="name" pInputText formControlName="name" />
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label for="type" class="text-sm font-medium">Type *</label>
+                                <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label for="location" class="text-sm font-medium">Location *</label>
+                                <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location"></p-select>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
+                                <p-datepicker id="finishDate" formControlName="finishDate" showIcon class="w-full" [fluid]="true" dateFormat="dd/mm/yy"></p-datepicker>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                            <div class="flex flex-col gap-1">
+                                <label for="note" class="text-sm font-medium">Note</label>
+                                <textarea pTextarea id="note" formControlName="note" rows="4" placeholder="Add note" class="resize-none"></textarea>
+                            </div>
+
+                            <div class="flex items-start gap-4 mt-6">
+                                <div class="flex flex-col gap-3 justify-start flex-grow">
+                                    <div class="flex items-center gap-2">
+                                        <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
+                                        <label class="text-sm">Main Quest / Story / Campaign finished</label>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <p-toggleSwitch formControlName="fav"></p-toggleSwitch>
+                                        <label class="text-sm">Favorite</label>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
+                                        <label class="text-sm">Replay</label>
+                                    </div>
+
+                                    <div class="flex flex-col gap-1 mt-1 max-w-[200px]">
+                                        <label for="replayValue" class="text-sm font-medium">Replay Value *</label>
+                                        <p-select
+                                            id="replayValue"
+                                            formControlName="replayValue"
+                                            [options]="replayValueOptions"
+                                            optionLabel="label"
+                                            optionValue="value"
+                                            placeholder="Select replay value"
+                                        ></p-select>
+                                    </div>
+                                </div>
+
+                                <!-- Cover Preview - Bottom Right -->
+                                <div class="flex-shrink-0" *ngIf="form.get('cover')?.value">
+                                     <img [src]="form.get('cover')?.value" class="w-24 md:w-32 rounded shadow-lg object-cover border border-white/10" style="aspect-ratio: 3/4" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+
+            <!-- Score Categories - 3 per row (excluding impression) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <ng-container *ngFor="let field of scoreFields">
+                    <p-fieldset *ngIf="field !== 'scoreImpression'" [legend]="field.replace('score', '')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm opacity-80">{{ scoreFieldComments[field] }}</span>
+                            <p-toggleSwitch [formControlName]="field + 'Enabled'"></p-toggleSwitch>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <p-rating [formControlName]="field" [disabled]="!form.get(field + 'Enabled')?.value" [stars]="10"></p-rating>
+                            <span *ngIf="form.get(field + 'Enabled')?.value" class="text-sm min-w-[30px]">
+                                {{ form.get(field)?.value }}/10
+                            </span>
+                        </div>
+                    </p-fieldset>
+                </ng-container>
+            </div>
+
+            <!-- Impression - Full Width at Bottom -->
+            <div class="w-full">
+                <p-fieldset legend="Impression" class="impression-fieldset">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm opacity-80">{{ scoreFieldComments['scoreImpression'] }}</span>
+                        <p-toggleSwitch formControlName="scoreImpressionEnabled"></p-toggleSwitch>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p-rating formControlName="scoreImpression" [disabled]="!form.get('scoreImpressionEnabled')?.value" [stars]="10"></p-rating>
+                        <span *ngIf="form.get('scoreImpressionEnabled')?.value" class="text-sm min-w-[30px]">
+                            {{ form.get('scoreImpression')?.value }}/10
+                        </span>
+                    </div>
+                </p-fieldset>
+            </div>
+        </div>
+    </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cover Image Dialog -->
+<p-dialog
+    header="Select Cover Image"
+    [(visible)]="coverDialogVisible"
+    [modal]="true"
+    [style]="{ width: '80vw', maxWidth: '900px' }"
+    [draggable]="false"
+    [resizable]="false"
+>
+    <!-- Loading state -->
+    <div *ngIf="coverSearchLoading" class="flex justify-center items-center py-12">
+        <p-progressSpinner strokeWidth="4" [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
+        <span class="ml-4 text-sm opacity-70">Searching IGDB...</span>
+    </div>
+
+    <!-- No results -->
+    <div *ngIf="!coverSearchLoading && coverResults.length === 0" class="flex justify-center items-center py-12">
+        <span class="text-sm opacity-70">No covers found for "{{ form.get('name')?.value }}".</span>
+    </div>
+
+    <!-- Cover grid -->
+    <div *ngIf="!coverSearchLoading && coverResults.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-2">
+        <div
+            *ngFor="let cover of coverResults"
+            class="flex flex-col items-center gap-2 cursor-pointer rounded-lg p-2 border border-transparent hover:border-[var(--primary-color)] transition-all"
+            (click)="selectCover(cover)"
+        >
+            <img
+                [src]="'https:' + cover.url.replace('t_thumb', 't_cover_big')"
+                [alt]="cover.game_name"
+                class="w-full rounded shadow object-cover"
+                style="aspect-ratio: 3/4"
+            />
+            <span class="text-xs text-center opacity-80 line-clamp-2">{{ cover.game_name }}</span>
+        </div>
+    </div>
+</p-dialog>
