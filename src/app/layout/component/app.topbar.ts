@@ -78,6 +78,14 @@ export class AppTopbar {
         this.router.navigate(['/overview']);
     }
 
+    openBacklog() {
+        const scrollContainer = document.querySelector('.layout-main');
+        if (scrollContainer && this.router.url === '/overview') {
+            this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+        }
+        this.router.navigate(['/backlog']);
+    }
+
     openDashboard(): void {
         const scrollContainer = document.querySelector('.layout-main');
         if (scrollContainer && this.router.url === '/overview') {

@@ -52,6 +52,10 @@
                     <i class="pi pi-database"></i>
                     <span>Entries</span>
                 </button>
+                <button type="button" class="layout-topbar-action" (click)="openBacklog()">
+                    <i class="pi pi-book"></i>
+                    <span>Backlog</span>
+                </button>
                 <button type="button" class="layout-topbar-action" (click)="openProfile()">
                     <i class="pi pi-user"></i>
                     <span>Profile</span>
@@ -73,6 +77,10 @@
                 <button type="button" class="layout-topbar-action-mobile" (click)="openOverview()" [class.active]="isActive('/overview')">
                     <i class="pi pi-database"></i>
                     <span class="hidden sm:inline">Entries</span>
+                </button>
+                <button type="button" class="layout-topbar-action-mobile" (click)="openBacklog()" [class.active]="isActive('/backlog')">
+                    <i class="pi pi-book"></i>
+                    <span class="hidden sm:inline">Backlog</span>
                 </button>
                 <button type="button" class="layout-topbar-action-mobile" (click)="openProfile()" [class.active]="isActive('/profile')">
                     <i class="pi pi-user"></i>

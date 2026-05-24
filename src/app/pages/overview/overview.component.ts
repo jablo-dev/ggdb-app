@@ -175,6 +175,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
             ? [...this.allRecords]
             : this.allRecords.filter((r) => r.name.toLowerCase().includes(term));
 
+        // Filter out backlog items from the overview
+        filtered = filtered.filter((r) => r.backlogItem !== 1);
+
         if (this.showFavoritesOnly) {
             filtered = filtered.filter((r) => r.fav === 1);
         }

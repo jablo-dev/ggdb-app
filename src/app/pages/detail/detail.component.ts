@@ -41,6 +41,7 @@ import { IgdbService, IgdbCover } from '../../service/igdb.service';
     styleUrl: './detail.component.scss'
 })
 export class DetailComponent implements OnInit {
+    private source: string | null = null;
     statService: StatService = inject(StatService);
     form!: FormGroup;
     formEditable = false;
@@ -100,6 +101,7 @@ export class DetailComponent implements OnInit {
     ngOnInit(): void {
         this.route.queryParams.subscribe((params) => {
             const recordParam = params['record'];
+            this.source = params['source'] || null;
             if (recordParam === 'new') {
                 this.formEditable = true;
                 this.initForm();
@@ -122,26 +124,48 @@ export class DetailComponent implements OnInit {
     }
 
     initForm(record?: GameRecord): void {
+        const isBacklog = this.source === 'backlog' || record?.backlogItem === 1;
+
         this.form = this.fb.group({
             id: [record?.id ?? 0],
             ownerId: [record?.ownerId ?? 0],
             name: [record?.name ?? '', Validators.required],
             status: [record?.status ?? ''],
             type: [record?.type ?? '', Validators.required],
-            location: [record?.location ? Locations[record.location as keyof typeof Locations] : '', Validators.required],
+            location: [record?.location ? (Locations[record.location as keyof typeof Locations] || record.location) : '', Validators.required],
             createDate: [record?.createDate ? this.parseStringToDate(record.createDate) : ''],
-            finishDate: [record?.finishDate ? this.parseStringToDate(record.finishDate) : '', Validators.required],
+            finishDate: [record?.finishDate ? this.parseStringToDate(record.finishDate) : '', isBacklog ? [] : [Validators.required]],
             note: [record?.note ?? ''],
-            replayValue: [record?.replayValue ?? 1, Validators.required],
+            replayValue: [record?.replayValue ?? 1, isBacklog ? [] : [Validators.required]],
             mainQuestDone: [record?.mainQuestDone === 1],
             fav: [record?.fav === 1],
             replay: [record?.replay === 1],
-            backlogItem: [record?.backlogItem === 1],
+            backlogItem: [isBacklog],
             canceled: [record?.canceled === 1],
             cover: [record?.cover ?? ''],
             playtime: [record?.playtime ?? 0],
             ...Object.fromEntries(this.scoreFields.map((field) => [field, record?.[field as keyof GameRecord] ?? 1])),
             ...Object.fromEntries(this.scoreFields.map((field) => [`${field}Enabled`, record ? record[field as keyof GameRecord] !== 0 : true]))
+        });
+
+        if (this.source === 'backlog' && !record?.id) {
+            this.form.get('backlogItem')?.disable();
+        }
+
+        // Subscribe to backlogItem changes to update validation
+        this.form.get('backlogItem')?.valueChanges.subscribe((backlog) => {
+            const finishDateControl = this.form.get('finishDate');
+            const replayValueControl = this.form.get('replayValue');
+
+            if (backlog) {
+                finishDateControl?.clearValidators();
+                replayValueControl?.clearValidators();
+            } else {
+                finishDateControl?.setValidators([Validators.required]);
+                replayValueControl?.setValidators([Validators.required]);
+            }
+            finishDateControl?.updateValueAndValidity();
+            replayValueControl?.updateValueAndValidity();
         });
 
         this.scoreFields.forEach((field) => {
@@ -164,13 +188,14 @@ export class DetailComponent implements OnInit {
     }
 
     get totalScore(): number {
+        const rawValue = this.form.getRawValue();
         const rawRecord: GameRecord = {
-            ...this.form.value,
-            mainQuestDone: this.form.value.mainQuestDone ? 1 : 0,
-            fav: this.form.value.fav ? 1 : 0,
-            replay: this.form.value.replay ? 1 : 0,
-            backlogItem: this.form.value.backlogItem ? 1 : 0,
-            canceled: this.form.value.canceled ? 1 : 0
+            ...rawValue,
+            mainQuestDone: rawValue.mainQuestDone ? 1 : 0,
+            fav: rawValue.fav ? 1 : 0,
+            replay: rawValue.replay ? 1 : 0,
+            backlogItem: rawValue.backlogItem ? 1 : 0,
+            canceled: rawValue.canceled ? 1 : 0
         };
         return this.statService.getTotalScore(rawRecord);
     }
@@ -180,10 +205,21 @@ export class DetailComponent implements OnInit {
 
         if (this.formEditable) {
             this.form.enable();
+            if (this.source === 'backlog' && !this.form.get('id')?.value) {
+                this.form.get('backlogItem')?.disable();
+            }
         } else {
             this.form.disable();
             this.initForm(this.form.value);
         }
+    }
+
+    finishGame(): void {
+        this.formEditable = true;
+        this.form.enable();
+        this.form.get('backlogItem')?.enable();
+        this.form.patchValue({ backlogItem: false });
+        // The valueChanges subscription in initForm will handle validators
     }
 
     save(): void {
@@ -192,13 +228,13 @@ export class DetailComponent implements OnInit {
             return;
         }
 
-        const raw = this.form.value;
+        const raw = this.form.getRawValue();
         const payload = {
             id: raw.id,
             name: raw.name,
             status: raw.status,
             type: raw.type,
-            location: this.getEnumKeyFromValue(Locations, raw.location),
+            location: this.getEnumKeyFromValue(Locations, raw.location) || raw.location,
             createDate: raw.createDate ? this.formatDateToString(raw.createDate) : '',
             finishDate: raw.finishDate ? this.formatDateToString(raw.finishDate) : '',
             note: raw.note,

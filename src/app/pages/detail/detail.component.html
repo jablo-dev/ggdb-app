@@ -117,11 +117,24 @@
                     label="Cover"
                     (click)="openCoverDialog()"
                 ></button>
+
+                <!-- Finish Game -->
+                <button
+                    *ngIf="form.get('id')?.value && form.get('backlogItem')?.value"
+                    pButton
+                    type="button"
+                    icon="pi pi-check-circle"
+                    class="p-button-success"
+                    pTooltip="Finish this game and move from backlog"
+                    tooltipPosition="top"
+                    label="Game finished!"
+                    (click) = "finishGame()"
+                ></button>
             </div>
         </ng-template>
 
         <!-- Right: Final score preview -->
-        <ng-template pTemplate="end">
+        <ng-template pTemplate="end" *ngIf="!form.get('backlogItem')?.value">
             <div class="w-full sm:w-[400px] md:w-[500px] lg:w-[600px] flex items-center gap-3">
                 <!-- Label -->
                 <label class="font-semibold opacity-80 whitespace-nowrap">Score preview</label>
@@ -173,7 +186,7 @@
                                         <label for="location" class="text-sm font-medium">Location *</label>
                                         <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location"></p-select>
                                     </div>
-                                    <div class="flex flex-col gap-1">
+                                    <div class="flex flex-col gap-1" *ngIf="!form.get('backlogItem')?.value">
                                         <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
                                         <p-datepicker id="finishDate" formControlName="finishDate" showIcon class="w-full" [fluid]="true" dateFormat="dd/mm/yy"></p-datepicker>
                                     </div>
@@ -184,7 +197,7 @@
                                 </div>
 
                                 <div class="flex items-center flex-wrap gap-4 mt-2">
-                                    <div class="flex flex-col gap-1 w-full max-w-[200px]">
+                                    <div class="flex flex-col gap-1 w-full max-w-[200px]" *ngIf="!form.get('backlogItem')?.value">
                                         <label for="replayValue" class="text-sm font-medium">Replay Value *</label>
                                         <p-select
                                             id="replayValue"
@@ -197,7 +210,7 @@
                                     </div>
 
                                     <div class="flex flex-wrap gap-x-6 gap-y-3 pt-5">
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-2" *ngIf="!form.get('backlogItem')?.value">
                                             <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
                                             <label class="text-sm whitespace-nowrap">Main Quest finished</label>
                                         </div>
@@ -209,11 +222,7 @@
                                             <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
                                             <label class="text-sm">Replay</label>
                                         </div>
-                                        <div class="flex items-center gap-2">
-                                            <p-toggleSwitch formControlName="backlogItem"></p-toggleSwitch>
-                                            <label class="text-sm">Backlog</label>
-                                        </div>
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-2" *ngIf="!form.get('backlogItem')?.value">
                                             <p-toggleSwitch formControlName="canceled"></p-toggleSwitch>
                                             <label class="text-sm">Canceled</label>
                                         </div>
@@ -270,7 +279,7 @@
             </div>
 
             <!-- Score Categories - 3 per row (excluding impression) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" *ngIf="!form.get('backlogItem')?.value">
                 <ng-container *ngFor="let field of scoreFields">
                     <p-fieldset *ngIf="field !== 'scoreImpression'" [legend]="field.replace('score', '')">
                         <div class="flex items-center justify-between mb-2">
@@ -288,7 +297,7 @@
             </div>
 
             <!-- Impression - Full Width at Bottom -->
-            <div class="w-full">
+            <div class="w-full" *ngIf="!form.get('backlogItem')?.value">
                 <p-fieldset legend="Impression" class="impression-fieldset">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-sm opacity-80">{{ scoreFieldComments['scoreImpression'] }}</span>
