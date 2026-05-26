@@ -1,164 +1,157 @@
-<div class="p-4">
-    <div class="max-w-none mx-auto">
-        <div class="fixed top-[4.5rem] left-0 right-0 z-10 bg-[var(--surface-ground)] min-h-[5rem] py-2 flex items-center shadow-sm box-border overflow-x-hidden">
-            <div class="w-full max-w-none mx-auto px-4 pl-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1rem+env(safe-area-inset-right))]">
-                <p-toolbar styleClass="border-none bg-transparent p-0">
+<ng-template #toolbarTemplate>
+    <div class="flex items-center justify-between w-full">
         <!-- Left: Buttons -->
-        <ng-template pTemplate="start">
-            <div class="flex flex-wrap items-center gap-2">
-                <!-- Return -->
-                <button
-                    *ngIf="!formEditable || !form.get('id')?.value"
-                    pButton
-                    type="button"
-                    icon="pi pi-arrow-left"
-                    class="p-button-secondary"
-                    pTooltip="Return"
-                    tooltipPosition="top"
-                    (click)="returnToOverview()"
-                ></button>
+        <div class="flex flex-wrap items-center gap-2">
+            <!-- Return -->
+            <button
+                *ngIf="!formEditable || !form.get('id')?.value"
+                pButton
+                type="button"
+                icon="pi pi-arrow-left"
+                class="p-button-secondary"
+                pTooltip="Return"
+                tooltipPosition="top"
+                (click)="returnToOverview()"
+            ></button>
 
-                <!-- Save New -->
-                <button
-                    *ngIf="formEditable && !form.get('id')?.value"
-                    pButton
-                    type="button"
-                    icon="pi pi-save"
-                    pTooltip="Create Playthrough"
-                    tooltipPosition="top"
-                    label="Save"
-                    (click)="save()"
-                    [disabled]="form.invalid"
-                ></button>
+            <!-- Save New -->
+            <button
+                *ngIf="formEditable && !form.get('id')?.value"
+                pButton
+                type="button"
+                icon="pi pi-save"
+                pTooltip="Create Playthrough"
+                tooltipPosition="top"
+                label="Save"
+                (click)="save()"
+                [disabled]="form.invalid"
+            ></button>
 
-                <!-- Reset -->
-                <button
-                    *ngIf="formEditable && !form.get('id')?.value"
-                    pButton
-                    type="button"
-                    icon="pi pi-refresh"
-                    class="p-button-secondary"
-                    pTooltip="Reset"
-                    label="Reset"
-                    tooltipPosition="top"
-                    (click)="reset()"
-                ></button>
+            <!-- Reset -->
+            <button
+                *ngIf="formEditable && !form.get('id')?.value"
+                pButton
+                type="button"
+                icon="pi pi-refresh"
+                class="p-button-secondary"
+                pTooltip="Reset"
+                label="Reset"
+                tooltipPosition="top"
+                (click)="reset()"
+            ></button>
 
-                <!-- Edit -->
-                <button
-                    *ngIf="!formEditable && form.get('id')?.value"
-                    pButton
-                    type="button"
-                    icon="pi pi-file-edit"
-                    class="p-button-secondary"
-                    pTooltip="Edit"
-                    tooltipPosition="top"
-                    (click)="toggleEdit()"
-                ></button>
+            <!-- Edit -->
+            <button
+                *ngIf="!formEditable && form.get('id')?.value"
+                pButton
+                type="button"
+                icon="pi pi-file-edit"
+                class="p-button-secondary"
+                pTooltip="Edit"
+                tooltipPosition="top"
+                (click)="toggleEdit()"
+            ></button>
 
-                <!-- Copy to Clipboard -->
-                <button
-                    *ngIf="!formEditable && form.get('id')?.value"
-                    pButton
-                    type="button"
-                    [icon]="isGeneratingCard ? 'pi pi-spin pi-spinner' : 'pi pi-copy'"
-                    class="p-button-secondary"
-                    pTooltip="{{ isGeneratingCard ? 'Generating card...' : 'Copy card to clipboard' }}"
-                    tooltipPosition="top"
-                    (click)="copyCardToClipboard()"
-                    [disabled]="isGeneratingCard"
-                ></button>
+            <!-- Copy to Clipboard -->
+            <button
+                *ngIf="!formEditable && form.get('id')?.value"
+                pButton
+                type="button"
+                [icon]="isGeneratingCard ? 'pi pi-spin pi-spinner' : 'pi pi-copy'"
+                class="p-button-secondary"
+                pTooltip="{{ isGeneratingCard ? 'Generating card...' : 'Copy card to clipboard' }}"
+                tooltipPosition="top"
+                (click)="copyCardToClipboard()"
+                [disabled]="isGeneratingCard"
+            ></button>
 
-                <!-- Save Changes -->
-                <button
-                    *ngIf="formEditable && form.get('id')?.value"
-                    pButton
-                    type="button"
-                    icon="pi pi-check"
-                    pTooltip="Save Changes"
-                    tooltipPosition="top"
-                    (click)="save()"
-                    [disabled]="form.invalid"
-                ></button>
+            <!-- Save Changes -->
+            <button
+                *ngIf="formEditable && form.get('id')?.value"
+                pButton
+                type="button"
+                icon="pi pi-check"
+                pTooltip="Save Changes"
+                tooltipPosition="top"
+                (click)="save()"
+                [disabled]="form.invalid"
+            ></button>
 
-                <!-- Cancel -->
-                <button
-                    *ngIf="formEditable && form.get('id')?.value"
-                    pButton
-                    type="button"
-                    icon="pi pi-times"
-                    class="p-button-secondary"
-                    pTooltip="Cancel Editing"
-                    tooltipPosition="top"
-                    (click)="toggleEdit()"
-                ></button>
+            <!-- Cancel -->
+            <button
+                *ngIf="formEditable && form.get('id')?.value"
+                pButton
+                type="button"
+                icon="pi pi-times"
+                class="p-button-secondary"
+                pTooltip="Cancel Editing"
+                tooltipPosition="top"
+                (click)="toggleEdit()"
+            ></button>
 
-                <!-- Delete -->
-                <button
-                    *ngIf="formEditable && form.get('id')?.value"
-                    pButton
-                    type="button"
-                    icon="pi pi-trash"
-                    class="p-button-danger"
-                    pTooltip="Delete"
-                    tooltipPosition="top"
-                    (click)="confirmDelete()"
-                ></button>
+            <!-- Delete -->
+            <button
+                *ngIf="formEditable && form.get('id')?.value"
+                pButton
+                type="button"
+                icon="pi pi-trash"
+                class="p-button-danger"
+                pTooltip="Delete"
+                tooltipPosition="top"
+                (click)="confirmDelete()"
+            ></button>
 
-                <!-- Select Cover Image -->
-                <button
-                    *ngIf="formEditable"
-                    pButton
-                    type="button"
-                    icon="pi pi-image"
-                    class="p-button-secondary"
-                    pTooltip="Select Cover Image"
-                    tooltipPosition="top"
-                    label="Cover"
-                    (click)="openCoverDialog()"
-                ></button>
+            <!-- Select Cover Image -->
+            <button
+                *ngIf="formEditable"
+                pButton
+                type="button"
+                icon="pi pi-image"
+                class="p-button-secondary"
+                pTooltip="Select Cover Image"
+                tooltipPosition="top"
+                label="Cover"
+                (click)="openCoverDialog()"
+            ></button>
 
-                <!-- Finish Game -->
-                <button
-                    *ngIf="form.get('id')?.value && form.get('backlogItem')?.value"
-                    pButton
-                    type="button"
-                    icon="pi pi-check-circle"
-                    class="p-button-success"
-                    pTooltip="Finish this game and move from backlog"
-                    tooltipPosition="top"
-                    label="Game finished!"
-                    (click) = "finishGame()"
-                ></button>
-            </div>
-        </ng-template>
-
-        <!-- Right: Final score preview -->
-        <ng-template pTemplate="end" *ngIf="!form.get('backlogItem')?.value">
-            <div class="flex items-center gap-3">
-                <!-- Label -->
-                <label class="font-semibold opacity-80 whitespace-nowrap hidden sm:inline">Score preview</label>
-
-                <!-- Progress bar -->
-                <div class="relative w-24 sm:w-32 md:w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                        class="absolute top-0 left-0 h-full bg-[var(--primary-color)] transition-all duration-300"
-                        [style.width.%]="totalScore"
-                    ></div>
-                </div>
-
-                <!-- Score value -->
-                <div class="font-semibold whitespace-nowrap text-right">
-                    {{ totalScore }}/100
-                </div>
-            </div>
-        </ng-template>
-    </p-toolbar>
-            </div>
+            <!-- Finish Game -->
+            <button
+                *ngIf="form.get('id')?.value && form.get('backlogItem')?.value"
+                pButton
+                type="button"
+                icon="pi pi-check-circle"
+                class="p-button-success"
+                pTooltip="Finish this game and move from backlog"
+                tooltipPosition="top"
+                label="Game finished!"
+                (click) = "finishGame()"
+            ></button>
         </div>
 
-        <!-- Content with top margin to account for fixed toolbar -->
-        <div class="pt-36 sm:pt-20">
+        <!-- Right: Final score preview -->
+        <div class="flex items-center gap-3" *ngIf="!form.get('backlogItem')?.value">
+            <!-- Label -->
+            <label class="font-semibold opacity-80 whitespace-nowrap hidden sm:inline">Score preview</label>
+
+            <!-- Progress bar -->
+            <div class="relative w-24 sm:w-32 md:w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div
+                    class="absolute top-0 left-0 h-full bg-[var(--primary-color)] transition-all duration-300"
+                    [style.width.%]="totalScore"
+                ></div>
+            </div>
+
+            <!-- Score value -->
+            <div class="font-semibold whitespace-nowrap text-right">
+                {{ totalScore }}/100
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<div class="p-4">
+    <div class="max-w-none mx-auto">
+        <div class="pt-4">
             <div class="max-w-none mx-auto">
     <div class="mb-4"></div>
 

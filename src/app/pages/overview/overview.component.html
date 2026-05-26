@@ -1,83 +1,77 @@
-<div [ngClass]="{ 'table-view-active': displayMode === 'Table' }">
-    <div class="max-w-none mx-auto">
-        <div class="fixed top-[4.5rem] left-0 right-0 z-10 bg-[var(--surface-ground)] min-h-[5rem] py-2 flex items-center shadow-sm box-border overflow-x-hidden">
-            <div class="w-full max-w-none mx-auto px-4 pl-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1rem+env(safe-area-inset-right))]">
-                <p-toolbar styleClass="mx-auto border-none bg-transparent p-0">
-        <ng-template pTemplate="start">
-            <div class="flex flex-wrap items-center gap-2">
-                <p-button icon="pi pi-plus-circle" label="Add" (click)="openAdd()"></p-button>
-                <p-button
-                    [icon]="showFavoritesOnly ? 'pi pi-star-fill' : 'pi pi-star'"
-                    label="Filter"
-                    severity="secondary"
-                    (click)="toggleFavoritesFilter()"
-                    [outlined]="!showFavoritesOnly"
-                ></p-button>
-                <p-button icon="pi pi-info-circle" label="Info" severity="secondary" (click)="showLegend = true" class="hidden sm:inline-block"></p-button>
+<ng-template #toolbarTemplate>
+    <div class="flex items-center justify-between w-full">
+        <div class="flex flex-wrap items-center gap-2">
+            <p-button icon="pi pi-plus-circle" label="Add" (click)="openAdd()"></p-button>
+            <p-button
+                [icon]="showFavoritesOnly ? 'pi pi-star-fill' : 'pi pi-star'"
+                label="Filter"
+                severity="secondary"
+                (click)="toggleFavoritesFilter()"
+                [outlined]="!showFavoritesOnly"
+            ></p-button>
+            <p-button icon="pi pi-info-circle" label="Info" severity="secondary" (click)="showLegend = true" class="hidden sm:inline-block"></p-button>
 
-                <div *ngIf="displayMode !== 'Timeline'" class="flex items-center flex-wrap gap-1">
-                    <div class="h-8 w-px bg-surface-300 dark:bg-surface-600 mx-1 hidden sm:block"></div>
+            <div *ngIf="displayMode !== 'Timeline'" class="flex items-center flex-wrap gap-1">
+                <div class="h-8 w-px bg-surface-300 dark:bg-surface-600 mx-1 hidden sm:block"></div>
 
-                    <span class="text-sm font-semibold opacity-60 ml-1 mr-2 hidden md:inline">Sort: </span>
-                    <div class="flex items-center gap-1">
-                        <p-button
-                            [label]="'Score'"
-                            [icon]="sortField === 'score' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
-                            severity="secondary"
-                            [outlined]="sortField !== 'score'"
-                            (click)="sort('score')"
-                            size="small"
-                        ></p-button>
-                        <p-button
-                            [label]="'Finished'"
-                            [icon]="sortField === 'finishDate' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
-                            severity="secondary"
-                            [outlined]="sortField !== 'finishDate'"
-                            (click)="sort('finishDate')"
-                            size="small"
-                        ></p-button>
-                        <p-button
-                            [label]="'Platform'"
-                            [icon]="sortField === 'platform' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
-                            severity="secondary"
-                            [outlined]="sortField !== 'platform'"
-                            (click)="sort('platform')"
-                            size="small"
-                            class="hidden sm:inline-block"
-                        ></p-button>
-                        <p-button
-                            icon="pi pi-filter-slash"
-                            severity="secondary"
-                            [text]="true"
-                            (click)="resetSorting()"
-                            size="small"
-                            pTooltip="Reset Sorting"
-                            tooltipPosition="bottom"
-                        ></p-button>
-                    </div>
-                </div>
-            </div>
-        </ng-template>
-
-        <ng-template pTemplate="end">
-            <div class="flex flex-wrap items-center gap-2 justify-end">
+                <span class="text-sm font-semibold opacity-60 ml-1 mr-2 hidden md:inline">Sort: </span>
                 <div class="flex items-center gap-1">
-                    <p-button icon="pi pi-th-large" [outlined]="displayMode !== 'Cards'" (click)="setDisplayMode('Cards')" label="Cards" size="small"></p-button>
-                    <p-button icon="pi pi-clock" [outlined]="displayMode !== 'Timeline'" (click)="setDisplayMode('Timeline')" label="Timeline" size="small" class="hidden sm:inline-block"></p-button>
-                    <p-button icon="pi pi-table" [outlined]="displayMode !== 'Table'" (click)="setDisplayMode('Table')" label="Table" size="small" class="hidden sm:inline-block"></p-button>
+                    <p-button
+                        [label]="'Score'"
+                        [icon]="sortField === 'score' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
+                        severity="secondary"
+                        [outlined]="sortField !== 'score'"
+                        (click)="sort('score')"
+                        size="small"
+                    ></p-button>
+                    <p-button
+                        [label]="'Finished'"
+                        [icon]="sortField === 'finishDate' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
+                        severity="secondary"
+                        [outlined]="sortField !== 'finishDate'"
+                        (click)="sort('finishDate')"
+                        size="small"
+                    ></p-button>
+                    <p-button
+                        [label]="'Platform'"
+                        [icon]="sortField === 'platform' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
+                        severity="secondary"
+                        [outlined]="sortField !== 'platform'"
+                        (click)="sort('platform')"
+                        size="small"
+                        class="hidden sm:inline-block"
+                    ></p-button>
+                    <p-button
+                        icon="pi pi-filter-slash"
+                        severity="secondary"
+                        [text]="true"
+                        (click)="resetSorting()"
+                        size="small"
+                        pTooltip="Reset Sorting"
+                        tooltipPosition="bottom"
+                    ></p-button>
                 </div>
-
-                <p-iconfield>
-                    <p-inputicon styleClass="pi pi-search" />
-                    <input type="text" pInputText placeholder="Search..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-28 sm:w-40 md:w-60" />
-                </p-iconfield>
-            </div>
-        </ng-template>
-    </p-toolbar>
             </div>
         </div>
 
-        <div class="pt-36 sm:pt-20" [ngClass]="{ 'px-4': displayMode !== 'Table' }">
+        <div class="flex flex-wrap items-center gap-2 justify-end">
+            <div class="flex items-center gap-1">
+                <p-button icon="pi pi-th-large" [outlined]="displayMode !== 'Cards'" (click)="setDisplayMode('Cards')" label="Cards" size="small"></p-button>
+                <p-button icon="pi pi-clock" [outlined]="displayMode !== 'Timeline'" (click)="setDisplayMode('Timeline')" label="Timeline" size="small" class="hidden sm:inline-block"></p-button>
+                <p-button icon="pi pi-table" [outlined]="displayMode !== 'Table'" (click)="setDisplayMode('Table')" label="Table" size="small" class="hidden sm:inline-block"></p-button>
+            </div>
+
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input type="text" pInputText placeholder="Search..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-28 sm:w-40 md:w-60" />
+            </p-iconfield>
+        </div>
+    </div>
+</ng-template>
+
+<div [ngClass]="{ 'table-view-active': displayMode === 'Table' }">
+    <div class="max-w-none mx-auto">
+        <div class="pt-4" [ngClass]="{ 'px-4': displayMode !== 'Table' }">
             <div class="max-w-none mx-auto">
                 <div *ngIf="(displayMode === 'Timeline' || displayMode === 'Table') && isMobile()" class="block sm:hidden text-center py-8">
                     <p class="text-lg opacity-70">This view is not available on mobile.</p>

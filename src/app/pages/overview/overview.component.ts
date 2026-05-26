@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { CardModule } from 'primeng/card';
@@ -20,6 +20,7 @@ import { TimelineModule } from 'primeng/timeline';
 import { DataDisplayService } from '../../service/data-display.service';
 import { RecordType } from '../../enum/type.enum';
 import { ScrollService } from '../../service/scroll.service';
+import { ToolbarService } from '../../service/toolbar.service';
 
 interface GameRecordGroup {
     year: number | null;
@@ -41,6 +42,7 @@ interface GameRecordGroup {
 })
 export class OverviewComponent implements OnInit, OnDestroy {
     @ViewChild('dt') table!: Table;
+    @ViewChild('toolbarTemplate', { static: true }) toolbarTemplate!: TemplateRef<any>;
 
     private readonly dataService = inject(DataService);
     private readonly route = inject(ActivatedRoute);
@@ -48,6 +50,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private readonly router = inject(Router);
     private readonly loadingService = inject(LoadingService);
     private readonly scrollService = inject(ScrollService);
+    private readonly toolbarService = inject(ToolbarService);
     readonly dataDisplay = inject(DataDisplayService);
 
     groupedGameRecords: GameRecordGroup[] = [];
@@ -86,6 +89,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.toolbarService.setTemplate(this.toolbarTemplate);
         // Initialize expandedRows as an empty object
         this.expandedRows = {};
 
@@ -410,6 +414,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.toolbarService.setTemplate(null);
         if (this.displayMode === 'Table' && this.table) {
             const scrollableElement = this.table.el.nativeElement.querySelector('.p-datatable-viewport');
             if (scrollableElement) {

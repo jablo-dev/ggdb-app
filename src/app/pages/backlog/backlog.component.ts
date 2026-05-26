@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataService } from '../../service/data.service';
@@ -11,6 +11,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
+import { ToolbarService } from '../../service/toolbar.service';
 
 @Component({
     selector: 'app-backlog',
@@ -18,7 +19,9 @@ import { FormsModule } from '@angular/forms';
     imports: [CommonModule, ButtonModule, CardModule, ToolbarModule, IconFieldModule, InputIconModule, InputTextModule, FormsModule],
     templateUrl: './backlog.component.html'
 })
-export class BacklogComponent implements OnInit {
+export class BacklogComponent implements OnInit, OnDestroy {
+    @ViewChild('toolbarTemplate', { static: true }) toolbarTemplate!: TemplateRef<any>;
+
     backlogItems: GameRecord[] = [];
     filteredBacklogItems: GameRecord[] = [];
     searchTerm: string = '';
@@ -26,8 +29,10 @@ export class BacklogComponent implements OnInit {
     private dataService = inject(DataService);
     private dataDisplay = inject(DataDisplayService);
     private router = inject(Router);
+    private toolbarService = inject(ToolbarService);
 
     ngOnInit() {
+        this.toolbarService.setTemplate(this.toolbarTemplate);
         const username = this.dataService.loginService.getUsername();
         if (username) {
             this.dataService.getAllRecords(username).subscribe((records) => {
@@ -56,5 +61,9 @@ export class BacklogComponent implements OnInit {
 
     openAdd() {
         this.router.navigate(['/detail'], { queryParams: { record: 'new', source: 'backlog' } });
+    }
+
+    ngOnDestroy() {
+        this.toolbarService.setTemplate(null);
     }
 }
