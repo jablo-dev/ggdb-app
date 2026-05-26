@@ -2,12 +2,14 @@
 
 .layout-topbar {
     position: fixed;
-    height: 4rem;
+    height: calc(4rem + env(safe-area-inset-top));
     z-index: 997;
     left: 0;
     top: 0;
     width: 100%;
-    padding: 0 2rem;
+    padding-top: env(safe-area-inset-top);
+    padding-left: calc(2rem + env(safe-area-inset-left));
+    padding-right: calc(2rem + env(safe-area-inset-right));
     background-color: var(--surface-card);
     transition: left var(--layout-section-transition-duration);
     display: flex;
@@ -215,7 +217,8 @@
 
 @media (max-width: 991px) {
     .layout-topbar {
-        padding: 0 1rem;
+        padding-left: calc(1rem + env(safe-area-inset-left));
+        padding-right: calc(1rem + env(safe-area-inset-right));
 
         .layout-topbar-logo-container {
             width: auto;
@@ -292,7 +295,8 @@
 
 @media (max-width: 640px) {
     .layout-topbar {
-        padding: 0 0.5rem;
+        padding-left: calc(0.5rem + env(safe-area-inset-left));
+        padding-right: calc(0.5rem + env(safe-area-inset-right));
 
         .layout-topbar-action-mobile {
             min-width: 2.5rem;
