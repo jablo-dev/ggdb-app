@@ -118,6 +118,19 @@ export class DataDisplayService {
             case 'NINTENDO_CONSOLE':
             case 'NINTENDO_CONSOLE2': return 'bi bi-nintendo-switch';
 
+            case 'GAMECUBE':
+            case 'WII':
+            case 'WII_U': return 'bi bi-controller';
+
+            case 'NINTENDO_3DS':
+            case 'NINTENDO_DS':
+            case 'GBA':
+            case 'GAME_BOY': return 'bi bi-device-hdd'; // Placeholder for handhelds if no specific ones
+
+            case 'NES':
+            case 'SNES':
+            case 'N64': return 'bi bi-controller';
+
             case 'EPIC_GAMES':
             case 'EA_PLAY':
             case 'UPLAY':

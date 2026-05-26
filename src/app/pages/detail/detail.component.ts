@@ -32,11 +32,12 @@ import { Toolbar } from 'primeng/toolbar';
 import { ClipboardService } from '../../service/clipboard.service';
 import { IgdbService, IgdbCover } from '../../service/igdb.service';
 import { ToolbarService } from '../../service/toolbar.service';
+import { DataDisplayService } from '../../service/data-display.service';
 
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, Toolbar, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule],
     providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
@@ -46,12 +47,16 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     private source: string | null = null;
     statService: StatService = inject(StatService);
+    dataDisplay: DataDisplayService = inject(DataDisplayService);
     form!: FormGroup;
     formEditable = false;
     isGeneratingCard = false;
     dataService = inject(DataService);
     recordTypes = Object.values(RecordType);
-    locationTypes = Object.values(Locations);
+    locationTypes = Object.keys(Locations).map(key => ({
+        label: Locations[key as keyof typeof Locations],
+        value: key
+    }));
 
     layoutService: LayoutService = inject(LayoutService);
     private toolbarService = inject(ToolbarService);
@@ -137,7 +142,7 @@ export class DetailComponent implements OnInit, OnDestroy {
             name: [record?.name ?? '', Validators.required],
             status: [record?.status ?? ''],
             type: [record?.type ?? '', Validators.required],
-            location: [record?.location ? (Locations[record.location as keyof typeof Locations] || record.location) : '', Validators.required],
+            location: [record?.location ?? '', Validators.required],
             createDate: [record?.createDate ? this.parseStringToDate(record.createDate) : ''],
             finishDate: [record?.finishDate ? this.parseStringToDate(record.finishDate) : '', isBacklog ? [] : [Validators.required]],
             note: [record?.note ?? ''],
@@ -239,7 +244,7 @@ export class DetailComponent implements OnInit, OnDestroy {
             name: raw.name,
             status: raw.status,
             type: raw.type,
-            location: this.getEnumKeyFromValue(Locations, raw.location) || raw.location,
+            location: raw.location,
             createDate: raw.createDate ? this.formatDateToString(raw.createDate) : '',
             finishDate: raw.finishDate ? this.formatDateToString(raw.finishDate) : '',
             note: raw.note,

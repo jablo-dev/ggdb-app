@@ -177,7 +177,20 @@
                                     </div>
                                     <div class="flex flex-col gap-1">
                                         <label for="location" class="text-sm font-medium">Location *</label>
-                                        <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location"></p-select>
+                                        <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location" optionLabel="label" optionValue="value">
+                                            <ng-template pTemplate="selectedItem" let-selectedOption>
+                                                <div class="flex items-center gap-2" *ngIf="selectedOption">
+                                                    <i [class]="dataDisplay.getPlatformIconClass(selectedOption.value)" class="text-primary"></i>
+                                                    <div>{{ selectedOption.label }}</div>
+                                                </div>
+                                            </ng-template>
+                                            <ng-template pTemplate="item" let-location>
+                                                <div class="flex items-center gap-2">
+                                                    <i [class]="dataDisplay.getPlatformIconClass(location.value)" class="text-primary"></i>
+                                                    <div>{{ location.label }}</div>
+                                                </div>
+                                            </ng-template>
+                                        </p-select>
                                     </div>
                                     <div class="flex flex-col gap-1" *ngIf="!form.get('backlogItem')?.value">
                                         <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
