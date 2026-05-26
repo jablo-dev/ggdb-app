@@ -225,14 +225,15 @@
         .layout-topbar-actions {
             flex: 1;
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             margin-left: 0;
         }
 
         .layout-topbar-menu-mobile {
             display: flex;
             flex: 1;
-            justify-content: center;
+            justify-content: flex-end;
+            align-items: center;
         }
 
         .layout-menu-button {

@@ -1,5 +1,12 @@
 [
     {
+        "version": "4.3.1",
+        "date": "2026-05-26",
+        "changes": [
+            "First iteration of global improvements to mobile layout."
+        ]
+    },
+    {
         "version": "4.3.0",
         "date": "2026-05-24",
         "major": true,

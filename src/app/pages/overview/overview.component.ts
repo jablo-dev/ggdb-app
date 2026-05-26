@@ -241,7 +241,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
         for (const record of records) {
             const year = new Date(record.finishDate).getFullYear();
 
-            // Only show year headers if we're sorting by date (descending is default)
             const showHeaders = this.sortField === 'finishDate';
             const insertSplitter = showHeaders && year !== lastYear;
 
@@ -353,9 +352,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
                 return true;
             }
 
-            // If we're not sorting by date, grouping is disabled in groupedGameRecords,
-            // so lastYearInGroup will be null and we show all records.
-            // If sorting by date, we check the collapse state of the most recent header.
             if (this.sortField === 'finishDate' && lastYearInGroup !== null) {
                 return !currentYearCollapsed;
             }
@@ -385,6 +381,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     isYearCollapsed(year: number): boolean {
         return !!this.collapsedYears[year];
+    }
+
+    isMobile(): boolean {
+        return window.innerWidth < 576;
     }
 
     setDisplayMode(mode: 'Cards' | 'Table' | 'Timeline') {
