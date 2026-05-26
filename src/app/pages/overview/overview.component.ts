@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../service/toast.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Toolbar } from 'primeng/toolbar';
 import { InputText } from 'primeng/inputtext';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
@@ -18,7 +17,6 @@ import { LoadingService } from '../../service/loading.service';
 import { Table, TableModule } from 'primeng/table';
 import { TimelineModule } from 'primeng/timeline';
 import { DataDisplayService } from '../../service/data-display.service';
-import { RecordType } from '../../enum/type.enum';
 import { ScrollService } from '../../service/scroll.service';
 import { ToolbarService } from '../../service/toolbar.service';
 
@@ -34,7 +32,7 @@ interface GameRecordGroup {
     standalone: true,
     imports: [
         CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent,
-        FormsModule, Toolbar, InputText, ReactiveFormsModule, IconField, InputIcon,
+        FormsModule, InputText, ReactiveFormsModule, IconField, InputIcon,
         Dialog, Button, TableModule, TimelineModule
     ],
     templateUrl: './overview.component.html',

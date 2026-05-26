@@ -118,6 +118,10 @@
 @media (max-width: 768px) {
     .layout-main-container {
         padding: 6rem 0.5rem 0 0.5rem !important;
+
+        &.has-sub-topbar {
+            padding-top: 10.5rem !important;
+        }
     }
 
     .layout-main {
@@ -129,6 +133,10 @@
 @media (max-width: 480px) {
     .layout-main-container {
         padding: 6rem 0.25rem 0 0.25rem !important;
+
+        &.has-sub-topbar {
+            padding-top: 10.5rem !important;
+        }
     }
 
     .layout-main {
