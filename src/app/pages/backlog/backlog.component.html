@@ -1,5 +1,5 @@
 <div class="px-4">
-    <div class="fixed top-16 left-0 right-0 z-10 bg-[var(--surface-ground)] h-20 flex items-center shadow-sm">
+    <div class="fixed top-[4.5rem] left-0 right-0 z-10 bg-[var(--surface-ground)] h-20 flex items-center shadow-sm">
         <div class="w-full max-w-none mx-auto px-4">
             <p-toolbar styleClass="mx-auto">
                 <ng-template pTemplate="start">
@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div class="pt-24 pb-10">
+    <div class="pt-32 sm:pt-24 pb-10">
         <div *ngIf="filteredBacklogItems.length === 0" class="flex flex-col items-center justify-center p-10 opacity-50">
             <i class="pi pi-inbox text-5xl mb-4"></i>
             <p class="text-xl">{{ searchTerm ? 'No games matching your search.' : 'Your backlog is empty. Time to add some games!' }}</p>

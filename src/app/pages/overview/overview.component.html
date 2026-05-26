@@ -1,6 +1,6 @@
 <div [ngClass]="{ 'table-view-active': displayMode === 'Table' }">
     <div class="max-w-none mx-auto">
-        <div class="fixed top-16 left-0 right-0 z-10 bg-[var(--surface-ground)] min-h-[5rem] py-2 flex items-center shadow-sm box-border overflow-x-hidden">
+        <div class="fixed top-[4.5rem] left-0 right-0 z-10 bg-[var(--surface-ground)] min-h-[5rem] py-2 flex items-center shadow-sm box-border overflow-x-hidden">
             <div class="w-full max-w-none mx-auto px-4 pl-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1rem+env(safe-area-inset-right))]">
                 <p-toolbar styleClass="mx-auto border-none bg-transparent p-0">
         <ng-template pTemplate="start">
@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <div class="pt-32 sm:pt-16" [ngClass]="{ 'px-4': displayMode !== 'Table' }">
+        <div class="pt-36 sm:pt-20" [ngClass]="{ 'px-4': displayMode !== 'Table' }">
             <div class="max-w-none mx-auto">
                 <div *ngIf="(displayMode === 'Timeline' || displayMode === 'Table') && isMobile()" class="block sm:hidden text-center py-8">
                     <p class="text-lg opacity-70">This view is not available on mobile.</p>
