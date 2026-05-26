@@ -75,13 +75,7 @@
                     <div class="platform-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.location as loc">
                         <i
                             class="platform-icon text-base"
-                            [ngClass]="{
-                                'bi bi-steam': loc === 'STEAM',
-                                'bi bi-playstation': loc === 'PLAYSTATION',
-                                'bi bi-xbox': loc === 'XBOX' || loc === 'XBOX_GAME_PASS',
-                                'bi bi-nintendo-switch': loc === 'NINTENDO_CONSOLE' || loc === 'NINTENDO_CONSOLE2',
-                                'bi bi-disc': loc !== 'STEAM' && loc !== 'PLAYSTATION' && loc !== 'XBOX' && loc !== 'NINTENDO_CONSOLE'
-                            }"
+                            [ngClass]="display.getPlatformIconClass(loc)"
                         ></i>
                         <span class="text-base truncate">{{ display.getPlatformLabel(loc) }}</span>
                     </div>
