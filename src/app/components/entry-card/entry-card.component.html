@@ -87,7 +87,7 @@
                     </div>
 
                     <!-- Replay indicator -->
-                    <div class="replay-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.replay === 1">
+                    <div class="replay-section flex items-center gap-2 text-gray-300 min-v-mobile:hidden" *ngIf="gameRecord?.replay === 1">
                         <i class="pi pi-refresh text-base"></i>
                         <span class="text-base truncate">Replay</span>
                     </div>

@@ -8,7 +8,7 @@ import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { DataService } from '../data.service';
-import { Dialog } from 'primeng/dialog';
+import { DialogModule } from 'primeng/dialog';
 import { NgForOf, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { VersionService } from '../version.service';
@@ -16,7 +16,7 @@ import { VersionService } from '../version.service';
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, NgForOf, CommonModule],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, NgForOf, CommonModule, DialogModule],
     templateUrl: './login.html',
     styleUrl: './login.scss'
 })
