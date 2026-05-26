@@ -3,9 +3,6 @@
     <div *ngIf="gameRecord?.cover && !imageError" class="cover-image-container flex-shrink-0 relative">
         <img [src]="gameRecord?.cover" class="h-full w-full object-cover" [alt]="gameRecord?.name" (error)="imageError = true">
         <div class="cover-overlay absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
-
-        <!-- Playtime Badge Overlay -->
-        <!-- Playtime Badge Overlay REMOVED from image as it is now next to score -->
     </div>
 
     <div class="card-content-wrapper relative flex-grow overflow-hidden flex flex-col">
@@ -45,39 +42,31 @@
         >
             <span>{{ gameRecord?.name }}</span>
         </div>
-
-        <!-- Type badges below title REMOVED as requested to move to bottom next to playtime -->
-
-        <div class="card-content h-full p-4 relative flex-grow">
-            <!-- Title section removed as it's now in the badge -->
-
-            <div class="info-grid-section mb-1 grid grid-cols-2 gap-4">
+        <div class="card-content h-full p-4 relative flex-grow overflow-hidden flex flex-col justify-between">
+            <div class="info-grid-section mb-1 grid grid-cols-2 gap-4 min-v-mobile:grid-cols-1 min-v-mobile:gap-1">
                 <div class="left-column flex flex-col gap-1">
                     <div class="date-section flex items-center gap-2 text-gray-300">
                         <i class="pi pi-calendar text-base"></i>
-                        <span class="text-base">{{ gameRecord?.finishDate | date: 'MMMM yyyy' }}</span>
+                        <span class="text-base truncate">{{ gameRecord?.finishDate | date: 'MMM yyyy' }}</span>
                     </div>
 
                     <!-- Story completion status -->
                     <div class="completion-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.mainQuestDone === 1 && gameRecord?.canceled !== 1">
                         <i class="pi pi-book text-primary"></i>
-                        <span class="text-base">Story completed</span>
+                        <span class="text-base truncate">Story completed</span>
                     </div>
 
                     <!-- Canceled status -->
                     <div class="completion-section flex items-center gap-2 text-red-400" *ngIf="gameRecord?.canceled === 1">
                         <i class="pi pi-times-circle text-red-500"></i>
-                        <span class="text-base font-semibold">Canceled</span>
+                        <span class="text-base font-semibold truncate">Canceled</span>
                     </div>
 
                     <!-- Backlog status -->
                     <div class="completion-section flex items-center gap-2 text-orange-400" *ngIf="gameRecord?.backlogItem === 1">
                         <i class="pi pi-bookmark text-orange-500"></i>
-                        <span class="text-base font-semibold">Backlog</span>
+                        <span class="text-base font-semibold truncate">Backlog</span>
                     </div>
-
-                    <!-- Playtime (fallback when no cover) -->
-                    <!-- Playtime (fallback when no cover) REMOVED as it is now always next to score -->
                 </div>
 
                 <!-- Right column -->
@@ -94,22 +83,22 @@
                                 'bi bi-disc': loc !== 'STEAM' && loc !== 'PLAYSTATION' && loc !== 'XBOX' && loc !== 'NINTENDO_CONSOLE'
                             }"
                         ></i>
-                        <span class="text-base">{{ display.getPlatformLabel(loc) }}</span>
+                        <span class="text-base truncate">{{ display.getPlatformLabel(loc) }}</span>
                     </div>
 
                     <!-- Replay indicator -->
-                    <div class="replay-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.replay === 1">
+                    <div class="replay-section flex items-center gap-2 text-gray-300 min-v-mobile:hidden" *ngIf="gameRecord?.replay === 1">
                         <i class="pi pi-refresh text-base"></i>
-                        <span class="text-base">Replay</span>
+                        <span class="text-base truncate">Replay</span>
                     </div>
                 </div>
             </div>
 
             <!-- Note section -->
-            <div class="note-section text-gray-300" *ngIf="gameRecord?.note && gameRecord?.note !== 'nan'">
-                <div class="flex items-start gap-2">
+            <div class="note-section text-gray-300 overflow-hidden" *ngIf="gameRecord?.note && gameRecord?.note !== 'nan'">
+                <div class="flex items-start gap-2 h-full">
                     <i class="pi pi-file-edit text-base mt-1 flex-shrink-0"></i>
-                    <p class="text-base leading-relaxed line-clamp-3">
+                    <p class="text-base leading-relaxed line-clamp-3 md:line-clamp-3 sm:line-clamp-2 min-v-mobile:line-clamp-1">
                         {{ gameRecord?.note }}
                     </p>
                 </div>

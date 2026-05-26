@@ -2,16 +2,20 @@
 
 .layout-topbar {
     position: fixed;
-    height: 4rem;
+    height: calc(4rem + env(safe-area-inset-top));
     z-index: 997;
     left: 0;
     top: 0;
     width: 100%;
-    padding: 0 2rem;
+    padding-top: env(safe-area-inset-top);
+    padding-left: calc(2rem + env(safe-area-inset-left));
+    padding-right: calc(2rem + env(safe-area-inset-right));
     background-color: var(--surface-card);
     transition: left var(--layout-section-transition-duration);
     display: flex;
     align-items: center;
+    box-sizing: border-box;
+    overflow-x: hidden;
 
     .layout-topbar-logo-container {
         width: 20rem;
@@ -213,9 +217,50 @@
     }
 }
 
+.layout-sub-topbar {
+    position: fixed;
+    top: calc(4rem + env(safe-area-inset-top));
+    left: 0;
+    width: 100%;
+    z-index: 996;
+    background-color: var(--surface-card);
+    border-top: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--surface-border);
+    min-height: 4.5rem;
+    display: flex;
+    align-items: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    .layout-sub-topbar-content {
+        width: 100%;
+        padding-left: calc(2rem + env(safe-area-inset-left));
+        padding-right: calc(2rem + env(safe-area-inset-right));
+    }
+}
+
+@media (max-width: 991px) {
+    .layout-sub-topbar {
+        .layout-sub-topbar-content {
+            padding-left: calc(1rem + env(safe-area-inset-left));
+            padding-right: calc(1rem + env(safe-area-inset-right));
+        }
+    }
+}
+
+@media (max-width: 640px) {
+    .layout-sub-topbar {
+        .layout-sub-topbar-content {
+            padding-left: calc(0.5rem + env(safe-area-inset-left));
+            padding-right: calc(0.5rem + env(safe-area-inset-right));
+        }
+    }
+}
+
 @media (max-width: 991px) {
     .layout-topbar {
-        padding: 0 1rem;
+        padding-left: calc(1rem + env(safe-area-inset-left));
+        padding-right: calc(1rem + env(safe-area-inset-right));
 
         .layout-topbar-logo-container {
             width: auto;
@@ -225,14 +270,15 @@
         .layout-topbar-actions {
             flex: 1;
             display: flex;
-            justify-content: center;
+            justify-content: flex-end;
             margin-left: 0;
         }
 
         .layout-topbar-menu-mobile {
             display: flex;
             flex: 1;
-            justify-content: center;
+            justify-content: flex-end;
+            align-items: center;
         }
 
         .layout-menu-button {
@@ -291,7 +337,8 @@
 
 @media (max-width: 640px) {
     .layout-topbar {
-        padding: 0 0.5rem;
+        padding-left: calc(0.5rem + env(safe-area-inset-left));
+        padding-right: calc(0.5rem + env(safe-area-inset-right));
 
         .layout-topbar-action-mobile {
             min-width: 2.5rem;

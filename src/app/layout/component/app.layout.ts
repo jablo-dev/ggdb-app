@@ -6,6 +6,7 @@ import { AppTopbar } from './app.topbar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ToolbarService } from '../../service/toolbar.service';
 
 @Component({
     selector: 'app-layout',
@@ -15,7 +16,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
         <div class="layout-wrapper" [ngClass]="containerClass">
             <app-topbar></app-topbar>
             <p-confirmDialog></p-confirmDialog>
-            <div class="layout-main-container">
+            <div class="layout-main-container" [ngClass]="{ 'has-sub-topbar': toolbarService.hasToolbar$ | async }">
                 <div class="layout-main">
                     <router-outlet></router-outlet>
                 </div>
@@ -34,7 +35,8 @@ export class AppLayout {
     constructor(
         public layoutService: LayoutService,
         public renderer: Renderer2,
-        public router: Router
+        public router: Router,
+        public toolbarService: ToolbarService
     ) {
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {

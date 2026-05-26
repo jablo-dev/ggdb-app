@@ -225,29 +225,73 @@
         }
 
         .card-content {
-            padding: 0.75rem;
+            padding: 0.75rem !important;
+            padding-top: 2.8rem !important;
         }
 
         .score-badge {
-            top: 0.5rem;
-            right: 0.5rem;
-            font-size: 0.875rem;
-            padding: 0.3rem 0.5rem;
-            min-width: 35px;
+            top: 0;
+            right: 0;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.4rem;
+            min-width: 30px;
+            border-bottom-left-radius: 0.5rem; // Slightly smaller radius on mobile
         }
 
-        .game-title {
-            font-size: 0.875rem;
+        .title-badge {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.4rem;
+            max-width: 65%;
+            border-bottom-right-radius: 0.5rem; // Slightly smaller radius on mobile
 
-            .platform-icon {
-                font-size: 0.75rem;
+            &.long-title {
+                font-size: 0.7rem;
             }
         }
 
         .date-section,
         .completion-section,
+        .note-section,
+        .platform-section,
+        .replay-section {
+            font-size: 0.7rem;
+        }
+
+        .info-grid-section {
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+    }
+
+    @media (max-width: 450px) {
+        height: 120px;
+
+        .cover-image-container {
+            width: 90px;
+        }
+
+        .card-content {
+            padding: 0.5rem !important;
+            padding-top: 2.3rem !important;
+        }
+
+        .title-badge {
+            max-width: 60%;
+        }
+
+        .info-grid-section {
+            display: flex; // Show info grid on very small screens as requested
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-bottom: 0.25rem;
+
+            .right-column {
+                display: flex;
+            }
+        }
+
         .note-section {
-            font-size: 0.75rem;
+            display: none; // Hide note on very small screens to give space to location/finishDate
         }
     }
 }

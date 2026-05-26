@@ -7,6 +7,7 @@ export default {
     plugins: [PrimeUI],
     theme: {
         screens: {
+            'min-v-mobile': { max: '450px' },
             sm: '576px',
             md: '768px',
             lg: '992px',

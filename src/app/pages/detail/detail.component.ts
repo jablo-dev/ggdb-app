@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -31,6 +31,7 @@ import { StatService } from '../../service/stat.service';
 import { Toolbar } from 'primeng/toolbar';
 import { ClipboardService } from '../../service/clipboard.service';
 import { IgdbService, IgdbCover } from '../../service/igdb.service';
+import { ToolbarService } from '../../service/toolbar.service';
 
 @Component({
     selector: 'app-detail',
@@ -40,7 +41,9 @@ import { IgdbService, IgdbCover } from '../../service/igdb.service';
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
 })
-export class DetailComponent implements OnInit {
+export class DetailComponent implements OnInit, OnDestroy {
+    @ViewChild('toolbarTemplate', { static: true }) toolbarTemplate!: TemplateRef<any>;
+
     private source: string | null = null;
     statService: StatService = inject(StatService);
     form!: FormGroup;
@@ -51,6 +54,7 @@ export class DetailComponent implements OnInit {
     locationTypes = Object.values(Locations);
 
     layoutService: LayoutService = inject(LayoutService);
+    private toolbarService = inject(ToolbarService);
 
     scoreFields: string[] = ['scoreGameplay', 'scorePresentation', 'scoreNarrative', 'scoreQuality', 'scoreSound', 'scoreContent', 'scorePacing', 'scoreBalance', 'scoreUIUX', 'scoreImpression'];
 
@@ -99,6 +103,7 @@ export class DetailComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.toolbarService.setTemplate(this.toolbarTemplate);
         this.route.queryParams.subscribe((params) => {
             const recordParam = params['record'];
             this.source = params['source'] || null;
@@ -419,5 +424,9 @@ export class DetailComponent implements OnInit {
         } finally {
             this.isGeneratingCard = false;
         }
+    }
+
+    ngOnDestroy(): void {
+        this.toolbarService.setTemplate(null);
     }
 }
