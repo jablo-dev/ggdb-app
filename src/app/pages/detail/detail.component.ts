@@ -30,14 +30,15 @@ import { ConfirmationService } from 'primeng/api';
 import { StatService } from '../../service/stat.service';
 import { Toolbar } from 'primeng/toolbar';
 import { ClipboardService } from '../../service/clipboard.service';
-import { IgdbService, IgdbCover } from '../../service/igdb.service';
+import { IgdbService, IgdbCover, IgdbGame } from '../../service/igdb.service';
+import { AutoComplete } from 'primeng/autocomplete';
 import { ToolbarService } from '../../service/toolbar.service';
 import { DataDisplayService } from '../../service/data-display.service';
 
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule, AutoComplete],
     providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
@@ -67,6 +68,8 @@ export class DetailComponent implements OnInit, OnDestroy {
     coverSearchLoading = false;
     coverResults: IgdbCover[] = [];
     selectedCoverUrl: string | null = null;
+
+    gameSuggestions: IgdbGame[] = [];
 
     playtimeDialogVisible = false;
     customHoursToAdd = 1;
@@ -445,5 +448,15 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.toolbarService.setTemplate(null);
+    }
+
+    searchGames(event: any): void {
+        const query = event.query;
+        const username = this.dataService.getUsername();
+        if (query && username) {
+            this.igdbService.suggestGames(query, username).subscribe(games => {
+                this.gameSuggestions = games;
+            });
+        }
     }
 }
