@@ -4,6 +4,7 @@
         "date": "2026-05-29",
         "changes": [
             "Improved session handling to avoid unnecessary logouts.",
+            "Added more colors for theme picker and reworked it's layout.",
             "Fixed a few minor styling issues."
         ]
     },

@@ -219,34 +219,116 @@ export class LayoutService {
             name: 'ocean',
             palette: {
                 0: '#ffffff',
-                50: '#fbfcfd',
-                100: '#f1f5f9',
-                200: '#e2e8f0',
-                300: '#cbd5e1',
-                400: '#94a3b8',
-                500: '#64748b',
-                600: '#475569',
-                700: '#334155',
-                800: '#1e293b',
-                900: '#0f172a',
-                950: '#020617'
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                200: '#bae6fd',
+                300: '#7dd3fc',
+                400: '#38bdf8',
+                500: '#0ea5e9',
+                600: '#0284c7',
+                700: '#0369a1',
+                800: '#075985',
+                900: '#0c4a6e',
+                950: '#082f49'
             }
         }
     ];
+
+    primaryColors = computed(() => {
+        const config = this.layoutConfig();
+        const preset = config.preset as KeyOfType<typeof presets>;
+        const presetPalette = presets[preset].primitive;
+        const colors = [
+            'red',
+            'orange',
+            'amber',
+            'gold',
+            'yellow',
+            'lime',
+            'green',
+            'emerald',
+            'teal',
+            'cyan',
+            'sky',
+            'blue',
+            'indigo',
+            'violet',
+            'purple',
+            'fuchsia',
+            'pink',
+            'rose',
+            'ash',
+            'slate',
+            'gray',
+            'zinc',
+            'neutral',
+            'stone'
+        ];
+        const palettes: any[] = [];
+
+        const customPalettes: any = {
+            ash: {
+                50: '#f9fafb',
+                100: '#f3f4f6',
+                200: '#e5e7eb',
+                300: '#d1d5db',
+                400: '#9ca3af',
+                500: '#6b7280',
+                600: '#4b5563',
+                700: '#374151',
+                800: '#1f2937',
+                900: '#111827',
+                950: '#030712'
+            },
+            gold: {
+                50: '#fdfbeb',
+                100: '#fcf6cd',
+                200: '#f8ea9a',
+                300: '#f4da67',
+                400: '#f1cc34',
+                500: '#eab308',
+                600: '#ca8a04',
+                700: '#a16207',
+                800: '#854d0e',
+                900: '#713f12',
+                950: '#422006'
+            }
+        };
+
+        const uniqueColors = Array.from(new Set(colors));
+
+        uniqueColors.forEach((color) => {
+            if (customPalettes[color]) {
+                palettes.push({
+                    name: color,
+                    palette: customPalettes[color]
+                });
+                return;
+            }
+            const palette = presetPalette?.[color as KeyOfType<typeof presetPalette>];
+            if (palette) {
+                palettes.push({
+                    name: color,
+                    palette: palette
+                });
+            }
+        });
+
+        return palettes;
+    });
 
     constructor() {
         if (isPlatformBrowser(this.platformId)) {
             const savedPrimary = localStorage.getItem('primaryColor');
             const savedSurface = localStorage.getItem('surfaceColor');
             const savedPreset = localStorage.getItem('themePreset');
-            const savedDarkTheme = localStorage.getItem('darkTheme');
 
             this._config = {
                 ...this._config,
                 primary: savedPrimary || this._config.primary,
                 surface: savedSurface || this._config.surface,
                 preset: savedPreset || this._config.preset,
-                darkTheme: savedDarkTheme ? savedDarkTheme === 'true' : this._config.darkTheme
+                darkTheme: true
             };
             this.layoutConfig.set(this._config);
 
@@ -262,58 +344,18 @@ export class LayoutService {
                     if (config.primary) localStorage.setItem('primaryColor', config.primary);
                     if (config.surface) localStorage.setItem('surfaceColor', config.surface);
                     if (config.preset) localStorage.setItem('themePreset', config.preset);
-                    if (config.darkTheme !== undefined) {
-                        localStorage.setItem('darkTheme', config.darkTheme.toString());
-                    }
+                    localStorage.setItem('darkTheme', 'true');
 
                     // Re-apply theme when config changes
                     this.applyFullTheme();
                 }
             }
         });
-
-        effect(() => {
-            const config = this.layoutConfig();
-
-            if (!this.initialized || !config) {
-                this.initialized = true;
-                return;
-            }
-
-            this.handleDarkModeTransition(config);
-        });
     }
 
-    private handleDarkModeTransition(config: layoutConfig): void {
-        if ((document as any).startViewTransition) {
-            this.startViewTransition(config);
-        } else {
-            this.toggleDarkMode(config);
-            this.onTransitionEnd();
-        }
-    }
-
-    private startViewTransition(config: layoutConfig): void {
-        const transition = (document as any).startViewTransition(() => {
-            this.toggleDarkMode(config);
-        });
-
-        transition.ready
-            .then(() => {
-                this.onTransitionEnd();
-            })
-            .catch(() => {});
-    }
-
-    toggleDarkMode(config?: layoutConfig): void {
-        const _config = config || this.layoutConfig();
-        if (_config.darkTheme) {
-            document.documentElement.classList.add('app-dark');
-            document.body.classList.add('app-dark');
-        } else {
-            document.documentElement.classList.remove('app-dark');
-            document.body.classList.remove('app-dark');
-        }
+    toggleDarkMode(): void {
+        document.documentElement.classList.add('app-dark');
+        document.body.classList.add('app-dark');
     }
 
     private onTransitionEnd() {
@@ -371,7 +413,7 @@ export class LayoutService {
             .use({ useDefaultOptions: true });
 
         // Apply Dark Mode
-        this.toggleDarkMode(config);
+        this.toggleDarkMode();
     }
 
     getPresetExt() {
@@ -380,54 +422,73 @@ export class LayoutService {
         const presetPalette = presets[preset].primitive;
         const colorName = config.primary;
 
-        const color: any = colorName === 'noir' ? { name: 'noir', palette: {} } : {
-            name: colorName,
-            palette: presetPalette?.[colorName as KeyOfType<typeof presetPalette>]
+        const customPalettes: any = {
+            ash: {
+                50: '#f9fafb',
+                100: '#f3f4f6',
+                200: '#e5e7eb',
+                300: '#d1d5db',
+                400: '#9ca3af',
+                500: '#6b7280',
+                600: '#4b5563',
+                700: '#374151',
+                800: '#1f2937',
+                900: '#111827',
+                950: '#030712'
+            },
+            gold: {
+                50: '#fdfbeb',
+                100: '#fcf6cd',
+                200: '#f8ea9a',
+                300: '#f4da67',
+                400: '#f1cc34',
+                500: '#eab308',
+                600: '#ca8a04',
+                700: '#a16207',
+                800: '#854d0e',
+                900: '#713f12',
+                950: '#422006'
+            }
         };
 
-        if (color.name === 'noir') {
+        const color: any = {
+            name: colorName,
+            palette: customPalettes[colorName as string] || presetPalette?.[colorName as KeyOfType<typeof presetPalette>]
+        };
+
+        const shadowStyles = {
+            colorScheme: {
+                dark: {
+                    content: {
+                        shadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        border: '1px solid {surface.700}'
+                    },
+                    inputtext: {
+                        border: '1px solid {surface.700}'
+                    }
+                }
+            }
+        };
+
+        if (preset === 'Nora') {
             return {
                 semantic: {
-                    primary: {
-                        50: '{surface.50}',
-                        100: '{surface.100}',
-                        200: '{surface.200}',
-                        300: '{surface.300}',
-                        400: '{surface.400}',
-                        500: '{surface.500}',
-                        600: '{surface.600}',
-                        700: '{surface.700}',
-                        800: '{surface.800}',
-                        900: '{surface.900}',
-                        950: '{surface.950}'
-                    },
+                    primary: color.palette,
+                    ...shadowStyles,
                     colorScheme: {
-                        light: {
-                            primary: {
-                                color: '{primary.950}',
-                                contrastColor: '#ffffff',
-                                hoverColor: '{primary.900}',
-                                activeColor: '{primary.800}'
-                            },
-                            highlight: {
-                                background: '{primary.950}',
-                                focusBackground: '{primary.700}',
-                                color: '#ffffff',
-                                focusColor: '#ffffff'
-                            }
-                        },
                         dark: {
+                            ...shadowStyles.colorScheme.dark,
                             primary: {
-                                color: '{primary.50}',
-                                contrastColor: '{primary.950}',
-                                hoverColor: '{primary.100}',
-                                activeColor: '{primary.200}'
+                                color: '{primary.500}',
+                                contrastColor: '{surface.900}',
+                                hoverColor: '{primary.400}',
+                                activeColor: '{primary.300}'
                             },
                             highlight: {
-                                background: '{primary.50}',
-                                focusBackground: '{primary.300}',
-                                color: '{primary.950}',
-                                focusColor: '{primary.950}'
+                                background: '{primary.500}',
+                                focusBackground: '{primary.400}',
+                                color: '{surface.900}',
+                                focusColor: '{surface.900}'
                             }
                         }
                     }
@@ -437,22 +498,10 @@ export class LayoutService {
             return {
                 semantic: {
                     primary: color.palette,
+                    ...shadowStyles,
                     colorScheme: {
-                        light: {
-                            primary: {
-                                color: '{primary.500}',
-                                contrastColor: '#ffffff',
-                                hoverColor: '{primary.600}',
-                                activeColor: '{primary.700}'
-                            },
-                            highlight: {
-                                background: '{primary.50}',
-                                focusBackground: '{primary.100}',
-                                color: '{primary.700}',
-                                focusColor: '{primary.800}'
-                            }
-                        },
                         dark: {
+                            ...shadowStyles.colorScheme.dark,
                             primary: {
                                 color: '{primary.400}',
                                 contrastColor: '{surface.900}',
