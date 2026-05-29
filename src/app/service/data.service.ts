@@ -19,6 +19,7 @@ export class DataService {
     private records: GameRecord[] = [];
     private sessionId: string | null = null;
     private username: string | null = null;
+    private isAdmin: boolean = false;
     private recordsLoaded = false;
 
     constructor(
@@ -51,6 +52,7 @@ export class DataService {
                 if (success) {
                     const username = requestBody.username;
                     this.loginService.setUsername(username);
+                    this.isAdmin = !!response.user?.isAdmin;
 
                     // Load user settings into layout service
                     if (response.user && response.user.playtimeEnabled !== undefined) {
@@ -85,11 +87,20 @@ export class DataService {
         return this.username ?? '';
     }
 
+    getIsAdmin(): boolean {
+        return this.isAdmin;
+    }
+
     getCurrentUser(username: string): Observable<any> {
         const url = `${this.apiUrl}?action=current-user&username=${username.toLowerCase()}`;
         return this.http.get<any>(url, {
             withCredentials: true
         }).pipe(
+            tap(response => {
+                if (response.success && response.user) {
+                    this.isAdmin = !!response.user.isAdmin;
+                }
+            }),
             catchError(error => {
                 console.error('Failed to get current user:', error);
                 return of({ success: false });
@@ -225,6 +236,19 @@ export class DataService {
             catchError(error => {
                 this.toast.error('Update failed', 'Something went wrong while updating settings.');
                 return of({ success: false });
+            })
+        );
+    }
+
+    getAdminLogs(username: string): Observable<any[]> {
+        const url = `${this.apiUrl}?action=admin-logs&username=${username.toLowerCase()}`;
+        return this.http.get<any[]>(url, {
+            withCredentials: true
+        }).pipe(
+            catchError(error => {
+                console.error('Failed to get admin logs:', error);
+                this.toast.error('Access Denied', 'You do not have permission to view admin logs.');
+                return of([]);
             })
         );
     }

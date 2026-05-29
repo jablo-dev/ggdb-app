@@ -27,7 +27,7 @@ export class AppTopbar {
 
     constructor(
         public layoutService: LayoutService,
-        private dataService: DataService,
+        public dataService: DataService,
         private loginService: LoginService,
         private router: Router,
         private loadingService: LoadingService,
@@ -120,6 +120,14 @@ export class AppTopbar {
             this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
         }
         this.router.navigate(['/profile']);
+    }
+
+    openAdmin(): void {
+        const scrollContainer = document.querySelector('.layout-main');
+        if (scrollContainer && this.router.url === '/overview') {
+            this.scrollService.setScrollPosition('overview', scrollContainer.scrollTop);
+        }
+        this.router.navigate(['/admin']);
     }
 
     logout(): void {

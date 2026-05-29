@@ -1,0 +1,50 @@
+<div class="card">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold m-0">Control Logs</h2>
+        <button pButton icon="pi pi-refresh" (click)="loadLogs()" label="Refresh" class="p-button-outlined"></button>
+    </div>
+
+    <p-table [value]="logs" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+             [rowsPerPageOptions]="[10, 25, 50]" [responsiveLayout]="'scroll'"
+             sortField="timestamp" [sortOrder]="-1">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="timestamp" style="width: 20%">Timestamp <p-sortIcon field="timestamp"></p-sortIcon></th>
+                <th pSortableColumn="user" style="width: 15%">User <p-sortIcon field="user"></p-sortIcon></th>
+                <th pSortableColumn="action" style="width: 15%">Action <p-sortIcon field="action"></p-sortIcon></th>
+                <th style="width: 50%">Event</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-log>
+            <tr>
+                <td>{{ log.timestamp }}</td>
+                <td>{{ log.user }}</td>
+                <td>
+                    <p-tag [value]="log.action" [severity]="getSeverity(log.action)"></p-tag>
+                </td>
+                <td>
+                    <div [innerHTML]="formatLogMessage(log)"></div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="4">No logs found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<div *ngIf="selectedDetails" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" (click)="selectedDetails = null">
+    <div class="bg-surface-0 dark:bg-surface-900 p-6 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-auto shadow-xl" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">Action Details</h3>
+            <div class="flex gap-2">
+                <button pButton icon="pi pi-copy" (click)="copyToClipboard(selectedDetails)" tooltipPosition="bottom" pTooltip="Copy JSON" class="p-button-rounded p-button-text"></button>
+                <button pButton icon="pi pi-times" (click)="selectedDetails = null" class="p-button-rounded p-button-text"></button>
+            </div>
+        </div>
+        <pre class="bg-surface-100 dark:bg-surface-800 p-4 rounded text-sm overflow-x-auto whitespace-pre-wrap break-all">{{ selectedDetails | json }}</pre>
+    </div>
+</div>

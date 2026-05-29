@@ -68,6 +68,10 @@
                     <i class="pi pi-user"></i>
                     <span>Profile</span>
                 </button>
+                <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action" (click)="openAdmin()" [class.active]="isActive('/admin')">
+                    <i class="pi pi-cog"></i>
+                    <span>Control</span>
+                </button>
                 <button type="button" class="layout-topbar-action" (click)="logout()">
                     <i class="pi pi-power-off"></i>
                     <span>Logout</span>
@@ -97,6 +101,10 @@
                 <button type="button" class="layout-topbar-action-mobile" (click)="openProfile()" [class.active]="isActive('/profile')">
                     <i class="pi pi-user"></i>
                     <span class="hidden sm:inline">Profile</span>
+                </button>
+                <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action-mobile" (click)="openAdmin()" [class.active]="isActive('/admin')">
+                    <i class="pi pi-cog"></i>
+                    <span class="hidden sm:inline">Control</span>
                 </button>
                 <button type="button" class="layout-topbar-action-mobile" (click)="logout()">
                     <i class="pi pi-power-off"></i>
