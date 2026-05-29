@@ -126,6 +126,19 @@
                 label="Game finished!"
                 (click) = "finishGame()"
             ></button>
+
+            <!-- Cancel Game -->
+            <button
+                *ngIf="form.get('id')?.value && form.get('backlogItem')?.value"
+                pButton
+                type="button"
+                icon="pi pi-times-circle"
+                class="p-button-danger"
+                pTooltip="Cancel this game and move from backlog"
+                tooltipPosition="top"
+                label="Cancel game"
+                (click) = "cancelGame()"
+            ></button>
         </div>
 
         <!-- Right: Final score preview -->
@@ -168,15 +181,26 @@
                             <div class="flex-grow flex flex-col gap-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     <div class="flex flex-col gap-1">
-                                        <label for="name" class="text-sm font-medium">Name *</label>
-                                        <input id="name" pInputText formControlName="name" />
+                                        <label for="name" class="text-sm font-medium flex items-center gap-1">Name <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
+                                        <p-autoComplete
+                                            id="name"
+                                            formControlName="name"
+                                            [suggestions]="gameSuggestions"
+                                            (completeMethod)="searchGames($event)"
+                                            field="name"
+                                            [optionValue]="'name'"
+                                            [fluid]="true"
+                                            appendTo="body"
+                                            [delay]="300"
+                                            [minLength]="2"
+                                        ></p-autoComplete>
                                     </div>
                                     <div class="flex flex-col gap-1">
-                                        <label for="type" class="text-sm font-medium">Type *</label>
+                                        <label for="type" class="text-sm font-medium flex items-center gap-1">Type <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
                                         <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
                                     </div>
                                     <div class="flex flex-col gap-1">
-                                        <label for="location" class="text-sm font-medium">Location *</label>
+                                        <label for="location" class="text-sm font-medium flex items-center gap-1">Location <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
                                         <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location" optionLabel="label" optionValue="value">
                                             <ng-template pTemplate="selectedItem" let-selectedOption>
                                                 <div class="flex items-center gap-2" *ngIf="selectedOption">
@@ -193,7 +217,7 @@
                                         </p-select>
                                     </div>
                                     <div class="flex flex-col gap-1" *ngIf="!form.get('backlogItem')?.value">
-                                        <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
+                                        <label for="finishDate" class="text-sm font-medium flex items-center gap-1">Finish Date <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
                                         <p-datepicker id="finishDate" formControlName="finishDate" showIcon class="w-full" [fluid]="true" dateFormat="dd/mm/yy"></p-datepicker>
                                     </div>
                                     <div class="flex flex-col gap-1 md:col-span-2">
@@ -204,7 +228,7 @@
 
                                 <div class="flex items-center flex-wrap gap-4 mt-2">
                                     <div class="flex flex-col gap-1 w-full max-w-[200px]" *ngIf="!form.get('backlogItem')?.value">
-                                        <label for="replayValue" class="text-sm font-medium">Replay Value *</label>
+                                        <label for="replayValue" class="text-sm font-medium flex items-center gap-1">Replay Value <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
                                         <p-select
                                             id="replayValue"
                                             formControlName="replayValue"
@@ -227,6 +251,10 @@
                                         <div class="flex items-center gap-2">
                                             <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
                                             <label class="text-sm">Replay</label>
+                                        </div>
+                                        <div class="flex items-center gap-2" *ngIf="!form.get('backlogItem')?.value">
+                                            <p-toggleSwitch formControlName="canceled"></p-toggleSwitch>
+                                            <label class="text-sm">Canceled</label>
                                         </div>
                                     </div>
                                 </div>

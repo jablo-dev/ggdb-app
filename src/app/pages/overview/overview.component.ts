@@ -16,6 +16,8 @@ import { Button } from 'primeng/button';
 import { LoadingService } from '../../service/loading.service';
 import { Table, TableModule } from 'primeng/table';
 import { TimelineModule } from 'primeng/timeline';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { SelectModule } from 'primeng/select';
 import { DataDisplayService } from '../../service/data-display.service';
 import { ScrollService } from '../../service/scroll.service';
 import { ToolbarService } from '../../service/toolbar.service';
@@ -33,7 +35,7 @@ interface GameRecordGroup {
     imports: [
         CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent,
         FormsModule, InputText, ReactiveFormsModule, IconField, InputIcon,
-        Dialog, Button, TableModule, TimelineModule
+        Dialog, Button, TableModule, TimelineModule, MultiSelectModule, SelectModule
     ],
     templateUrl: './overview.component.html',
     styleUrl: './overview.component.scss'
@@ -58,7 +60,24 @@ export class OverviewComponent implements OnInit, OnDestroy {
     showLegend = false;
     displayMode: 'Cards' | 'Table' | 'Timeline' = 'Cards';
     expandedRows: { [id: number]: boolean } = {};
-    showFavoritesOnly = false;
+
+    filterOptions = [
+        { label: 'Default', value: 'all', icon: 'pi pi-th-large' },
+        { label: 'Favorites', value: 'fav', icon: 'pi pi-star-fill' },
+        { label: 'Canceled', value: 'canceled', icon: 'pi pi-times-circle' }
+    ];
+    selectedFilters: string[] = ['all', 'fav', 'canceled'];
+
+    sortOptions = [
+        { label: 'Finished (Newest)', value: 'finishDate-desc', icon: 'pi pi-calendar', field: 'finishDate', order: -1 },
+        { label: 'Finished (Oldest)', value: 'finishDate-asc', icon: 'pi pi-calendar', field: 'finishDate', order: 1 },
+        { label: 'Score (High)', value: 'score-desc', icon: 'pi pi-sort-amount-down', field: 'score', order: -1 },
+        { label: 'Score (Low)', value: 'score-asc', icon: 'pi pi-sort-amount-up', field: 'score', order: 1 },
+        { label: 'Platform (A-Z)', value: 'platform-asc', icon: 'pi pi-sort-alpha-down', field: 'platform', order: 1 },
+        { label: 'Platform (Z-A)', value: 'platform-desc', icon: 'pi pi-sort-alpha-up', field: 'platform', order: -1 }
+    ];
+    selectedSort: string = 'finishDate-desc';
+
     timelineRecords: any[] = [];
     allTimelineRecords: any[] = [];
     collapsedYears: { [year: number]: boolean } = {};
@@ -66,6 +85,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
     sortOrder: number = -1;
 
     resetSorting(): void {
+        this.selectedSort = 'finishDate-desc';
+        localStorage.setItem('ggdb_selected_sort', this.selectedSort);
         this.sortField = 'finishDate';
         this.sortOrder = -1;
         this.filterRecords();
@@ -86,7 +107,45 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.filterRecords();
     }
 
+    get selectedFiltersLabel(): string {
+        if (!this.selectedFilters || this.selectedFilters.length === 0) {
+            return 'Filter';
+        }
+
+        // Use the order from filterOptions to find the first selected one
+        const firstSelectedOption = this.filterOptions.find(option =>
+            this.selectedFilters.includes(option.value)
+        );
+
+        const label = firstSelectedOption ? firstSelectedOption.label : 'Filter';
+
+        if (this.selectedFilters.length > 1) {
+            return `${label} (+${this.selectedFilters.length - 1})`;
+        }
+
+        return label;
+    }
+
     ngOnInit(): void {
+        const savedFilters = localStorage.getItem('ggdb_selected_filters');
+        if (savedFilters) {
+            try {
+                this.selectedFilters = JSON.parse(savedFilters);
+            } catch (e) {
+                console.error('Error parsing saved filters', e);
+            }
+        }
+
+        const savedSort = localStorage.getItem('ggdb_selected_sort');
+        if (savedSort) {
+            this.selectedSort = savedSort;
+            const option = this.sortOptions.find(o => o.value === this.selectedSort);
+            if (option) {
+                this.sortField = option.field;
+                this.sortOrder = option.order;
+            }
+        }
+
         this.toolbarService.setTemplate(this.toolbarTemplate);
         // Initialize expandedRows as an empty object
         this.expandedRows = {};
@@ -152,6 +211,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
         }
     }
 
+    onSortChange(): void {
+        localStorage.setItem('ggdb_selected_sort', this.selectedSort);
+        const option = this.sortOptions.find(o => o.value === this.selectedSort);
+        if (option) {
+            this.sortField = option.field;
+            this.sortOrder = option.order;
+            this.filterRecords();
+        }
+    }
+
     onSearchEnter(): void {
         this.filterRecords();
     }
@@ -172,6 +241,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
     filterRecords(): void {
+        localStorage.setItem('ggdb_selected_filters', JSON.stringify(this.selectedFilters));
         const term = this._searchTerm.trim().toLowerCase();
         let filtered = term.length === 0
             ? [...this.allRecords]
@@ -180,9 +250,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
         // Filter out backlog items from the overview
         filtered = filtered.filter((r) => r.backlogItem !== 1);
 
-        if (this.showFavoritesOnly) {
-            filtered = filtered.filter((r) => r.fav === 1);
-        }
+        const showFav = this.selectedFilters.includes('fav');
+        const showCanceled = this.selectedFilters.includes('canceled');
+        const showAll = this.selectedFilters.includes('all');
+
+        filtered = filtered.filter((r) => {
+            if (r.fav === 1 && showFav) return true;
+            if (r.canceled === 1 && showCanceled) return true;
+            if (r.fav === 0 && r.canceled === 0 && showAll) return true;
+            return false;
+        });
 
         // Apply sorting
         filtered.sort((a, b) => {
@@ -193,10 +270,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
                 case 'score':
                     valA = this.dataDisplay.getTotalScore(a);
                     valB = this.dataDisplay.getTotalScore(b);
+                    // Special case for score: nulls should go to bottom
+                    if (valA === null) valA = this.sortOrder === 1 ? Infinity : -Infinity;
+                    if (valB === null) valB = this.sortOrder === 1 ? Infinity : -Infinity;
                     break;
                 case 'finishDate':
-                    valA = new Date(a.finishDate).getTime();
-                    valB = new Date(b.finishDate).getTime();
+                    valA = a.finishDate ? new Date(a.finishDate).getTime() : 0;
+                    valB = b.finishDate ? new Date(b.finishDate).getTime() : 0;
                     break;
                 case 'platform':
                     valA = this.dataDisplay.getPlatformLabel(a.location).toLowerCase();
@@ -217,11 +297,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.updateVisibleCards();
         this.allTimelineRecords = this.prepareTimelineData(filtered);
         this.updateVisibleTimeline();
-    }
-
-    toggleFavoritesFilter(): void {
-        this.showFavoritesOnly = !this.showFavoritesOnly;
-        this.filterRecords();
     }
 
     openAdd(): void {

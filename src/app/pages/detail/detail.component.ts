@@ -30,14 +30,15 @@ import { ConfirmationService } from 'primeng/api';
 import { StatService } from '../../service/stat.service';
 import { Toolbar } from 'primeng/toolbar';
 import { ClipboardService } from '../../service/clipboard.service';
-import { IgdbService, IgdbCover } from '../../service/igdb.service';
+import { IgdbService, IgdbCover, IgdbGame } from '../../service/igdb.service';
+import { AutoComplete } from 'primeng/autocomplete';
 import { ToolbarService } from '../../service/toolbar.service';
 import { DataDisplayService } from '../../service/data-display.service';
 
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule, AutoComplete],
     providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
@@ -67,6 +68,8 @@ export class DetailComponent implements OnInit, OnDestroy {
     coverSearchLoading = false;
     coverResults: IgdbCover[] = [];
     selectedCoverUrl: string | null = null;
+
+    gameSuggestions: IgdbGame[] = [];
 
     playtimeDialogVisible = false;
     customHoursToAdd = 1;
@@ -228,8 +231,21 @@ export class DetailComponent implements OnInit, OnDestroy {
         this.formEditable = true;
         this.form.enable();
         this.form.get('backlogItem')?.enable();
-        this.form.patchValue({ backlogItem: false });
+        this.form.patchValue({
+            backlogItem: false,
+            mainQuestDone: true
+        });
         // The valueChanges subscription in initForm will handle validators
+    }
+
+    cancelGame(): void {
+        this.formEditable = true;
+        this.form.enable();
+        this.form.get('backlogItem')?.enable();
+        this.form.patchValue({
+            backlogItem: false,
+            canceled: true
+        });
     }
 
     save(): void {
@@ -253,10 +269,19 @@ export class DetailComponent implements OnInit, OnDestroy {
             fav: raw.fav ? 1 : 0,
             backlogItem: raw.backlogItem ? 1 : 0,
             canceled: raw.canceled ? 1 : 0,
+            scoreGameplay: raw.scoreGameplay,
+            scorePresentation: raw.scorePresentation,
+            scoreNarrative: raw.scoreNarrative,
+            scoreQuality: raw.scoreQuality,
+            scoreSound: raw.scoreSound,
+            scoreContent: raw.scoreContent,
+            scorePacing: raw.scorePacing,
+            scoreBalance: raw.scoreBalance,
+            scoreUIUX: raw.scoreUIUX,
+            scoreImpression: raw.scoreImpression,
             replayValue: raw.replayValue,
             cover: raw.cover,
-            playtime: raw.playtime,
-            ...Object.fromEntries(this.scoreFields.map((field) => [field, raw[field]]))
+            playtime: raw.playtime
         };
 
         const username = this.dataService.loginService.getUsername();
@@ -410,11 +435,14 @@ export class DetailComponent implements OnInit, OnDestroy {
         this.isGeneratingCard = true;
 
         try {
+            const rawValue = this.form.getRawValue();
             const rawRecord: GameRecord = {
-                ...this.form.value,
-                mainQuestDone: this.form.value.mainQuestDone ? 1 : 0,
-                fav: this.form.value.fav ? 1 : 0,
-                replay: this.form.value.replay ? 1 : 0
+                ...rawValue,
+                mainQuestDone: rawValue.mainQuestDone ? 1 : 0,
+                fav: rawValue.fav ? 1 : 0,
+                replay: rawValue.replay ? 1 : 0,
+                backlogItem: rawValue.backlogItem ? 1 : 0,
+                canceled: rawValue.canceled ? 1 : 0
             };
 
             await this.clipboardService.generateAndCopyCardToClipboard(rawRecord, this.totalScore);
@@ -433,5 +461,15 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.toolbarService.setTemplate(null);
+    }
+
+    searchGames(event: any): void {
+        const query = event.query;
+        const username = this.dataService.getUsername();
+        if (query && username) {
+            this.igdbService.suggestGames(query, username).subscribe(games => {
+                this.gameSuggestions = games;
+            });
+        }
     }
 }

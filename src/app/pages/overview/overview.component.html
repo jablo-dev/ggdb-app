@@ -1,56 +1,61 @@
 <ng-template #toolbarTemplate>
     <div class="flex items-center justify-between w-full">
         <div class="flex flex-wrap items-center gap-2">
-            <p-button icon="pi pi-plus-circle" label="Add" (click)="openAdd()"></p-button>
-            <p-button
-                [icon]="showFavoritesOnly ? 'pi pi-star-fill' : 'pi pi-star'"
-                label="Filter"
-                severity="secondary"
-                (click)="toggleFavoritesFilter()"
-                [outlined]="!showFavoritesOnly"
-            ></p-button>
-            <p-button icon="pi pi-info-circle" label="Info" severity="secondary" (click)="showLegend = true" class="hidden sm:inline-block"></p-button>
-
+            <p-button icon="pi pi-plus-circle" (click)="openAdd()"></p-button>
+            <p-multiselect
+                [options]="filterOptions"
+                [(ngModel)]="selectedFilters"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Filter"
+                [maxSelectedLabels]="0"
+                selectedItemsLabel="Filter"
+                [filter]="false"
+                (onChange)="filterRecords()"
+                styleClass="w-40"
+                display="chip"
+                [showToggleAll]="false"
+                [showHeader]="false"
+                [panelStyle]="{ 'max-height': '300px' }"
+                [appendTo]="'body'"
+            >
+                <ng-template let-value pTemplate="selectedItems">
+                    <div class="flex items-center gap-2 text-surface-600 dark:text-surface-400">
+                        <i class="pi pi-filter"></i>
+                        <span>{{ selectedFiltersLabel }}</span>
+                    </div>
+                </ng-template>
+                <ng-template let-option pTemplate="item">
+                    <div class="flex items-center gap-2">
+                        <i [class]="option.icon" [ngClass]="{'text-primary': option.value === 'all', 'text-yellow-400': option.value === 'fav', 'text-red-500': option.value === 'canceled'}"></i>
+                        <span>{{ option.label }}</span>
+                    </div>
+                </ng-template>
+            </p-multiselect>
             <div *ngIf="displayMode !== 'Timeline'" class="flex items-center flex-wrap gap-1">
-                <div class="h-8 w-px bg-surface-300 dark:bg-surface-600 mx-1 hidden sm:block"></div>
 
-                <span class="text-sm font-semibold opacity-60 ml-1 mr-2 hidden md:inline">Sort: </span>
-                <div class="flex items-center gap-1">
-                    <p-button
-                        [label]="'Score'"
-                        [icon]="sortField === 'score' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
-                        severity="secondary"
-                        [outlined]="sortField !== 'score'"
-                        (click)="sort('score')"
-                        size="small"
-                    ></p-button>
-                    <p-button
-                        [label]="'Finished'"
-                        [icon]="sortField === 'finishDate' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
-                        severity="secondary"
-                        [outlined]="sortField !== 'finishDate'"
-                        (click)="sort('finishDate')"
-                        size="small"
-                    ></p-button>
-                    <p-button
-                        [label]="'Platform'"
-                        [icon]="sortField === 'platform' ? (sortOrder === 1 ? 'pi pi-sort-amount-up' : 'pi pi-sort-amount-down') : 'pi pi-sort'"
-                        severity="secondary"
-                        [outlined]="sortField !== 'platform'"
-                        (click)="sort('platform')"
-                        size="small"
-                        class="hidden sm:inline-block"
-                    ></p-button>
-                    <p-button
-                        icon="pi pi-filter-slash"
-                        severity="secondary"
-                        [text]="true"
-                        (click)="resetSorting()"
-                        size="small"
-                        pTooltip="Reset Sorting"
-                        tooltipPosition="bottom"
-                    ></p-button>
-                </div>
+                <p-select
+                    [options]="sortOptions"
+                    [(ngModel)]="selectedSort"
+                    optionLabel="label"
+                    optionValue="value"
+                    (onChange)="onSortChange()"
+                    styleClass="w-56"
+                    [appendTo]="'body'"
+                >
+                    <ng-template let-value pTemplate="selectedItem">
+                        <div class="flex items-center gap-2 text-surface-600 dark:text-surface-400">
+                            <i class="pi pi-sort-alt"></i>
+                            <span>{{ value.label }}</span>
+                        </div>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                        <div class="flex items-center gap-2">
+                            <i [class]="option.icon" class="text-primary"></i>
+                            <span>{{ option.label }}</span>
+                        </div>
+                    </ng-template>
+                </p-select>
             </div>
         </div>
 

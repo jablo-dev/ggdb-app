@@ -4,6 +4,10 @@
         "date": "2026-05-29",
         "changes": [
             "Improved session handling to avoid unnecessary logouts.",
+            "Added more colors for theme picker and reworked it's layout.",
+            "Added option to cancel a game from backlog and start rating process.",
+            "Added option to cancel a game but still rate it.",
+            "Implemented game title suggestions based on IGDB, when you enter a new game record.",
             "Fixed a few minor styling issues."
         ]
     },
