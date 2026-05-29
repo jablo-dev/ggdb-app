@@ -12,7 +12,9 @@ export class ToolbarService {
     hasToolbar$ = this.hasToolbar.asObservable();
 
     setTemplate(template: TemplateRef<any> | null) {
-        this.toolbarTemplate.next(template);
-        this.hasToolbar.next(!!template);
+        setTimeout(() => {
+            this.toolbarTemplate.next(template);
+            this.hasToolbar.next(!!template);
+        });
     }
 }

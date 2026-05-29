@@ -93,6 +93,8 @@ export class LayoutService {
 
     private initialized = false;
 
+    private platformId = inject(PLATFORM_ID);
+
     surfaces = [
         {
             name: 'slate',
@@ -233,7 +235,7 @@ export class LayoutService {
     ];
 
     constructor() {
-        if (isPlatformBrowser(inject(PLATFORM_ID))) {
+        if (isPlatformBrowser(this.platformId)) {
             const savedPrimary = localStorage.getItem('primaryColor');
             const savedSurface = localStorage.getItem('surfaceColor');
             const savedPreset = localStorage.getItem('themePreset');
@@ -256,7 +258,7 @@ export class LayoutService {
             const config = this.layoutConfig();
             if (config) {
                 this.onConfigUpdate();
-                if (isPlatformBrowser(inject(PLATFORM_ID))) {
+                if (isPlatformBrowser(this.platformId)) {
                     if (config.primary) localStorage.setItem('primaryColor', config.primary);
                     if (config.surface) localStorage.setItem('surfaceColor', config.surface);
                     if (config.preset) localStorage.setItem('themePreset', config.preset);

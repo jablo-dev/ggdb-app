@@ -12,13 +12,27 @@
                 const darkTheme = localStorage.getItem('darkTheme');
                 if (darkTheme === 'true' || darkTheme === null) {
                     document.documentElement.classList.add('app-dark');
-                    document.body.classList.add('app-dark');
                 }
             })();
         </script>
     </head>
 
     <body>
+        <script>
+            (function() {
+                const darkTheme = localStorage.getItem('darkTheme');
+                if (darkTheme === 'true' || darkTheme === null) {
+                    if (document.body) {
+                        document.body.classList.add('app-dark');
+                    } else {
+                        // Fallback if body is still null for some reason
+                        window.addEventListener('DOMContentLoaded', () => {
+                             document.body.classList.add('app-dark');
+                        });
+                    }
+                }
+            })();
+        </script>
         <app-root></app-root>
     </body>
 </html>
