@@ -105,12 +105,40 @@ export class DataDisplayService {
             case 'UPLAY':
             case 'GOG': return 'bi bi-pc-display';
 
+            case 'PLAYSTATION_1':
+            case 'PLAYSTATION_2':
+            case 'PLAYSTATION_3':
+            case 'PLAYSTATION_4':
+            case 'PLAYSTATION': return 'bi bi-playstation';
+
+            case 'XBOX':
+            case 'XBOX_ONE':
+            case 'XBOX_360':
+            case 'XBOX_ORIGINAL':
+            case 'XBOX_GAME_PASS': return 'bi bi-xbox';
+
+            case 'PS_VITA':
+            case 'PSP':
+            case 'NINTENDO_3DS':
+            case 'NINTENDO_DS':
+            case 'GBA':
+            case 'GAME_BOY': return 'bi bi-device-hdd';
+
+            case 'NES':
+            case 'SNES':
+            case 'N64':
+            case 'GAMECUBE':
+            case 'WII':
+            case 'WII_U':
             case 'GENESIS':
             case 'SATURN':
             case 'DREAMCAST':
             case 'ATARI_2600': return 'bi bi-controller';
 
-            case 'OTHER': return 'bi bi-question-circle';
+            case 'NINTENDO_CONSOLE':
+            case 'NINTENDO_CONSOLE2': return 'bi bi-nintendo-switch';
+
+            case 'OTHER': return 'bi bi-disc';
             default: return 'bi bi-disc';
         }
     }
