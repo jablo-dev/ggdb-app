@@ -234,19 +234,86 @@ export class LayoutService {
         }
     ];
 
+    primaryColors = computed(() => {
+        const config = this.layoutConfig();
+        const preset = config.preset as KeyOfType<typeof presets>;
+        const presetPalette = presets[preset].primitive;
+        const colors = [
+            'red',
+            'crimson',
+            'rose',
+            'pink',
+            'fuchsia',
+            'purple',
+            'violet',
+            'lavender',
+            'indigo',
+            'navy',
+            'blue',
+            'sky',
+            'cyan',
+            'teal',
+            'emerald',
+            'mint',
+            'green',
+            'cactus',
+            'lime',
+            'olive',
+            'yellow',
+            'amber',
+            'gold',
+            'orange',
+            'coral',
+            'brown',
+            'maroon',
+            'coffee',
+            'wood',
+            'earth',
+            'sand',
+            'stone',
+            'neutral',
+            'gray',
+            'slate',
+            'zinc',
+            'iron',
+            'steel',
+            'tin',
+            'nickel',
+            'lead',
+            'platinum',
+            'silver',
+            'bronze',
+            'copper'
+        ];
+        const palettes: any[] = [{ name: 'noir', palette: {} }];
+
+        const uniqueColors = Array.from(new Set(colors));
+
+        uniqueColors.forEach((color) => {
+            const palette = presetPalette?.[color as KeyOfType<typeof presetPalette>];
+            if (palette) {
+                palettes.push({
+                    name: color,
+                    palette: palette
+                });
+            }
+        });
+
+        return palettes;
+    });
+
     constructor() {
         if (isPlatformBrowser(this.platformId)) {
             const savedPrimary = localStorage.getItem('primaryColor');
             const savedSurface = localStorage.getItem('surfaceColor');
             const savedPreset = localStorage.getItem('themePreset');
-            const savedDarkTheme = localStorage.getItem('darkTheme');
 
             this._config = {
                 ...this._config,
                 primary: savedPrimary || this._config.primary,
                 surface: savedSurface || this._config.surface,
                 preset: savedPreset || this._config.preset,
-                darkTheme: savedDarkTheme ? savedDarkTheme === 'true' : this._config.darkTheme
+                darkTheme: true
             };
             this.layoutConfig.set(this._config);
 
@@ -262,58 +329,18 @@ export class LayoutService {
                     if (config.primary) localStorage.setItem('primaryColor', config.primary);
                     if (config.surface) localStorage.setItem('surfaceColor', config.surface);
                     if (config.preset) localStorage.setItem('themePreset', config.preset);
-                    if (config.darkTheme !== undefined) {
-                        localStorage.setItem('darkTheme', config.darkTheme.toString());
-                    }
+                    localStorage.setItem('darkTheme', 'true');
 
                     // Re-apply theme when config changes
                     this.applyFullTheme();
                 }
             }
         });
-
-        effect(() => {
-            const config = this.layoutConfig();
-
-            if (!this.initialized || !config) {
-                this.initialized = true;
-                return;
-            }
-
-            this.handleDarkModeTransition(config);
-        });
     }
 
-    private handleDarkModeTransition(config: layoutConfig): void {
-        if ((document as any).startViewTransition) {
-            this.startViewTransition(config);
-        } else {
-            this.toggleDarkMode(config);
-            this.onTransitionEnd();
-        }
-    }
-
-    private startViewTransition(config: layoutConfig): void {
-        const transition = (document as any).startViewTransition(() => {
-            this.toggleDarkMode(config);
-        });
-
-        transition.ready
-            .then(() => {
-                this.onTransitionEnd();
-            })
-            .catch(() => {});
-    }
-
-    toggleDarkMode(config?: layoutConfig): void {
-        const _config = config || this.layoutConfig();
-        if (_config.darkTheme) {
-            document.documentElement.classList.add('app-dark');
-            document.body.classList.add('app-dark');
-        } else {
-            document.documentElement.classList.remove('app-dark');
-            document.body.classList.remove('app-dark');
-        }
+    toggleDarkMode(): void {
+        document.documentElement.classList.add('app-dark');
+        document.body.classList.add('app-dark');
     }
 
     private onTransitionEnd() {
@@ -371,7 +398,7 @@ export class LayoutService {
             .use({ useDefaultOptions: true });
 
         // Apply Dark Mode
-        this.toggleDarkMode(config);
+        this.toggleDarkMode();
     }
 
     getPresetExt() {
@@ -383,6 +410,20 @@ export class LayoutService {
         const color: any = colorName === 'noir' ? { name: 'noir', palette: {} } : {
             name: colorName,
             palette: presetPalette?.[colorName as KeyOfType<typeof presetPalette>]
+        };
+
+        const shadowStyles = {
+            colorScheme: {
+                dark: {
+                    content: {
+                        shadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        border: '1px solid {surface.700}'
+                    },
+                    inputtext: {
+                        border: '1px solid {surface.700}'
+                    }
+                }
+            }
         };
 
         if (color.name === 'noir') {
@@ -401,22 +442,10 @@ export class LayoutService {
                         900: '{surface.900}',
                         950: '{surface.950}'
                     },
+                    ...shadowStyles,
                     colorScheme: {
-                        light: {
-                            primary: {
-                                color: '{primary.950}',
-                                contrastColor: '#ffffff',
-                                hoverColor: '{primary.900}',
-                                activeColor: '{primary.800}'
-                            },
-                            highlight: {
-                                background: '{primary.950}',
-                                focusBackground: '{primary.700}',
-                                color: '#ffffff',
-                                focusColor: '#ffffff'
-                            }
-                        },
                         dark: {
+                            ...shadowStyles.colorScheme.dark,
                             primary: {
                                 color: '{primary.50}',
                                 contrastColor: '{primary.950}',
@@ -434,41 +463,55 @@ export class LayoutService {
                 }
             };
         } else {
-            return {
-                semantic: {
-                    primary: color.palette,
-                    colorScheme: {
-                        light: {
-                            primary: {
-                                color: '{primary.500}',
-                                contrastColor: '#ffffff',
-                                hoverColor: '{primary.600}',
-                                activeColor: '{primary.700}'
-                            },
-                            highlight: {
-                                background: '{primary.50}',
-                                focusBackground: '{primary.100}',
-                                color: '{primary.700}',
-                                focusColor: '{primary.800}'
-                            }
-                        },
-                        dark: {
-                            primary: {
-                                color: '{primary.400}',
-                                contrastColor: '{surface.900}',
-                                hoverColor: '{primary.300}',
-                                activeColor: '{primary.200}'
-                            },
-                            highlight: {
-                                background: 'color-mix(in srgb, {primary.400}, transparent 84%)',
-                                focusBackground: 'color-mix(in srgb, {primary.400}, transparent 76%)',
-                                color: 'rgba(255,255,255,.87)',
-                                focusColor: 'rgba(255,255,255,.87)'
+            if (preset === 'Nora') {
+                return {
+                    semantic: {
+                        primary: color.palette,
+                        ...shadowStyles,
+                        colorScheme: {
+                            dark: {
+                                ...shadowStyles.colorScheme.dark,
+                                primary: {
+                                    color: '{primary.500}',
+                                    contrastColor: '{surface.900}',
+                                    hoverColor: '{primary.400}',
+                                    activeColor: '{primary.300}'
+                                },
+                                highlight: {
+                                    background: '{primary.500}',
+                                    focusBackground: '{primary.400}',
+                                    color: '{surface.900}',
+                                    focusColor: '{surface.900}'
+                                }
                             }
                         }
                     }
-                }
-            };
+                };
+            } else {
+                return {
+                    semantic: {
+                        primary: color.palette,
+                        ...shadowStyles,
+                        colorScheme: {
+                            dark: {
+                                ...shadowStyles.colorScheme.dark,
+                                primary: {
+                                    color: '{primary.400}',
+                                    contrastColor: '{surface.900}',
+                                    hoverColor: '{primary.300}',
+                                    activeColor: '{primary.200}'
+                                },
+                                highlight: {
+                                    background: 'color-mix(in srgb, {primary.400}, transparent 84%)',
+                                    focusBackground: 'color-mix(in srgb, {primary.400}, transparent 76%)',
+                                    color: 'rgba(255,255,255,.87)',
+                                    focusColor: 'rgba(255,255,255,.87)'
+                                }
+                            }
+                        }
+                    }
+                };
+            }
         }
     }
 

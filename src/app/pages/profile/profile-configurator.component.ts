@@ -44,20 +44,6 @@ declare type SurfacesType = {
     imports: [CommonModule, FormsModule, SelectButtonModule, ToggleSwitchModule],
     template: `
         <div class="flex flex-col gap-6">
-            <!-- <div>
-                <span class="text-sm text-muted-color font-semibold">Mode</span>
-                <div class="pt-2 flex items-center justify-start gap-3">
-                    <button
-                        type="button"
-                        (click)="toggleDarkMode()"
-                        [title]="isDarkTheme() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
-                        class="border-none rounded-full p-0 cursor-pointer outline-none outline-offset-2 outline-2 hover:scale-110 transition-transform duration-200 bg-transparent flex items-center justify-center"
-                        style="width: 30px; height: 30px;"
-                    >
-                        <i [class]="isDarkTheme() ? 'pi pi-sun text-yellow-500 text-2xl' : 'pi pi-moon text-blue-400 text-2xl'"></i>
-                    </button>
-                </div>
-            </div> -->
             <div>
                 <span class="text-sm text-muted-color font-semibold">Primary Colors</span>
                 <div class="pt-2 flex gap-2 flex-wrap justify-start">
@@ -83,7 +69,7 @@ declare type SurfacesType = {
                             type="button"
                             [title]="surface.name"
                             (click)="updateColors($event, 'surface', surface)"
-                            [ngClass]="{ 'outline-primary': selectedSurfaceColor() ? selectedSurfaceColor() === surface.name : layoutService.layoutConfig().darkTheme ? surface.name === 'zinc' : surface.name === 'slate' }"
+                            [ngClass]="{ 'outline-primary': selectedSurfaceColor() ? selectedSurfaceColor() === surface.name : surface.name === 'zinc' }"
                             class="border-none w-8 h-8 rounded-full p-0 cursor-pointer outline-none outline-offset-2 outline-2 hover:scale-110 transition-transform duration-200"
                             [style]="{
                                 'background-color': surface?.name === 'noir' ? 'var(--text-color)' : surface?.palette?.['500']
@@ -111,93 +97,7 @@ export class ProfileConfiguratorComponent {
         }
     }
 
-    surfaces: SurfacesType[] = [
-        {
-            name: 'slate',
-            palette: {
-                0: '#ffffff',
-                50: '#f8fafc',
-                100: '#f1f5f9',
-                200: '#e2e8f0',
-                300: '#cbd5e1',
-                400: '#94a3b8',
-                500: '#64748b',
-                600: '#475569',
-                700: '#334155',
-                800: '#1e293b',
-                900: '#0f172a',
-                950: '#020617'
-            }
-        },
-        {
-            name: 'gray',
-            palette: {
-                0: '#ffffff',
-                50: '#f9fafb',
-                100: '#f3f4f6',
-                200: '#e5e7eb',
-                300: '#d1d5db',
-                400: '#9ca3af',
-                500: '#6b7280',
-                600: '#4b5563',
-                700: '#374151',
-                800: '#1f2937',
-                900: '#111827',
-                950: '#030712'
-            }
-        },
-        {
-            name: 'zinc',
-            palette: {
-                0: '#ffffff',
-                50: '#fafafa',
-                100: '#f4f4f5',
-                200: '#e4e4e7',
-                300: '#d4d4d8',
-                400: '#a1a1aa',
-                500: '#71717a',
-                600: '#52525b',
-                700: '#3f3f46',
-                800: '#27272a',
-                900: '#18181b',
-                950: '#09090b'
-            }
-        },
-        {
-            name: 'neutral',
-            palette: {
-                0: '#ffffff',
-                50: '#fafafa',
-                100: '#f5f5f5',
-                200: '#e5e5e5',
-                300: '#d4d4d4',
-                400: '#a3a3a3',
-                500: '#737373',
-                600: '#525252',
-                700: '#404040',
-                800: '#262626',
-                900: '#171717',
-                950: '#0a0a0a'
-            }
-        },
-        {
-            name: 'stone',
-            palette: {
-                0: '#ffffff',
-                50: '#fafafa',
-                100: '#f5f5f5',
-                200: '#e5e5e5',
-                300: '#d4d4d4',
-                400: '#a8a29e',
-                500: '#78716c',
-                600: '#57534e',
-                700: '#44403c',
-                800: '#292524',
-                900: '#1c1917',
-                950: '#0c0a09'
-            }
-        }
-    ];
+    surfaces = this.layoutService.surfaces;
 
     selectedPrimaryColor = computed(() => {
         return this.layoutService.layoutConfig().primary;
@@ -209,23 +109,10 @@ export class ProfileConfiguratorComponent {
 
     isDarkTheme = computed(() => this.layoutService.layoutConfig().darkTheme);
 
-    primaryColors = computed<SurfacesType[]>(() => {
-        const presetPalette = presets[this.layoutService.layoutConfig().preset as KeyOfType<typeof presets>].primitive;
-        const colors = ['emerald', 'green', 'lime', 'orange', 'amber', 'yellow', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose'];
-        const palettes: SurfacesType[] = [{ name: 'noir', palette: {} }];
-
-        colors.forEach((color) => {
-            palettes.push({
-                name: color,
-                palette: presetPalette?.[color as KeyOfType<typeof presetPalette>] as SurfacesType['palette']
-            });
-        });
-
-        return palettes;
-    });
+    primaryColors = this.layoutService.primaryColors;
 
     getPresetExt() {
-        const color: SurfacesType = this.primaryColors().find((c) => c.name === this.selectedPrimaryColor()) || {};
+        const color: any = this.primaryColors().find((c: any) => c.name === this.selectedPrimaryColor()) || {};
         const preset = this.layoutService.layoutConfig().preset;
 
         if (color.name === 'noir') {
@@ -337,9 +224,5 @@ export class ProfileConfiguratorComponent {
     onPresetChange(event: any) {
         this.layoutService.layoutConfig.update((state) => ({ ...state, preset: event }));
         this.layoutService.applyFullTheme();
-    }
-
-    toggleDarkMode() {
-        this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
     }
 }

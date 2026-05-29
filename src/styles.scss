@@ -32,7 +32,13 @@
 
 .p-toolbar.override-toolbar-margin {
     margin-bottom: 2rem !important;
-    background-color: red !important; // test only
+}
+
+.card {
+    background: var(--p-content-background);
+    color: var(--p-content-color);
+    box-shadow: var(--p-content-shadow);
+    border: var(--p-content-border);
 }
 
 :root {

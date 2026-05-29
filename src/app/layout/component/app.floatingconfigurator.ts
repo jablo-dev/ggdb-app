@@ -19,8 +19,4 @@ export class AppFloatingConfigurator {
     LayoutService = inject(LayoutService);
 
     isDarkTheme = computed(() => this.LayoutService.layoutConfig().darkTheme);
-
-    toggleDarkMode() {
-        this.LayoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
-    }
 }
