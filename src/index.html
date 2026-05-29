@@ -12,6 +12,7 @@
                 const darkTheme = localStorage.getItem('darkTheme');
                 if (darkTheme === 'true' || darkTheme === null) {
                     document.documentElement.classList.add('app-dark');
+                    document.body.classList.add('app-dark');
                 }
             })();
         </script>

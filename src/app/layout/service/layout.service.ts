@@ -307,8 +307,10 @@ export class LayoutService {
         const _config = config || this.layoutConfig();
         if (_config.darkTheme) {
             document.documentElement.classList.add('app-dark');
+            document.body.classList.add('app-dark');
         } else {
             document.documentElement.classList.remove('app-dark');
+            document.body.classList.remove('app-dark');
         }
     }
 
