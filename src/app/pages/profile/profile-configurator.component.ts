@@ -107,26 +107,7 @@ export class ProfileConfiguratorComponent {
 
     ngOnInit() {
         if (isPlatformBrowser(this.platformId)) {
-            const savedPrimary = localStorage.getItem('primaryColor');
-            const savedSurface = localStorage.getItem('surfaceColor');
-            const savedPreset = localStorage.getItem('themePreset');
-            const savedDarkTheme = localStorage.getItem('darkTheme');
-
-            this.layoutService.layoutConfig.update((state) => ({
-                ...state,
-                primary: savedPrimary || state.primary,
-                surface: savedSurface || state.surface,
-                preset: savedPreset || state.preset,
-                darkTheme: savedDarkTheme ? savedDarkTheme === 'true' : state.darkTheme
-            }));
-
-            this.onPresetChange(this.layoutService.layoutConfig().preset);
-            if (savedSurface) {
-                const surfacePalette = this.surfaces.find((s) => s.name === savedSurface)?.palette;
-                if (surfacePalette) {
-                    updateSurfacePalette(surfacePalette);
-                }
-            }
+            this.layoutService.applyFullTheme();
         }
     }
 
@@ -337,13 +318,11 @@ export class ProfileConfiguratorComponent {
     updateColors(event: any, type: string, color: any) {
         if (type === 'primary') {
             this.layoutService.layoutConfig.update((state) => ({ ...state, primary: color.name }));
-            localStorage.setItem('primaryColor', color.name);
         } else if (type === 'surface') {
             this.layoutService.layoutConfig.update((state) => ({ ...state, surface: color.name }));
-            localStorage.setItem('surfaceColor', color.name);
         }
 
-        this.applyTheme(type, color);
+        this.layoutService.applyFullTheme();
         event.stopPropagation();
     }
 
@@ -356,16 +335,11 @@ export class ProfileConfiguratorComponent {
     }
 
     onPresetChange(event: any) {
-        localStorage.setItem('themePreset', event);
         this.layoutService.layoutConfig.update((state) => ({ ...state, preset: event }));
-        const preset = presets[event as KeyOfType<typeof presets>];
-        const surfacePalette = this.surfaces.find((s) => s.name === this.selectedSurfaceColor())?.palette;
-        $t().preset(preset).preset(this.getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
+        this.layoutService.applyFullTheme();
     }
 
     toggleDarkMode() {
-        const newDarkTheme = !this.layoutService.layoutConfig().darkTheme;
-        this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: newDarkTheme }));
-        localStorage.setItem('darkTheme', newDarkTheme.toString());
+        this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
     }
 }
