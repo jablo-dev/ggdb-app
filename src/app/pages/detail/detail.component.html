@@ -126,6 +126,19 @@
                 label="Game finished!"
                 (click) = "finishGame()"
             ></button>
+
+            <!-- Cancel Game -->
+            <button
+                *ngIf="form.get('id')?.value && form.get('backlogItem')?.value"
+                pButton
+                type="button"
+                icon="pi pi-times-circle"
+                class="p-button-danger"
+                pTooltip="Cancel this game and move from backlog"
+                tooltipPosition="top"
+                label="Cancel game"
+                (click) = "cancelGame()"
+            ></button>
         </div>
 
         <!-- Right: Final score preview -->

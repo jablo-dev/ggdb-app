@@ -231,8 +231,21 @@ export class DetailComponent implements OnInit, OnDestroy {
         this.formEditable = true;
         this.form.enable();
         this.form.get('backlogItem')?.enable();
-        this.form.patchValue({ backlogItem: false });
+        this.form.patchValue({
+            backlogItem: false,
+            mainQuestDone: true
+        });
         // The valueChanges subscription in initForm will handle validators
+    }
+
+    cancelGame(): void {
+        this.formEditable = true;
+        this.form.enable();
+        this.form.get('backlogItem')?.enable();
+        this.form.patchValue({
+            backlogItem: false,
+            canceled: true
+        });
     }
 
     save(): void {
