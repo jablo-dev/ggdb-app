@@ -7,6 +7,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/x-icon" href="https://jablo.dev/ggdb2.ico" />
         <link href="https://fonts.cdnfonts.com/css/lato" rel="stylesheet" />
+        <script>
+            (function() {
+                const darkTheme = localStorage.getItem('darkTheme');
+                if (darkTheme === 'true' || darkTheme === null) {
+                    document.documentElement.classList.add('app-dark');
+                    document.body.classList.add('app-dark');
+                }
+            })();
+        </script>
     </head>
 
     <body>

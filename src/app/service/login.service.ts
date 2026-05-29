@@ -8,12 +8,21 @@ export class LoginService {
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
 
-    private username: string | null = null;
+    private username: string | null = localStorage.getItem('username');
 
-    constructor() {}
+    constructor() {
+        if (this.username) {
+            this.isAuthenticatedSubject.next(true);
+        }
+    }
 
     setUsername(username: string | null): void {
         this.username = username ? username.toLowerCase() : null;
+        if (this.username) {
+            localStorage.setItem('username', this.username);
+        } else {
+            localStorage.removeItem('username');
+        }
     }
 
     getUsername(): string | null {
@@ -24,7 +33,7 @@ export class LoginService {
         this.isAuthenticatedSubject.next(state);
 
         if (!state) {
-            this.username = null;
+            this.setUsername(null);
         }
     }
 

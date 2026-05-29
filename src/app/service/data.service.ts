@@ -29,7 +29,12 @@ export class DataService {
         private router: Router,
         private loadingService: LoadingService,
         private layoutService: LayoutService
-    ) {}
+    ) {
+        this.username = this.loginService.getUsername();
+        if (this.username) {
+            this.getCurrentUser(this.username).subscribe();
+        }
+    }
 
     login(user: User): Observable<any> {
         const url = `${this.apiUrl}?action=login`;
@@ -52,6 +57,7 @@ export class DataService {
                 if (success) {
                     const username = requestBody.username;
                     this.loginService.setUsername(username);
+                    this.username = username;
                     this.isAdmin = !!response.user?.isAdmin;
 
                     // Load user settings into layout service
@@ -68,7 +74,6 @@ export class DataService {
                     setTimeout(() => {
                         // Temporary disabled toast here
                     }, 200);
-                    this.username = username;
                     this.router.navigate(['/']);
                 } else {
                     this.toast.error('Login failed', 'Invalid credentials.');
@@ -99,10 +104,15 @@ export class DataService {
             tap(response => {
                 if (response.success && response.user) {
                     this.isAdmin = !!response.user.isAdmin;
+                } else {
+                    this.loginService.setLoggedIn(false);
+                    this.loginService.setUsername(null);
                 }
             }),
             catchError(error => {
                 console.error('Failed to get current user:', error);
+                this.loginService.setLoggedIn(false);
+                this.loginService.setUsername(null);
                 return of({ success: false });
             })
         );
@@ -211,8 +221,9 @@ export class DataService {
             tap(() => {
                 this.records = [];
                 this.sessionId = null;
+                this.username = null;
+                this.isAdmin = false;
                 this.loginService.setLoggedIn(false);
-                this.loginService.setUsername(null);
             }),
             catchError(error => {
                 return of({ success: false });

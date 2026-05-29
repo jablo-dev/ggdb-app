@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../../service/data.service';
+import { LayoutService } from '../../layout/service/layout.service';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
@@ -25,6 +26,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class AdminComponent implements OnInit {
     private dataService = inject(DataService);
+    private layoutService = inject(LayoutService);
     logs: any[] = [];
     selectedDetails: any = null;
 

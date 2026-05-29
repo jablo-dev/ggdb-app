@@ -104,24 +104,7 @@ export class AppConfigurator {
 
     ngOnInit() {
         if (isPlatformBrowser(this.platformId)) {
-            const savedPrimary = localStorage.getItem('primaryColor');
-            const savedSurface = localStorage.getItem('surfaceColor');
-            const savedPreset = localStorage.getItem('themePreset');
-
-            this.layoutService.layoutConfig.update((state) => ({
-                ...state,
-                primary: savedPrimary || state.primary,
-                surface: savedSurface || state.surface,
-                preset: savedPreset || state.preset
-            }));
-
-            this.onPresetChange(this.layoutService.layoutConfig().preset);
-            if (savedSurface) {
-                const surfacePalette = this.surfaces.find((s) => s.name === savedSurface)?.palette;
-                if (surfacePalette) {
-                    updateSurfacePalette(surfacePalette);
-                }
-            }
+            this.layoutService.applyFullTheme();
         }
     }
 
@@ -422,13 +405,11 @@ export class AppConfigurator {
     updateColors(event: any, type: string, color: any) {
         if (type === 'primary') {
             this.layoutService.layoutConfig.update((state) => ({ ...state, primary: color.name }));
-            localStorage.setItem('primaryColor', color.name);
         } else if (type === 'surface') {
             this.layoutService.layoutConfig.update((state) => ({ ...state, surface: color.name }));
-            localStorage.setItem('surfaceColor', color.name);
         }
 
-        this.applyTheme(type, color);
+        this.layoutService.applyFullTheme();
         event.stopPropagation();
     }
 
@@ -442,11 +423,8 @@ export class AppConfigurator {
     }
 
     onPresetChange(event: any) {
-        localStorage.setItem('themePreset', event);
         this.layoutService.layoutConfig.update((state) => ({ ...state, preset: event }));
-        const preset = presets[event as KeyOfType<typeof presets>];
-        const surfacePalette = this.surfaces.find((s) => s.name === this.selectedSurfaceColor())?.palette;
-        $t().preset(preset).preset(this.getPresetExt()).surfacePalette(surfacePalette).use({ useDefaultOptions: true });
+        this.layoutService.applyFullTheme();
     }
 
 
