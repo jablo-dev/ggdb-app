@@ -228,6 +228,10 @@
                                             <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
                                             <label class="text-sm">Replay</label>
                                         </div>
+                                        <div class="flex items-center gap-2" *ngIf="!form.get('backlogItem')?.value">
+                                            <p-toggleSwitch formControlName="canceled"></p-toggleSwitch>
+                                            <label class="text-sm">Canceled</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

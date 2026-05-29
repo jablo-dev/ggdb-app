@@ -253,10 +253,19 @@ export class DetailComponent implements OnInit, OnDestroy {
             fav: raw.fav ? 1 : 0,
             backlogItem: raw.backlogItem ? 1 : 0,
             canceled: raw.canceled ? 1 : 0,
+            scoreGameplay: raw.scoreGameplay,
+            scorePresentation: raw.scorePresentation,
+            scoreNarrative: raw.scoreNarrative,
+            scoreQuality: raw.scoreQuality,
+            scoreSound: raw.scoreSound,
+            scoreContent: raw.scoreContent,
+            scorePacing: raw.scorePacing,
+            scoreBalance: raw.scoreBalance,
+            scoreUIUX: raw.scoreUIUX,
+            scoreImpression: raw.scoreImpression,
             replayValue: raw.replayValue,
             cover: raw.cover,
-            playtime: raw.playtime,
-            ...Object.fromEntries(this.scoreFields.map((field) => [field, raw[field]]))
+            playtime: raw.playtime
         };
 
         const username = this.dataService.loginService.getUsername();
@@ -410,11 +419,14 @@ export class DetailComponent implements OnInit, OnDestroy {
         this.isGeneratingCard = true;
 
         try {
+            const rawValue = this.form.getRawValue();
             const rawRecord: GameRecord = {
-                ...this.form.value,
-                mainQuestDone: this.form.value.mainQuestDone ? 1 : 0,
-                fav: this.form.value.fav ? 1 : 0,
-                replay: this.form.value.replay ? 1 : 0
+                ...rawValue,
+                mainQuestDone: rawValue.mainQuestDone ? 1 : 0,
+                fav: rawValue.fav ? 1 : 0,
+                replay: rawValue.replay ? 1 : 0,
+                backlogItem: rawValue.backlogItem ? 1 : 0,
+                canceled: rawValue.canceled ? 1 : 0
             };
 
             await this.clipboardService.generateAndCopyCardToClipboard(rawRecord, this.totalScore);

@@ -3,9 +3,18 @@
     <div *ngIf="gameRecord?.cover && !imageError" class="cover-image-container flex-shrink-0 relative">
         <img [src]="gameRecord?.cover" class="h-full w-full object-cover" [alt]="gameRecord?.name" (error)="imageError = true">
         <div class="cover-overlay absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+
+        <!-- Big Canceled Stamp -->
+        <div *ngIf="gameRecord?.canceled === 1" class="canceled-stamp-container absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+            <div class="canceled-stamp">CANCELED</div>
+        </div>
     </div>
 
     <div class="card-content-wrapper relative flex-grow overflow-hidden flex flex-col">
+        <!-- Big Canceled Stamp (when no cover) -->
+        <div *ngIf="(!gameRecord?.cover || imageError) && gameRecord?.canceled === 1" class="canceled-stamp-container absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-[20]">
+            <div class="canceled-stamp">CANCELED</div>
+        </div>
         <div
             *ngIf="score !== null"
             class="score-badge absolute top-0 right-0 px-3 py-2 font-bold text-lg"
@@ -51,13 +60,13 @@
                     </div>
 
                     <!-- Story completion status -->
-                    <div class="completion-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.mainQuestDone === 1 && gameRecord?.canceled !== 1">
+                    <div class="completion-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.mainQuestDone === 1 && gameRecord?.canceled !== 1 && gameRecord?.backlogItem !== 1">
                         <i class="pi pi-book text-primary"></i>
                         <span class="text-base truncate">Story completed</span>
                     </div>
 
                     <!-- Canceled status -->
-                    <div class="completion-section flex items-center gap-2 text-red-400" *ngIf="gameRecord?.canceled === 1">
+                    <div class="completion-section flex items-center gap-2 text-red-400" *ngIf="gameRecord?.canceled === 1 && gameRecord?.backlogItem !== 1">
                         <i class="pi pi-times-circle text-red-500"></i>
                         <span class="text-base font-semibold truncate">Canceled</span>
                     </div>
