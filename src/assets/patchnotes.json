@@ -3,7 +3,8 @@
         "version": "4.3.2",
         "date": "2026-05-29",
         "changes": [
-            "Improved session handling to avoid unnecessary logouts."
+            "Improved session handling to avoid unnecessary logouts.",
+            "Fixed a few minor styling issues."
         ]
     },
     {

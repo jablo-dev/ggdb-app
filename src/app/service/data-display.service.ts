@@ -99,38 +99,7 @@ export class DataDisplayService {
     getPlatformIconClass(location: string): string {
         switch (location) {
             case 'STEAM': return 'bi bi-steam';
-            case 'BATTLE_NET': return 'bi bi-unity'; // Using unity as placeholder for launcher if no battle.net icon
-
-            case 'PLAYSTATION':
-            case 'PLAYSTATION_1':
-            case 'PLAYSTATION_2':
-            case 'PLAYSTATION_3':
-            case 'PLAYSTATION_4':
-            case 'PS_VITA':
-            case 'PSP': return 'bi bi-playstation';
-
-            case 'XBOX':
-            case 'XBOX_ONE':
-            case 'XBOX_360':
-            case 'XBOX_ORIGINAL':
-            case 'XBOX_GAME_PASS': return 'bi bi-xbox';
-
-            case 'NINTENDO_CONSOLE':
-            case 'NINTENDO_CONSOLE2': return 'bi bi-nintendo-switch';
-
-            case 'GAMECUBE':
-            case 'WII':
-            case 'WII_U': return 'bi bi-controller';
-
-            case 'NINTENDO_3DS':
-            case 'NINTENDO_DS':
-            case 'GBA':
-            case 'GAME_BOY': return 'bi bi-device-hdd'; // Placeholder for handhelds if no specific ones
-
-            case 'NES':
-            case 'SNES':
-            case 'N64': return 'bi bi-controller';
-
+            case 'BATTLE_NET':
             case 'EPIC_GAMES':
             case 'EA_PLAY':
             case 'UPLAY':

@@ -71,7 +71,7 @@
 
 <div [ngClass]="{ 'table-view-active': displayMode === 'Table' }">
     <div class="max-w-none mx-auto">
-        <div class="pt-4" [ngClass]="{ 'px-4': displayMode !== 'Table' }">
+        <div class="pt-2" [ngClass]="{ 'px-4': displayMode !== 'Table' }">
             <div class="max-w-none mx-auto">
                 <div *ngIf="(displayMode === 'Timeline' || displayMode === 'Table') && isMobile()" class="block sm:hidden text-center py-8">
                     <p class="text-lg opacity-70">This view is not available on mobile.</p>
@@ -79,7 +79,7 @@
                 </div>
 
     <ng-container *ngIf="displayMode === 'Cards'">
-        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-2">
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-0">
             <ng-container *ngFor="let item of visibleCardRecords">
                 <ng-container *ngIf="item.year !== null">
                     <div class="col-span-full">
