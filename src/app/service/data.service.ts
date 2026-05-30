@@ -107,12 +107,14 @@ export class DataService {
                 } else {
                     this.loginService.setLoggedIn(false);
                     this.loginService.setUsername(null);
+                    this.router.navigate(['/auth/login']);
                 }
             }),
             catchError(error => {
                 console.error('Failed to get current user:', error);
                 this.loginService.setLoggedIn(false);
                 this.loginService.setUsername(null);
+                this.router.navigate(['/auth/login']);
                 return of({ success: false });
             })
         );
@@ -127,6 +129,14 @@ export class DataService {
             withCredentials: true
         }).pipe(
             tap(response => {
+                // If response is an object with success=false, it means session is likely expired
+                if (response && response.success === false) {
+                    this.loginService.setLoggedIn(false);
+                    this.loginService.setUsername(null);
+                    this.router.navigate(['/auth/login']);
+                    return;
+                }
+
                 // Handle both array and object responses (with numeric keys)
                 const records = Array.isArray(response) ? response : Object.values(response);
                 this.records = records as GameRecord[];
@@ -149,7 +159,13 @@ export class DataService {
             headers,
             withCredentials: true
         }).pipe(
-            tap(() => {
+            tap(response => {
+                if (response && response.success === false && response.message === 'Invalid session') {
+                    this.loginService.setLoggedIn(false);
+                    this.loginService.setUsername(null);
+                    this.router.navigate(['/auth/login']);
+                    return;
+                }
                 this.recordsLoaded = false; // Invalidate cache
             }),
             catchError(error => {
@@ -167,7 +183,13 @@ export class DataService {
             headers,
             withCredentials: true
         }).pipe(
-            tap(() => {
+            tap(response => {
+                if (response && response.success === false && response.message === 'Invalid session') {
+                    this.loginService.setLoggedIn(false);
+                    this.loginService.setUsername(null);
+                    this.router.navigate(['/auth/login']);
+                    return;
+                }
                 this.recordsLoaded = false; // Invalidate cache
             }),
             catchError(error => {
@@ -187,7 +209,13 @@ export class DataService {
             headers,
             withCredentials: true
         }).pipe(
-            tap(() => {
+            tap(response => {
+                if (response && response.success === false && response.message === 'Invalid session') {
+                    this.loginService.setLoggedIn(false);
+                    this.loginService.setUsername(null);
+                    this.router.navigate(['/auth/login']);
+                    return;
+                }
                 this.recordsLoaded = false; // Invalidate cache
             }),
             catchError(error => {
@@ -256,6 +284,13 @@ export class DataService {
         return this.http.get<any[]>(url, {
             withCredentials: true
         }).pipe(
+            tap(response => {
+                if (response && (response as any).success === false) {
+                    this.loginService.setLoggedIn(false);
+                    this.loginService.setUsername(null);
+                    this.router.navigate(['/auth/login']);
+                }
+            }),
             catchError(error => {
                 console.error('Failed to get admin logs:', error);
                 this.toast.error('Access Denied', 'You do not have permission to view admin logs.');
