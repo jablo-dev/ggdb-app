@@ -27,7 +27,6 @@ export class ProfileComponent {
 
     togglePlaytime(event: any) {
         const enabled = event.checked;
-        localStorage.setItem('playtimeEnabled', enabled.toString());
 
         const username = this.dataService.getUsername();
         if (username) {

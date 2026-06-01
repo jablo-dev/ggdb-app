@@ -67,7 +67,6 @@ export class DataService {
                             ...state,
                             playtimeEnabled
                         }));
-                        localStorage.setItem('playtimeEnabled', playtimeEnabled.toString());
                     }
 
                     // Delay toast after route navigation
@@ -104,6 +103,15 @@ export class DataService {
             tap(response => {
                 if (response.success && response.user) {
                     this.isAdmin = !!response.user.isAdmin;
+
+                    // Sync playtimeEnabled
+                    if (response.user.playtimeEnabled !== undefined) {
+                        const playtimeEnabled = response.user.playtimeEnabled === 1;
+                        this.layoutService.layoutConfig.update(state => ({
+                            ...state,
+                            playtimeEnabled
+                        }));
+                    }
                 } else {
                     this.loginService.setLoggedIn(false);
                     this.loginService.setUsername(null);

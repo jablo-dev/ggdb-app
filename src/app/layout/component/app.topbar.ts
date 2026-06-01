@@ -53,7 +53,6 @@ export class AppTopbar {
                             ...state,
                             playtimeEnabled
                         }));
-                        localStorage.setItem('playtimeEnabled', playtimeEnabled.toString());
                     }
                 } else {
                     // Fallback to the username from login service
