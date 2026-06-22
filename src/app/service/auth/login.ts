@@ -28,6 +28,7 @@ export class Login {
     patchnotes: { version: string; date: string; changes: string[]; major?: boolean }[] = [];
     version: string = '';
     isLatestMajor: boolean = false;
+    isInfoVisible: boolean = true;
 
     features = [
         {
@@ -70,6 +71,15 @@ export class Login {
     ) {
         this.loadPatchnotes();
         this.version = this.versionService.getVersion();
+        const savedInfoVisible = localStorage.getItem('ggdb-login-info-visible');
+        if (savedInfoVisible !== null) {
+            this.isInfoVisible = savedInfoVisible === 'true';
+        }
+    }
+
+    toggleInfo(): void {
+        this.isInfoVisible = !this.isInfoVisible;
+        localStorage.setItem('ggdb-login-info-visible', this.isInfoVisible.toString());
     }
 
     loadPatchnotes() {

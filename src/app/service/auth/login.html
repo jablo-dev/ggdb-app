@@ -1,6 +1,7 @@
 ﻿<div class="flex flex-col md:flex-row min-h-screen">
     <!-- Left Half: Application Info (Scrollable) -->
-    <div class="hidden md:flex md:w-1/2 bg-surface-50 dark:bg-surface-950 overflow-y-auto h-screen border-r border-surface-200 dark:border-surface-800 relative">
+    <div *ngIf="isInfoVisible" class="hidden md:flex md:w-1/2 bg-surface-50 dark:bg-surface-950 overflow-y-auto h-screen border-r border-surface-200 dark:border-surface-800 relative">
+        <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-sm absolute top-4 left-4 z-20" (click)="toggleInfo()"></button>
         <div class="p-12 w-full min-h-full flex flex-col items-center">
             <div class="max-w-2xl mx-auto relative w-full my-auto py-8">
 
@@ -95,7 +96,7 @@
     </div>
 
     <!-- Right Half: Login Form (Non-scrollable) -->
-    <div class="flex-1 md:w-1/2 flex items-center justify-center bg-surface-0 dark:bg-surface-900 overflow-hidden relative">
+    <div [ngClass]="{'md:w-1/2': isInfoVisible, 'w-full': !isInfoVisible}" class="flex-1 flex items-center justify-center bg-surface-0 dark:bg-surface-900 overflow-hidden relative">
         <!-- Background Decorations -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[80px] animate-pulse"></div>
@@ -164,6 +165,14 @@
                             pButtonLabel=""
                             (click)="showPatchnotes = true"
                         >View Patch Notes</button>
+                        <button
+                            *ngIf="!isInfoVisible"
+                            pButton
+                            icon="pi pi-info-circle"
+                            label="Show App Info"
+                            class="p-button-text p-button-sm p-button-secondary"
+                            (click)="toggleInfo()"
+                        ></button>
                     </div>
 
                     <!-- Mobile Features Overview -->
