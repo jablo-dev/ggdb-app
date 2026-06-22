@@ -38,6 +38,14 @@ export class ProfileComponent {
         });
     }
 
+    get rpgRarityEnabled(): boolean {
+        return localStorage.getItem('rpgRarityEnabled') === 'true';
+    }
+
+    set rpgRarityEnabled(value: boolean) {
+        localStorage.setItem('rpgRarityEnabled', value ? 'true' : 'false');
+    }
+
     togglePlaytime(event: any) {
         const enabled = event.checked;
 

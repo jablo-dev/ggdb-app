@@ -34,9 +34,23 @@ export class DataDisplayService {
     }
 
     getTierGradient(score: number): string {
+        if (this.isRpgRarityEnabled()) {
+            return this.getRpgTierGradient(score);
+        }
         if (score >= 95) return 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%)';
         if (score >= 90) return 'linear-gradient(135deg, #E8E8E8 0%, #C0C0C0 50%, #A8A8A8 100%)';
         if (score >= 85) return 'radial-gradient(circle, #e49a6e 30%, #b4693e 90%)';
+        return 'transparent';
+    }
+
+    isRpgRarityEnabled(): boolean {
+        return localStorage.getItem('rpgRarityEnabled') === 'true';
+    }
+
+    getRpgTierGradient(score: number): string {
+        if (score >= 95) return 'linear-gradient(135deg, #FFD700 0%, #FFC200 50%, #B8860B 100%)';
+        if (score >= 90) return 'linear-gradient(135deg, #BF5FFF 0%, #9B30FF 50%, #7B00FF 100%)';
+        if (score >= 85) return 'linear-gradient(135deg, #4FC3F7 0%, #1E88E5 50%, #1565C0 100%)';
         return 'transparent';
     }
 

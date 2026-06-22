@@ -329,10 +329,15 @@
                     <span [innerHTML]="'overview.tier_score_description' | translate"></span>
                 </div>
                 <div>
-                    <ul class="list-disc list-inside ml-6">
+                    <ul class="list-disc list-inside ml-6" *ngIf="!dataDisplay.isRpgRarityEnabled()">
                         <li><strong>85–89:</strong> {{ 'overview.bronze_tier' | translate }}</li>
                         <li><strong>90–94:</strong> {{ 'overview.silver_tier' | translate }}</li>
                         <li><strong>95–100:</strong> {{ 'overview.gold_tier' | translate }}</li>
+                    </ul>
+                    <ul class="list-disc list-inside ml-6" *ngIf="dataDisplay.isRpgRarityEnabled()">
+                        <li><strong>85–89:</strong> <span style="color: #4FC3F7">{{ 'overview.rare_tier' | translate }}</span></li>
+                        <li><strong>90–94:</strong> <span style="color: #BF5FFF">{{ 'overview.epic_tier' | translate }}</span></li>
+                        <li><strong>95–100:</strong> <span style="color: #FFD700">{{ 'overview.legendary_tier' | translate }}</span></li>
                     </ul>
                     <p class="mt-1 text-gray-400 text-xs">{{ 'overview.score_scale_description' | translate }}</p>
                 </div>

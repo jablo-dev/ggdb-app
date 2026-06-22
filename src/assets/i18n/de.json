@@ -45,7 +45,9 @@
         "track_playtime_desc": "Aktiviere das Verfolgen der Spielzeit für deine Spiele",
         "language": "Sprache",
         "language_desc": "Wähle deine bevorzugte Sprache",
-        "language_placeholder": "Sprache wählen"
+        "language_placeholder": "Sprache wählen",
+        "rpg_rarity": "RPG-Seltenheitssystem",
+        "rpg_rarity_desc": "Verwende RPG-Seltenheitsstufen (Selten, Episch, Legendär) anstelle von Medaillen für die Bewertung"
     },
     "dashboard": {
         "all_time_completed": "Insgesamt abgeschlossen",
@@ -254,6 +256,9 @@
         "bronze_tier": "85–89: Bronze-Stufe",
         "silver_tier": "90–94: Silber-Stufe",
         "gold_tier": "95–100: Gold-Stufe",
+        "rare_tier": "85–89: Selten",
+        "epic_tier": "90–94: Episch",
+        "legendary_tier": "95–100: Legendär",
         "score_scale_description": "Die Punktzahl wird von 1–10 Bewertungen pro Kategorie skaliert und auf eine Skala von 10–100 normalisiert."
     }
 }

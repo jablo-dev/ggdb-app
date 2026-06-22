@@ -127,20 +127,40 @@ export class ClipboardService {
         ctx.save();
         if (totalScore >= 85) {
             let gradient: CanvasGradient;
-            if (totalScore >= 95) {
-                gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
-                gradient.addColorStop(0, '#FFD700');
-                gradient.addColorStop(0.5, '#FFA500');
-                gradient.addColorStop(1, '#FF8C00');
-            } else if (totalScore >= 90) {
-                gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
-                gradient.addColorStop(0, '#E8E8E8');
-                gradient.addColorStop(0.5, '#C0C0C0');
-                gradient.addColorStop(1, '#A8A8A8');
+            const rpgRarity = localStorage.getItem('rpgRarityEnabled') === 'true';
+            if (rpgRarity) {
+                if (totalScore >= 95) {
+                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient.addColorStop(0, '#FFD700');
+                    gradient.addColorStop(0.5, '#FFC200');
+                    gradient.addColorStop(1, '#B8860B');
+                } else if (totalScore >= 90) {
+                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient.addColorStop(0, '#BF5FFF');
+                    gradient.addColorStop(0.5, '#9B30FF');
+                    gradient.addColorStop(1, '#7B00FF');
+                } else {
+                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient.addColorStop(0, '#4FC3F7');
+                    gradient.addColorStop(0.5, '#1E88E5');
+                    gradient.addColorStop(1, '#1565C0');
+                }
             } else {
-                gradient = ctx.createRadialGradient(width - scoreWidth/2 - 10, 25, 5, width - scoreWidth/2 - 10, 25, 30);
-                gradient.addColorStop(0, '#e49a6e');
-                gradient.addColorStop(1, '#b4693e');
+                if (totalScore >= 95) {
+                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient.addColorStop(0, '#FFD700');
+                    gradient.addColorStop(0.5, '#FFA500');
+                    gradient.addColorStop(1, '#FF8C00');
+                } else if (totalScore >= 90) {
+                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient.addColorStop(0, '#E8E8E8');
+                    gradient.addColorStop(0.5, '#C0C0C0');
+                    gradient.addColorStop(1, '#A8A8A8');
+                } else {
+                    gradient = ctx.createRadialGradient(width - scoreWidth/2 - 10, 25, 5, width - scoreWidth/2 - 10, 25, 30);
+                    gradient.addColorStop(0, '#e49a6e');
+                    gradient.addColorStop(1, '#b4693e');
+                }
             }
             this.drawRoundedRect(ctx, width - scoreWidth - 10, 10, scoreWidth, 32, 6, null, false);
             ctx.fillStyle = gradient;
@@ -206,9 +226,15 @@ export class ClipboardService {
 
         const footerStartY = height - 55;
 
-        ctx.fillText(`Total score:`, contentStartX, footerStartY);
-        ctx.fillStyle = primaryColor;
-        ctx.fillText(`${totalScore}`, contentStartX + ctx.measureText('Total score: ').width, footerStartY);
+        if (record.playtime) {
+            const ph = Math.floor(record.playtime / 60);
+            const pm = record.playtime % 60;
+            const playtimeFooterStr = ph === 0 ? `${pm}m` : (pm === 0 ? `${ph}h` : `${ph}h ${pm}m`);
+            ctx.fillText(`Playtime:`, contentStartX, footerStartY);
+            ctx.fillStyle = primaryColor;
+            ctx.fillText(playtimeFooterStr, contentStartX + ctx.measureText('Playtime: ').width, footerStartY);
+            ctx.fillStyle = '#9ca3af';
+        }
 
         ctx.fillStyle = '#9ca3af';
         ctx.fillText(`Replay value:`, contentStartX, footerStartY + 18);
@@ -238,13 +264,6 @@ export class ClipboardService {
 
             if (record.replay === 1) {
                 footerText += ' | Replay';
-            }
-
-            if (record.playtime) {
-                const h = Math.floor(record.playtime / 60);
-                const m = record.playtime % 60;
-                const playtimeStr = h === 0 ? `${m}m` : (m === 0 ? `${h}h` : `${h}h ${m}m`);
-                footerText += ` | Playtime: ${playtimeStr}`;
             }
 
             ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
