@@ -224,6 +224,8 @@
         "cards": "Karten",
         "timeline": "Zeitstrahl",
         "table": "Tabelle",
+        "flip_all": "Alle umdrehen",
+        "unflip_all": "Alle zurückdrehen",
         "search": "Suchen",
         "score": "Punktzahl",
         "game": "Spiel",

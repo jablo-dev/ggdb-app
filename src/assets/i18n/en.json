@@ -224,6 +224,8 @@
         "cards": "Cards",
         "timeline": "Timeline",
         "table": "Table",
+        "flip_all": "Flip all",
+        "unflip_all": "Unflip all",
         "search": "Search",
         "score": "Score",
         "game": "Game",

@@ -1,4 +1,4 @@
-<div class="entry-card-flip h-full" [class.flipped]="flipped" [class.flip-enabled]="cardFlipEnabled" (click)="onCardClick($event)">
+<div class="entry-card-flip h-full" [class.flipped]="isFlipped" [class.flip-enabled]="cardFlipEnabled || forceFlipped !== null" (click)="onCardClick($event)">
 <div class="entry-card-inner h-full">
 <div class="entry-card-face entry-card-front">
 <div class="entry-card-container relative rounded-xl overflow-hidden h-full group cursor-pointer flex">

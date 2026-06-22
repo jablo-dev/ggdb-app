@@ -88,10 +88,10 @@
             <ng-container *ngFor="let item of visibleCardRecords">
                 <ng-container *ngIf="item.year !== null">
                     <div class="col-span-full">
-                        <app-yearly-line-break [year]="item.year" [count]="item.yearCount" [isCollapsed]="isYearCollapsed(item.year)" (toggle)="toggleYearCollapse(item.year)"></app-yearly-line-break>
+                        <app-yearly-line-break [year]="item.year" [count]="item.yearCount" [isCollapsed]="isYearCollapsed(item.year)" [allFlipped]="isYearFlipped(item.year)" (toggle)="toggleYearCollapse(item.year)" (flipAll)="toggleYearFlip(item.year)"></app-yearly-line-break>
                     </div>
                 </ng-container>
-                <app-entry-card *ngIf="item.year === null" class="h-full" [gameRecord]="item.gameRecord"></app-entry-card>
+                <app-entry-card *ngIf="item.year === null" class="h-full" [gameRecord]="item.gameRecord" [forceFlipped]="getForceFlipped(item.gameRecord)"></app-entry-card>
             </ng-container>
         </div>
     </ng-container>

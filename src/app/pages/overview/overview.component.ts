@@ -73,6 +73,44 @@ export class OverviewComponent implements OnInit, OnDestroy {
     timelineRecords: any[] = [];
     allTimelineRecords: any[] = [];
     collapsedYears: { [year: number]: boolean } = {};
+    flippedYears: { [year: number]: boolean } = this.readFlippedYears();
+
+    private static readonly FLIPPED_YEARS_KEY = 'overviewFlippedYears';
+
+    private readFlippedYears(): { [year: number]: boolean } {
+        try {
+            const raw = sessionStorage.getItem(OverviewComponent.FLIPPED_YEARS_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch {
+            return {};
+        }
+    }
+
+    private writeFlippedYears(): void {
+        try {
+            sessionStorage.setItem(OverviewComponent.FLIPPED_YEARS_KEY, JSON.stringify(this.flippedYears));
+        } catch {
+            // ignore
+        }
+    }
+
+    isYearFlipped(year: number | null | undefined): boolean {
+        if (year == null) return false;
+        return !!this.flippedYears[year];
+    }
+
+    toggleYearFlip(year: number | null | undefined): void {
+        if (year == null) return;
+        this.flippedYears[year] = !this.flippedYears[year];
+        if (!this.flippedYears[year]) delete this.flippedYears[year];
+        this.writeFlippedYears();
+    }
+
+    getForceFlipped(record: GameRecord | undefined): boolean | null {
+        if (!record || !record.finishDate) return null;
+        const y = new Date(record.finishDate).getFullYear();
+        return this.flippedYears[y] ? true : null;
+    }
     sortField: string = 'finishDate';
     sortOrder: number = -1;
 

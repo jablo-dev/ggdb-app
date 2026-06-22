@@ -18,6 +18,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class EntryCardComponent {
     @Input() gameRecord: GameRecord | undefined;
+    @Input() forceFlipped: boolean | null = null;
     router = inject(Router);
     display = inject(DataDisplayService);
     scrollService = inject(ScrollService);
@@ -27,6 +28,25 @@ export class EntryCardComponent {
 
     score: number = 0;
 
+    private static readonly FLIP_STATE_KEY = 'entryCardFlipState';
+
+    private static readFlipState(): { [id: string]: boolean } {
+        try {
+            const raw = sessionStorage.getItem(EntryCardComponent.FLIP_STATE_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch {
+            return {};
+        }
+    }
+
+    private static writeFlipState(state: { [id: string]: boolean }): void {
+        try {
+            sessionStorage.setItem(EntryCardComponent.FLIP_STATE_KEY, JSON.stringify(state));
+        } catch {
+            // ignore quota / disabled storage
+        }
+    }
+
     get playtimeEnabled(): boolean {
         return this.layoutService.layoutConfig().playtimeEnabled ?? false;
     }
@@ -35,13 +55,19 @@ export class EntryCardComponent {
         return localStorage.getItem('cardFlipEnabled') === 'true';
     }
 
+    get isFlipped(): boolean {
+        return this.forceFlipped !== null ? this.forceFlipped : this.flipped;
+    }
+
     subScores: { key: string; label: string; value: number }[] = [];
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['gameRecord'] && this.gameRecord) {
             this.score = this.display.getTotalScore(this.gameRecord);
             this.imageError = false; // Reset error flag when record changes
-            this.flipped = false;
+            const state = EntryCardComponent.readFlipState();
+            const id = String(this.gameRecord.id);
+            this.flipped = !!state[id];
             this.subScores = this.buildSubScores(this.gameRecord);
         }
     }
@@ -68,9 +94,22 @@ export class EntryCardComponent {
         if (this.cardFlipEnabled) {
             event.stopPropagation();
             this.flipped = !this.flipped;
+            this.persistFlipped();
         } else {
             this.goToDetail();
         }
+    }
+
+    private persistFlipped(): void {
+        if (!this.gameRecord) return;
+        const state = EntryCardComponent.readFlipState();
+        const id = String(this.gameRecord.id);
+        if (this.flipped) {
+            state[id] = true;
+        } else {
+            delete state[id];
+        }
+        EntryCardComponent.writeFlipState(state);
     }
 
     onDetailClick(event: MouseEvent): void {
