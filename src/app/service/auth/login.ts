@@ -12,11 +12,12 @@ import { DialogModule } from 'primeng/dialog';
 import { NgForOf, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { VersionService } from '../version.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, NgForOf, CommonModule, DialogModule],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, NgForOf, CommonModule, DialogModule, TranslatePipe],
     templateUrl: './login.html',
     styleUrl: './login.scss'
 })
@@ -28,37 +29,38 @@ export class Login {
     patchnotes: { version: string; date: string; changes: string[]; major?: boolean }[] = [];
     version: string = '';
     isLatestMajor: boolean = false;
+    isInfoVisible: boolean = true;
 
     features = [
         {
             icon: 'pi pi-list',
-            title: 'Track Your Games',
-            description: "Keep a comprehensive record of all the games you've completed. Never forget what you've played and when you finished it."
+            title: 'login.features.track.title',
+            description: 'login.features.track.description'
         },
         {
             icon: 'pi pi-history',
-            title: 'Backlog Management',
-            description: 'Track games you are currently playing or plan to start soon. Manage your gaming queue and stay organized.'
+            title: 'login.features.backlog.title',
+            description: 'login.features.backlog.description'
         },
         {
             icon: 'pi pi-star',
-            title: 'Rate & Review',
-            description: 'Score games across multiple categories including gameplay, presentation, narrative, and more. Build your personal gaming history.'
+            title: 'login.features.rate.title',
+            description: 'login.features.rate.description'
         },
         {
             icon: 'pi pi-chart-line',
-            title: 'Personal Stats',
-            description: 'View detailed statistics about your gaming habits, completion rates, and discover patterns in your gaming preferences.'
+            title: 'login.features.stats.title',
+            description: 'login.features.stats.description'
         },
         {
             icon: 'pi pi-heart',
-            title: 'Mark Favorites',
-            description: 'Highlight your favorite games and easily filter your collection to find the gems that made a lasting impression.'
+            title: 'login.features.favorites.title',
+            description: 'login.features.favorites.description'
         },
         {
             icon: 'pi pi-calendar',
-            title: 'Timeline View',
-            description: 'See your gaming journey organized by year and date, creating a visual timeline of your gaming experiences.'
+            title: 'login.features.timeline.title',
+            description: 'login.features.timeline.description'
         }
     ];
 
@@ -70,6 +72,15 @@ export class Login {
     ) {
         this.loadPatchnotes();
         this.version = this.versionService.getVersion();
+        const savedInfoVisible = localStorage.getItem('ggdb-login-info-visible');
+        if (savedInfoVisible !== null) {
+            this.isInfoVisible = savedInfoVisible === 'true';
+        }
+    }
+
+    toggleInfo(): void {
+        this.isInfoVisible = !this.isInfoVisible;
+        localStorage.setItem('ggdb-login-info-visible', this.isInfoVisible.toString());
     }
 
     loadPatchnotes() {

@@ -1,6 +1,7 @@
 ﻿<div class="flex flex-col md:flex-row min-h-screen">
     <!-- Left Half: Application Info (Scrollable) -->
-    <div class="hidden md:flex md:w-1/2 bg-surface-50 dark:bg-surface-950 overflow-y-auto h-screen border-r border-surface-200 dark:border-surface-800 relative">
+    <div *ngIf="isInfoVisible" class="hidden md:flex md:w-1/2 bg-surface-50 dark:bg-surface-950 overflow-y-auto h-screen border-r border-surface-200 dark:border-surface-800 relative">
+        <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-sm absolute top-4 left-4 z-20" (click)="toggleInfo()"></button>
         <div class="p-12 w-full min-h-full flex flex-col items-center">
             <div class="max-w-2xl mx-auto relative w-full my-auto py-8">
 
@@ -25,10 +26,9 @@
                             <span class="text-[10px] text-muted-color font-medium opacity-70">v{{ version }}</span>
                         </div>
                     </div>
-                    <h2 class="text-2xl font-semibold mb-2 text-primary">Track Your Gaming Journey</h2>
+                    <h2 class="text-2xl font-semibold mb-2 text-primary">{{ 'login.header' | translate }}</h2>
                     <p class="text-base mb-4 text-muted-color">
-                        Keep a comprehensive record of every game you complete, rate them across multiple categories,
-                        and build your personal gaming database.
+                        {{ 'login.description' | translate }}
                     </p>
 
                     <div class="grid grid-cols-1 gap-2">
@@ -38,8 +38,8 @@
                                 <i [class]="feature.icon + ' text-base text-primary'"></i>
                             </div>
                             <div>
-                                <h3 class="text-base font-bold mb-0.5 text-surface-900 dark:text-surface-0">{{ feature.title }}</h3>
-                                <p class="text-sm text-muted-color">{{ feature.description }}</p>
+                                <h3 class="text-base font-bold mb-0.5 text-surface-900 dark:text-surface-0">{{ feature.title | translate }}</h3>
+                                <p class="text-sm text-muted-color">{{ feature.description | translate }}</p>
                             </div>
                         </div>
                     </div>
@@ -48,8 +48,8 @@
                         <div class="absolute top-0 right-0 bg-primary text-primary-contrast text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
                             Invite Only
                         </div>
-                        <h2 class="text-xl font-bold mb-1 text-surface-900 dark:text-surface-0">Ready to Start Tracking?</h2>
-                        <p class="text-base text-muted-color mb-4">Join other gamers building their personal playthrough databases</p>
+                        <h2 class="text-xl font-bold mb-1 text-surface-900 dark:text-surface-0">{{ 'login.ready' | translate }}</h2>
+                        <p class="text-base text-muted-color mb-4">{{ 'login.join_message' | translate }}</p>
 
                         <div class="pt-4 border-t border-surface-200 dark:border-surface-800">
                             <p class="text-sm text-surface-700 dark:text-surface-200 font-semibold italic">
@@ -95,7 +95,7 @@
     </div>
 
     <!-- Right Half: Login Form (Non-scrollable) -->
-    <div class="flex-1 md:w-1/2 flex items-center justify-center bg-surface-0 dark:bg-surface-900 overflow-hidden relative">
+    <div [ngClass]="{'md:w-1/2': isInfoVisible, 'w-full': !isInfoVisible}" class="flex-1 flex items-center justify-center bg-surface-0 dark:bg-surface-900 overflow-hidden relative">
         <!-- Background Decorations -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[80px] animate-pulse"></div>
@@ -164,6 +164,14 @@
                             pButtonLabel=""
                             (click)="showPatchnotes = true"
                         >View Patch Notes</button>
+                        <button
+                            *ngIf="!isInfoVisible"
+                            pButton
+                            icon="pi pi-info-circle"
+                            label="Show App Info"
+                            class="p-button-text p-button-sm p-button-secondary"
+                            (click)="toggleInfo()"
+                        ></button>
                     </div>
 
                     <!-- Mobile Features Overview -->

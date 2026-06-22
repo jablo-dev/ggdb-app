@@ -1,48 +1,74 @@
-<div class="flex flex-col md:flex-row gap-6 items-stretch">
+<div class="flex flex-col md:flex-row gap-6 items-start">
     <div class="card md:w-1/2 flex flex-col">
-        <h2 class="text-2xl font-bold mb-4">Profile Settings</h2>
-        <p class="mb-4">Manage your profile settings and preferences here.</p>
+        <h2 class="text-2xl font-bold mb-4">{{ 'profile.title' | translate }}</h2>
+        <p class="mb-4">{{ 'profile.description' | translate }}</p>
         <div class="flex flex-col gap-6">
             <div>
-
                 <div class="pt-2 flex flex-col gap-3">
                     <div class="flex items-center justify-between border border-surface-200 dark:border-surface-700 rounded-lg p-3">
                         <div class="flex flex-col gap-1">
-                            <span class="font-medium">Track Playtime</span>
-                            <span class="text-xs text-muted-color">Enable playtime tracking for your games</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-medium">{{ 'profile.language' | translate }}</span>
+                                <span class="bg-primary text-primary-contrast text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Beta</span>
+                            </div>
+                            <span class="text-xs text-muted-color">{{ 'profile.language_desc' | translate }}</span>
+                        </div>
+                        <p-select [(ngModel)]="language" [options]="[{label: 'English', value: 'en'}, {label: 'Deutsch', value: 'de'}]" optionLabel="label" optionValue="value" [placeholder]="'profile.language_placeholder' | translate" styleClass="w-full md:w-48" [appendTo]="'body'" />
+                    </div>
+
+                    <div class="flex items-center justify-between border border-surface-200 dark:border-surface-700 rounded-lg p-3">
+                        <div class="flex flex-col gap-1">
+                            <span class="font-medium">{{ 'profile.track_playtime' | translate }}</span>
+                            <span class="text-xs text-muted-color">{{ 'profile.track_playtime_desc' | translate }}</span>
                         </div>
                         <p-toggleswitch [(ngModel)]="playtimeEnabled" (onChange)="togglePlaytime($event)"></p-toggleswitch>
                     </div>
 
-                    <div class="flex items-center justify-between border border-surface-200 dark:border-surface-700 rounded-lg p-3 opacity-60">
+                    <div class="flex items-center justify-between border border-surface-200 dark:border-surface-700 rounded-lg p-3">
                         <div class="flex flex-col gap-1">
-                            <div class="flex items-center gap-2">
-                                <span class="font-medium">Track more!</span>
-                                <span class="bg-primary text-primary-contrast text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Coming Soon</span>
-                            </div>
-                            <span class="text-xs text-muted-color">Track movies, tv shows, audibooks and more</span>
+                            <span class="font-medium">{{ 'profile.rpg_rarity' | translate }}</span>
+                            <span class="text-xs text-muted-color">{{ 'profile.rpg_rarity_desc' | translate }}</span>
                         </div>
-                        <p-toggleswitch [disabled]="true"></p-toggleswitch>
+                        <p-toggleswitch [(ngModel)]="rpgRarityEnabled"></p-toggleswitch>
                     </div>
 
-                    <div class="flex items-center justify-between border border-surface-200 dark:border-surface-700 rounded-lg p-3 opacity-60">
+                    <div class="flex items-center justify-between border border-surface-200 dark:border-surface-700 rounded-lg p-3">
+                        <div class="flex flex-col gap-1">
+                            <span class="font-medium">{{ 'profile.card_flip' | translate }}</span>
+                            <span class="text-xs text-muted-color">{{ 'profile.card_flip_desc' | translate }}</span>
+                        </div>
+                        <p-toggleswitch [(ngModel)]="cardFlipEnabled"></p-toggleswitch>
+                    </div>
+
+                    <div class="flex items-center justify-between border border-surface-200 dark:border-surface-700 rounded-lg p-3">
+                        <div class="flex flex-col gap-1">
+                            <span class="font-medium">{{ 'profile.animated_background' | translate }}</span>
+                            <span class="text-xs text-muted-color">{{ 'profile.animated_background_desc' | translate }}</span>
+                        </div>
+                        <p-toggleswitch [(ngModel)]="animatedBackgroundEnabled"></p-toggleswitch>
+                    </div>
+
+                    <div class="flex items-center justify-between border border-surface-200 dark:border-surface-700 rounded-lg p-3 more-animations-row"
+                         [class.opacity-50]="!animatedBackgroundEnabled"
+                         [title]="!animatedBackgroundEnabled ? ('profile.more_animations_needs_bg' | translate) : ''">
                         <div class="flex flex-col gap-1">
                             <div class="flex items-center gap-2">
-                                <span class="font-medium">Quick Rating</span>
-                                <span class="bg-primary text-primary-contrast text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Coming Soon</span>
+                                <span class="font-medium ls-title">{{ 'profile.more_animations' | translate }}</span>
+                                <span *ngIf="!animatedBackgroundEnabled" class="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">{{ 'profile.more_animations_needs_bg' | translate }}</span>
                             </div>
-                            <span class="text-xs text-muted-color">Only rate your games between 0-100 and ignore all the different catagories like gameplay etc</span>
+                            <span class="text-xs text-muted-color">{{ 'profile.more_animations_desc' | translate }}</span>
                         </div>
-                        <p-toggleswitch [disabled]="true"></p-toggleswitch>
+                        <p-toggleswitch [(ngModel)]="moreAnimationsEnabled" [disabled]="!animatedBackgroundEnabled"></p-toggleswitch>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 
     <div class="card md:w-1/2 flex flex-col">
-        <h3 class="text-xl font-semibold mb-4">Theme Configuration</h3>
-        <p class="text-muted-color mb-4">Customize the appearance of the application by selecting your preferred colors and theme.</p>
+        <h3 class="text-xl font-semibold mb-4">{{ 'configurator.title' | translate }}</h3>
+        <p class="text-muted-color mb-4">{{ 'configurator.description' | translate }}</p>
         <app-profile-configurator />
     </div>
 </div>

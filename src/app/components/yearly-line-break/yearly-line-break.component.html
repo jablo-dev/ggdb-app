@@ -10,4 +10,14 @@
         <i class="pi text-xs text-primary ml-1" [ngClass]="isCollapsed ? 'pi-chevron-down' : 'pi-chevron-up'"></i>
     </div>
     <div class="flex-grow h-px bg-gray-600"></div>
+    <button
+        *ngIf="cardFlipEnabled"
+        type="button"
+        class="flip-all-btn ml-3 flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+        (click)="onFlipAll($event)"
+        [title]="'overview.flip_all' | translate"
+    >
+        <i class="pi pi-refresh text-xs"></i>
+        <span>{{ (allFlipped ? 'overview.unflip_all' : 'overview.flip_all') | translate }}</span>
+    </button>
 </div>

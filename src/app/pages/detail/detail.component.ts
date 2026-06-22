@@ -34,11 +34,13 @@ import { IgdbService, IgdbCover, IgdbGame } from '../../service/igdb.service';
 import { AutoComplete } from 'primeng/autocomplete';
 import { ToolbarService } from '../../service/toolbar.service';
 import { DataDisplayService } from '../../service/data-display.service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule, AutoComplete],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule, AutoComplete, TranslatePipe],
     providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
@@ -74,26 +76,35 @@ export class DetailComponent implements OnInit, OnDestroy {
     playtimeDialogVisible = false;
     customHoursToAdd = 1;
 
-    scoreFieldComments: Record<string, string> = {
-        scoreGameplay: 'How engaging and responsive was the core gameplay loop?',
-        scorePresentation: 'Visuals, animations, polish and overall impression.',
-        scoreNarrative: 'Storytelling, writing, characters, and world-building.',
-        scoreQuality: 'Stability, bug-free experience, and polish level.',
-        scoreSound: 'Music, sound effects, and audio design.',
-        scoreContent: 'Amount and quality of content available.',
-        scorePacing: 'Flow of progression and timing of major beats.',
-        scoreBalance: 'Difficulty tuning and fair challenge.',
-        scoreUIUX: 'Menus, HUD, and overall usability.',
-        scoreImpression: 'Your overall impression.'
-    };
+    private readonly translate = inject(TranslateService);
+    private langChangeSubscription: Subscription = new Subscription();
 
-    replayValueOptions = [
-        { value: 1, label: 'No replay value' },
-        { value: 2, label: 'Maybe someday' },
-        { value: 3, label: 'Would replay' },
-        { value: 4, label: 'Definitely again' },
-        { value: 5, label: 'Can’t stop playing!' }
-    ];
+    scoreFieldComments: Record<string, string> = {};
+
+    replayValueOptions: { value: number; label: string }[] = [];
+
+    updateOptions() {
+        this.scoreFieldComments = {
+            scoreGameplay: this.translate.instant('detail.score_comments.scoreGameplay'),
+            scorePresentation: this.translate.instant('detail.score_comments.scorePresentation'),
+            scoreNarrative: this.translate.instant('detail.score_comments.scoreNarrative'),
+            scoreQuality: this.translate.instant('detail.score_comments.scoreQuality'),
+            scoreSound: this.translate.instant('detail.score_comments.scoreSound'),
+            scoreContent: this.translate.instant('detail.score_comments.scoreContent'),
+            scorePacing: this.translate.instant('detail.score_comments.scorePacing'),
+            scoreBalance: this.translate.instant('detail.score_comments.scoreBalance'),
+            scoreUIUX: this.translate.instant('detail.score_comments.scoreUIUX'),
+            scoreImpression: this.translate.instant('detail.score_comments.scoreImpression')
+        };
+
+        this.replayValueOptions = [
+            { value: 1, label: this.translate.instant('detail.replay_values.1') },
+            { value: 2, label: this.translate.instant('detail.replay_values.2') },
+            { value: 3, label: this.translate.instant('detail.replay_values.3') },
+            { value: 4, label: this.translate.instant('detail.replay_values.4') },
+            { value: 5, label: this.translate.instant('detail.replay_values.5') }
+        ];
+    }
 
     constructor(
         private fb: FormBuilder,
@@ -111,6 +122,8 @@ export class DetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.updateOptions();
+        this.langChangeSubscription = this.translate.onLangChange.subscribe(() => this.updateOptions());
         this.toolbarService.setTemplate(this.toolbarTemplate);
         this.route.queryParams.subscribe((params) => {
             const recordParam = params['record'];
@@ -460,6 +473,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.langChangeSubscription.unsubscribe();
         this.toolbarService.setTemplate(null);
     }
 

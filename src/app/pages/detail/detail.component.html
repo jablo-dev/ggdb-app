@@ -9,7 +9,7 @@
                 type="button"
                 icon="pi pi-arrow-left"
                 class="p-button-secondary"
-                pTooltip="Return"
+                pTooltip="{{ 'detail.return' | translate }}"
                 tooltipPosition="top"
                 (click)="returnToOverview()"
             ></button>
@@ -20,9 +20,9 @@
                 pButton
                 type="button"
                 icon="pi pi-save"
-                pTooltip="Create Playthrough"
+                pTooltip="{{ 'detail.save_playthrough' | translate }}"
                 tooltipPosition="top"
-                label="Save"
+                label="{{ 'detail.save' | translate }}"
                 (click)="save()"
                 [disabled]="form.invalid"
             ></button>
@@ -34,8 +34,8 @@
                 type="button"
                 icon="pi pi-refresh"
                 class="p-button-secondary"
-                pTooltip="Reset"
-                label="Reset"
+                pTooltip="{{ 'detail.reset' | translate }}"
+                label="{{ 'detail.reset' | translate }}"
                 tooltipPosition="top"
                 (click)="reset()"
             ></button>
@@ -47,7 +47,7 @@
                 type="button"
                 icon="pi pi-file-edit"
                 class="p-button-secondary"
-                pTooltip="Edit"
+                pTooltip="{{ 'detail.edit' | translate }}"
                 tooltipPosition="top"
                 (click)="toggleEdit()"
             ></button>
@@ -59,7 +59,7 @@
                 type="button"
                 [icon]="isGeneratingCard ? 'pi pi-spin pi-spinner' : 'pi pi-copy'"
                 class="p-button-secondary"
-                pTooltip="{{ isGeneratingCard ? 'Generating card...' : 'Copy card to clipboard' }}"
+                pTooltip="{{ isGeneratingCard ? ('detail.generating_card' | translate) : ('detail.copy_to_clipboard' | translate) }}"
                 tooltipPosition="top"
                 (click)="copyCardToClipboard()"
                 [disabled]="isGeneratingCard"
@@ -71,7 +71,7 @@
                 pButton
                 type="button"
                 icon="pi pi-check"
-                pTooltip="Save Changes"
+                pTooltip="{{ 'detail.save_changes' | translate }}"
                 tooltipPosition="top"
                 (click)="save()"
                 [disabled]="form.invalid"
@@ -84,7 +84,7 @@
                 type="button"
                 icon="pi pi-times"
                 class="p-button-secondary"
-                pTooltip="Cancel Editing"
+                pTooltip="{{ 'detail.cancel_editing' | translate }}"
                 tooltipPosition="top"
                 (click)="toggleEdit()"
             ></button>
@@ -96,7 +96,7 @@
                 type="button"
                 icon="pi pi-trash"
                 class="p-button-danger"
-                pTooltip="Delete"
+                pTooltip="{{ 'detail.delete' | translate }}"
                 tooltipPosition="top"
                 (click)="confirmDelete()"
             ></button>
@@ -108,9 +108,9 @@
                 type="button"
                 icon="pi pi-image"
                 class="p-button-secondary"
-                pTooltip="Select Cover Image"
+                pTooltip="{{ 'detail.select_cover_image' | translate }}"
                 tooltipPosition="top"
-                label="Cover"
+                label="{{ 'detail.cover' | translate }}"
                 (click)="openCoverDialog()"
             ></button>
 
@@ -121,9 +121,9 @@
                 type="button"
                 icon="pi pi-check-circle"
                 class="p-button-success"
-                pTooltip="Finish this game and move from backlog"
+                pTooltip="{{ 'detail.finish_game' | translate }}"
                 tooltipPosition="top"
-                label="Game finished!"
+                label="{{ 'detail.finish_game_label' | translate }}"
                 (click) = "finishGame()"
             ></button>
 
@@ -134,9 +134,9 @@
                 type="button"
                 icon="pi pi-times-circle"
                 class="p-button-danger"
-                pTooltip="Cancel this game and move from backlog"
+                pTooltip="{{ 'detail.cancel_game' | translate }}"
                 tooltipPosition="top"
-                label="Cancel game"
+                label="{{ 'detail.cancel_game_label' | translate }}"
                 (click) = "cancelGame()"
             ></button>
         </div>
@@ -144,7 +144,7 @@
         <!-- Right: Final score preview -->
         <div class="flex items-center gap-3" *ngIf="!form.get('backlogItem')?.value">
             <!-- Label -->
-            <label class="font-semibold opacity-80 whitespace-nowrap hidden sm:inline">Score preview</label>
+            <label class="font-semibold opacity-80 whitespace-nowrap hidden sm:inline">{{ 'detail.score_preview' | translate }}</label>
 
             <!-- Progress bar -->
             <div class="relative w-24 sm:w-32 md:w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
@@ -175,13 +175,13 @@
             <div class="flex flex-col lg:flex-row gap-4">
                 <!-- Record Info -->
                 <div [ngClass]="playtimeEnabled ? 'w-full lg:w-[70%]' : 'w-full'">
-                    <p-fieldset legend="Record Information">
+                    <p-fieldset legend="{{ 'detail.record_information' | translate }}">
                         <div class="flex flex-col lg:flex-row gap-6">
                             <!-- Left side: Main Fields -->
                             <div class="flex-grow flex flex-col gap-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     <div class="flex flex-col gap-1">
-                                        <label for="name" class="text-sm font-medium flex items-center gap-1">Name <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
+                                        <label for="name" class="text-sm font-medium flex items-center gap-1">{{ 'detail.name' | translate }} <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
                                         <p-autoComplete
                                             id="name"
                                             formControlName="name"
@@ -196,12 +196,12 @@
                                         ></p-autoComplete>
                                     </div>
                                     <div class="flex flex-col gap-1">
-                                        <label for="type" class="text-sm font-medium flex items-center gap-1">Type <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
-                                        <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
+                                        <label for="type" class="text-sm font-medium flex items-center gap-1">{{ 'detail.type' | translate }} <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
+                                        <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="{{ 'detail.select_type' | translate }}"></p-select>
                                     </div>
                                     <div class="flex flex-col gap-1">
-                                        <label for="location" class="text-sm font-medium flex items-center gap-1">Location <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
-                                        <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location" optionLabel="label" optionValue="value">
+                                        <label for="location" class="text-sm font-medium flex items-center gap-1">{{ 'detail.location' | translate }} <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
+                                        <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="{{ 'detail.select_location' | translate }}" optionLabel="label" optionValue="value">
                                             <ng-template pTemplate="selectedItem" let-selectedOption>
                                                 <div class="flex items-center gap-2" *ngIf="selectedOption">
                                                     <i [class]="dataDisplay.getPlatformIconClass(selectedOption.value)" class="text-primary"></i>
@@ -217,44 +217,44 @@
                                         </p-select>
                                     </div>
                                     <div class="flex flex-col gap-1" *ngIf="!form.get('backlogItem')?.value">
-                                        <label for="finishDate" class="text-sm font-medium flex items-center gap-1">Finish Date <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
+                                        <label for="finishDate" class="text-sm font-medium flex items-center gap-1">{{ 'detail.finish_date' | translate }} <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
                                         <p-datepicker id="finishDate" formControlName="finishDate" showIcon class="w-full" [fluid]="true" dateFormat="dd/mm/yy"></p-datepicker>
                                     </div>
                                     <div class="flex flex-col gap-1 md:col-span-2">
-                                        <label for="note" class="text-sm font-medium">Note</label>
-                                        <input id="note" pInputText formControlName="note" placeholder="Add note" />
+                                        <label for="note" class="text-sm font-medium">{{ 'detail.note' | translate }}</label>
+                                        <input id="note" pInputText formControlName="note" placeholder="{{ 'detail.add_note' | translate }}" />
                                     </div>
                                 </div>
 
                                 <div class="flex items-center flex-wrap gap-4 mt-2">
                                     <div class="flex flex-col gap-1 w-full max-w-[200px]" *ngIf="!form.get('backlogItem')?.value">
-                                        <label for="replayValue" class="text-sm font-medium flex items-center gap-1">Replay Value <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
+                                        <label for="replayValue" class="text-sm font-medium flex items-center gap-1">{{ 'detail.replay_value' | translate }} <i class="pi pi-asterisk text-primary text-[6px]"></i></label>
                                         <p-select
                                             id="replayValue"
                                             formControlName="replayValue"
                                             [options]="replayValueOptions"
                                             optionLabel="label"
                                             optionValue="value"
-                                            placeholder="Select replay value"
+                                            placeholder="{{ 'detail.select_replay_value' | translate }}"
                                         ></p-select>
                                     </div>
 
                                     <div class="flex flex-wrap gap-x-6 gap-y-3 pt-5">
                                         <div class="flex items-center gap-2" *ngIf="!form.get('backlogItem')?.value">
                                             <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
-                                            <label class="text-sm whitespace-nowrap">Main Quest finished</label>
+                                            <label class="text-sm whitespace-nowrap">{{ 'detail.main_quest_finished' | translate }}</label>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <p-toggleSwitch formControlName="fav"></p-toggleSwitch>
-                                            <label class="text-sm">Favorite</label>
+                                            <label class="text-sm">{{ 'detail.favorite' | translate }}</label>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
-                                            <label class="text-sm">Replay</label>
+                                            <label class="text-sm">{{ 'detail.replay' | translate }}</label>
                                         </div>
                                         <div class="flex items-center gap-2" *ngIf="!form.get('backlogItem')?.value">
                                             <p-toggleSwitch formControlName="canceled"></p-toggleSwitch>
-                                            <label class="text-sm">Canceled</label>
+                                            <label class="text-sm">{{ 'detail.canceled' | translate }}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -273,22 +273,22 @@
 
                 <!-- Playtime Tracker -->
                 <div class="w-full lg:w-[30%]" *ngIf="playtimeEnabled">
-                    <p-fieldset legend="Playtime Tracker" class="h-full">
+                    <p-fieldset legend="{{ 'detail.playtime_tracker' | translate }}" class="h-full">
                         <div class="flex flex-col gap-4">
                             <div class="flex flex-col gap-1 w-full">
                                 <label for="playtime" class="text-sm font-semibold flex items-center gap-2">
                                     <i class="pi pi-clock text-primary"></i>
-                                    Total Playtime
+                                    {{ 'detail.total_playtime' | translate }}
                                 </label>
                                 <div class="flex flex-col gap-4">
                                     <div class="flex items-center gap-2">
-                                        <p-inputNumber id="playtime" formControlName="playtime" [min]="0" placeholder="Minutes" class="flex-grow" suffix=" min" [readonly]="!formEditable"></p-inputNumber>
+                                        <p-inputNumber id="playtime" formControlName="playtime" [min]="0" placeholder="{{ 'detail.minutes' | translate }}" class="flex-grow" suffix="{{ 'detail.minutes' | translate }}" [readonly]="!formEditable"></p-inputNumber>
                                         <p-button
                                             *ngIf="!formEditable"
                                             icon="pi pi-plus"
                                             [rounded]="true"
                                             [text]="true"
-                                            pTooltip="Add Time"
+                                            pTooltip="{{ 'detail.add_time' | translate }}"
                                             (click)="showPlaytimeDialog()"
                                         ></p-button>
                                     </div>
@@ -311,7 +311,7 @@
             <!-- Score Categories - 3 per row (excluding impression) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" *ngIf="!form.get('backlogItem')?.value">
                 <ng-container *ngFor="let field of scoreFields">
-                    <p-fieldset *ngIf="field !== 'scoreImpression'" [legend]="field.replace('score', '')">
+                    <p-fieldset *ngIf="field !== 'scoreImpression'" [legend]="('detail.score_labels.' + field.replace('score', '')) | translate">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm opacity-80">{{ scoreFieldComments[field] }}</span>
                             <p-toggleSwitch [formControlName]="field + 'Enabled'"></p-toggleSwitch>
@@ -328,7 +328,7 @@
 
             <!-- Impression - Full Width at Bottom -->
             <div class="w-full" *ngIf="!form.get('backlogItem')?.value">
-                <p-fieldset legend="Impression" class="impression-fieldset">
+                <p-fieldset legend="{{ 'detail.impression' | translate }}" class="impression-fieldset">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-sm opacity-80">{{ scoreFieldComments['scoreImpression'] }}</span>
                         <p-toggleSwitch formControlName="scoreImpressionEnabled"></p-toggleSwitch>
@@ -350,7 +350,7 @@
 
 <!-- Cover Image Dialog -->
 <p-dialog
-    header="Select Cover Image"
+    header="{{ 'detail.select_cover_image' | translate }}"
     [(visible)]="coverDialogVisible"
     [modal]="true"
     [style]="{ width: '80vw', maxWidth: '900px' }"
@@ -360,12 +360,12 @@
     <!-- Loading state -->
     <div *ngIf="coverSearchLoading" class="flex justify-center items-center py-12">
         <p-progressSpinner strokeWidth="4" [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
-        <span class="ml-4 text-sm opacity-70">Searching IGDB...</span>
+        <span class="ml-4 text-sm opacity-70">{{ 'detail.searching_igdb' | translate }}</span>
     </div>
 
     <!-- No results -->
     <div *ngIf="!coverSearchLoading && coverResults.length === 0" class="flex justify-center items-center py-12">
-        <span class="text-sm opacity-70">No covers found for "{{ form.get('name')?.value }}".</span>
+        <span class="text-sm opacity-70">{{ 'detail.no_covers_found' | translate:{name: form.get('name')?.value} }}</span>
     </div>
 
     <!-- Cover grid -->
@@ -388,7 +388,7 @@
 
 <!-- Quick Add Playtime Dialog -->
 <p-dialog
-    header="Add Playtime"
+    header="{{ 'detail.add_playtime' | translate }}"
     [(visible)]="playtimeDialogVisible"
     [modal]="true"
     [style]="{ width: '350px' }"
@@ -397,7 +397,7 @@
 >
     <div class="flex flex-col gap-4 py-2">
         <div class="text-center text-muted-color mb-2">
-            Add hours to your total playtime for <strong>{{ form.get('name')?.value }}</strong>
+            {{ 'detail.add_hours_desc' | translate:{name: form.get('name')?.value} }}
         </div>
         <div class="grid grid-cols-3 gap-2">
             <button pButton type="button" label="+1h" class="p-button-outlined" (click)="quickAddAndSave(1)"></button>
@@ -408,9 +408,9 @@
             <button pButton type="button" label="+20h" class="p-button-outlined" (click)="quickAddAndSave(20)"></button>
         </div>
         <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
-            <label class="text-sm font-medium">Custom Hours</label>
+            <label class="text-sm font-medium">{{ 'detail.custom_hours' | translate }}</label>
             <div class="flex gap-2">
-                <p-inputNumber [(ngModel)]="customHoursToAdd" [min]="1" [showButtons]="true" class="flex-grow" suffix=" hrs"></p-inputNumber>
+                <p-inputNumber [(ngModel)]="customHoursToAdd" [min]="1" [showButtons]="true" class="flex-grow" [suffix]="' ' + ('detail.hrs' | translate)"></p-inputNumber>
                 <button pButton icon="pi pi-plus" (click)="quickAddAndSave(customHoursToAdd)"></button>
             </div>
         </div>

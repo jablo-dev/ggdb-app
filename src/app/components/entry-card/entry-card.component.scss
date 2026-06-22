@@ -1,3 +1,166 @@
+.entry-card-flip {
+    position: relative;
+    perspective: 1200px;
+    width: 100%;
+    height: 180px;
+
+    .entry-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        transform-style: preserve-3d;
+    }
+
+    // Ensure the inner card container fills the flip wrapper instead of
+    // relying on its own fixed 180px height (which would be ignored when the
+    // face is absolutely positioned and could collapse the layout).
+    .entry-card-face .entry-card-container {
+        height: 100%;
+    }
+
+    &.flip-enabled.flipped .entry-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .entry-card-face {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        // Promote each face to its own 3D layer so children (with their own
+        // transforms/filters) don't bleed through and don't appear mirrored.
+        transform: rotateY(0deg);
+        transform-style: preserve-3d;
+        -webkit-transform-style: preserve-3d;
+    }
+
+    .entry-card-front {
+        // Hide front when flipped (fallback for browsers/children that ignore
+        // backface-visibility due to nested transforms/filters).
+        transition: opacity 0s linear 0.3s;
+    }
+
+    .entry-card-back {
+        transform: rotateY(180deg);
+        transition: opacity 0s linear 0.3s;
+        opacity: 0;
+    }
+
+    &.flip-enabled.flipped {
+        .entry-card-front {
+            opacity: 0;
+        }
+        .entry-card-back {
+            opacity: 1;
+        }
+    }
+
+    // When flip is disabled, behave like a normal block (no absolute positioning)
+    &:not(.flip-enabled) {
+        perspective: none;
+
+        .entry-card-inner {
+            transform: none !important;
+        }
+
+        .entry-card-face {
+            position: relative;
+            inset: auto;
+        }
+
+        .entry-card-back {
+            display: none;
+        }
+    }
+}
+
+.entry-card-back-container {
+    background: var(--surface-card);
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    .back-header {
+        background: var(--surface-100);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+        .back-title {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            max-width: 70%;
+        }
+
+        .back-copy-btn {
+            background: transparent;
+            color: var(--text-color-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+
+            &:hover:not(:disabled) {
+                color: var(--primary-color);
+                border-color: var(--primary-color);
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+
+        .back-detail-btn {
+            background: var(--primary-color);
+            color: var(--primary-contrast-color, #000);
+            border: none;
+            transition: filter 0.15s ease-in-out;
+
+            &:hover {
+                filter: brightness(1.1);
+            }
+        }
+    }
+
+    .back-content {
+        padding-top: 0.5rem;
+    }
+
+    .subscore-row {
+        color: var(--text-color);
+        padding: 0.15rem 0;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+
+        .subscore-label {
+            opacity: 0.85;
+        }
+    }
+
+    .back-footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--surface-100);
+
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            white-space: nowrap;
+
+            .tier-label {
+                opacity: 0.85;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .back-header .back-title { font-size: 0.8rem; }
+        .subscore-row { font-size: 0.7rem; }
+    }
+}
+
 .entry-card-container {
     background: var(--surface-card);
     border-radius: 0.75rem;
@@ -6,12 +169,36 @@
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease-in-out;
     height: 180px;
+    // border-right: 0px solid transparent;
 
     &:hover {
-        filter: brightness(1.5);
         box-shadow:
             0 15px 25px -3px rgba(0, 0, 0, 0.15),
             0 6px 10px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4px;
+        background: var(--primary-color);
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    // Default highlight (when NOT in more-animations mode)
+    :host-context(body:not(.more-animations)) &:hover::after {
+        opacity: 1;
+    }
+
+    // Special effects only for more-animations mode
+    :host-context(body.more-animations) &:hover {
+        filter: brightness(1.5);
     }
 
     .card-content-wrapper {
@@ -20,6 +207,7 @@
         display: flex;
         flex-direction: column;
         position: relative;
+        z-index: 2;
     }
 
     .card-content {
@@ -135,6 +323,7 @@
         overflow: hidden;
         width: 135px; // 180px * 3/4
         height: 100%;
+        z-index: 2;
 
         img {
             transition: transform 0.5s ease;
@@ -143,7 +332,9 @@
     }
 
     &:hover .cover-image-container img {
-        transform: scale(1.05);
+        :host-context(body.more-animations) & {
+            transform: scale(1.05);
+        }
     }
 
     .canceled-stamp {
