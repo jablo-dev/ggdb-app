@@ -169,12 +169,36 @@
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease-in-out;
     height: 180px;
+    // border-right: 0px solid transparent;
 
     &:hover {
-        filter: brightness(1.5);
         box-shadow:
             0 15px 25px -3px rgba(0, 0, 0, 0.15),
             0 6px 10px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4px;
+        background: var(--primary-color);
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    // Default highlight (when NOT in more-animations mode)
+    :host-context(body:not(.more-animations)) &:hover::after {
+        opacity: 1;
+    }
+
+    // Special effects only for more-animations mode
+    :host-context(body.more-animations) &:hover {
+        filter: brightness(1.5);
     }
 
     .card-content-wrapper {
@@ -183,6 +207,7 @@
         display: flex;
         flex-direction: column;
         position: relative;
+        z-index: 2;
     }
 
     .card-content {
@@ -298,6 +323,7 @@
         overflow: hidden;
         width: 135px; // 180px * 3/4
         height: 100%;
+        z-index: 2;
 
         img {
             transition: transform 0.5s ease;
@@ -306,7 +332,9 @@
     }
 
     &:hover .cover-image-container img {
-        transform: scale(1.05);
+        :host-context(body.more-animations) & {
+            transform: scale(1.05);
+        }
     }
 
     .canceled-stamp {
