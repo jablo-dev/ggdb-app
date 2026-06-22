@@ -2,6 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { GameRecord } from "../models/record.model";
 import { VersionService } from "./version.service";
 import { DataService } from "./data.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
     providedIn: 'root'
@@ -9,6 +10,7 @@ import { DataService } from "./data.service";
 export class ClipboardService {
     private versionService = inject(VersionService);
     private dataService = inject(DataService);
+    private translateService = inject(TranslateService);
 
     async generateAndCopyCardToClipboard(record: GameRecord, totalScore: number): Promise<void> {
         try {
@@ -58,7 +60,7 @@ export class ClipboardService {
         const ctx = canvas.getContext('2d')!;
 
         const width = 650;
-        const height = 280;
+        const height = 300; // Slightly taller to accommodate more subscores
 
         const devicePixelRatio = window.devicePixelRatio || 1;
 
@@ -83,46 +85,68 @@ export class ClipboardService {
         if (record.cover) {
             try {
                 const img = await this.loadImage(record.cover);
-                const coverWidth = 180;
+                const coverWidth = 200; // Increased width to match design
                 const coverHeight = height;
 
                 ctx.save();
                 this.drawRoundedRect(ctx, 0, 0, coverWidth, coverHeight, 12);
                 ctx.clip();
-                ctx.drawImage(img, 0, 0, coverWidth, coverHeight);
+
+                // Cover image scaling (object-cover equivalent)
+                const imgRatio = img.width / img.height;
+                const canvasRatio = coverWidth / coverHeight;
+                let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+
+                if (imgRatio > canvasRatio) {
+                    drawHeight = coverHeight;
+                    drawWidth = img.width * (coverHeight / img.height);
+                    offsetX = (coverWidth - drawWidth) / 2;
+                } else {
+                    drawWidth = coverWidth;
+                    drawHeight = img.height * (coverWidth / img.width);
+                    offsetY = (coverHeight - drawHeight) / 2;
+                }
+
+                ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
 
                 // Add a subtle overlay like in the UI
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
                 ctx.fillRect(0, 0, coverWidth, coverHeight);
                 ctx.restore();
 
-                contentStartX = coverWidth + 20;
+                contentStartX = coverWidth + 0; // The content starts right after cover
             } catch (e) {
                 console.error('Failed to load cover image for canvas:', e);
             }
         }
 
-        ctx.fillStyle = primaryColor;
-        ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'left';
-        const title = record.name || 'Unknown Game';
+        const contentWidth = width - contentStartX;
 
-        const maxTitleWidth = width - contentStartX - 100; // Leave space for score
-        let displayTitle = title;
+        // Title (Top Left of content area)
+        const titlePadding = 12;
+        ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+        const title = record.name || 'Unknown Game';
         const titleMetrics = ctx.measureText(title);
-        if (titleMetrics.width > maxTitleWidth) {
-            while (ctx.measureText(displayTitle + '...').width > maxTitleWidth && displayTitle.length > 0) {
+        const titleMaxWidth = contentWidth - 100;
+
+        ctx.fillStyle = primaryColor;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        let displayTitle = title;
+        if (titleMetrics.width > titleMaxWidth) {
+            while (ctx.measureText(displayTitle + '...').width > titleMaxWidth && displayTitle.length > 0) {
                 displayTitle = displayTitle.slice(0, -1);
             }
             displayTitle += '...';
         }
+        ctx.fillText(displayTitle, contentStartX + titlePadding, 20);
 
-        ctx.fillText(displayTitle, contentStartX, 40);
-
-        // Score Badge (top right)
+        // Score Badge (Top Right)
         const scoreStr = totalScore.toString();
-        ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
-        const scoreWidth = ctx.measureText(scoreStr).width + 20;
+        ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+        const scoreWidth = ctx.measureText(scoreStr).width + 30;
+        const scoreHeight = 40;
 
         ctx.save();
         if (totalScore >= 85) {
@@ -130,153 +154,189 @@ export class ClipboardService {
             const rpgRarity = localStorage.getItem('rpgRarityEnabled') === 'true';
             if (rpgRarity) {
                 if (totalScore >= 95) {
-                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
                     gradient.addColorStop(0, '#FFD700');
                     gradient.addColorStop(0.5, '#FFC200');
                     gradient.addColorStop(1, '#B8860B');
                 } else if (totalScore >= 90) {
-                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
                     gradient.addColorStop(0, '#BF5FFF');
                     gradient.addColorStop(0.5, '#9B30FF');
                     gradient.addColorStop(1, '#7B00FF');
                 } else {
-                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
                     gradient.addColorStop(0, '#4FC3F7');
                     gradient.addColorStop(0.5, '#1E88E5');
                     gradient.addColorStop(1, '#1565C0');
                 }
             } else {
                 if (totalScore >= 95) {
-                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
                     gradient.addColorStop(0, '#FFD700');
                     gradient.addColorStop(0.5, '#FFA500');
                     gradient.addColorStop(1, '#FF8C00');
                 } else if (totalScore >= 90) {
-                    gradient = ctx.createLinearGradient(width - scoreWidth - 10, 10, width - 10, 40);
+                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
                     gradient.addColorStop(0, '#E8E8E8');
                     gradient.addColorStop(0.5, '#C0C0C0');
                     gradient.addColorStop(1, '#A8A8A8');
                 } else {
-                    gradient = ctx.createRadialGradient(width - scoreWidth/2 - 10, 25, 5, width - scoreWidth/2 - 10, 25, 30);
+                    gradient = ctx.createRadialGradient(width - scoreWidth/2, scoreHeight/2, 5, width - scoreWidth/2, scoreHeight/2, 20);
                     gradient.addColorStop(0, '#e49a6e');
                     gradient.addColorStop(1, '#b4693e');
                 }
             }
-            this.drawRoundedRect(ctx, width - scoreWidth - 10, 10, scoreWidth, 32, 6, null, false);
             ctx.fillStyle = gradient;
-            ctx.fill();
+            ctx.fillRect(width - scoreWidth, 0, scoreWidth, scoreHeight);
             ctx.fillStyle = '#000000';
         } else {
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = surfaceColors.darker || 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(width - scoreWidth, 0, scoreWidth, scoreHeight);
+            ctx.fillStyle = primaryColor;
         }
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(scoreStr, width - scoreWidth / 2 - 10, 27);
+        ctx.fillText(scoreStr, width - scoreWidth / 2, scoreHeight / 2);
         ctx.restore();
 
-        // Reset text baseline for other drawings
-        ctx.textBaseline = 'alphabetic';
-
-        const allScoreFields = [
+        // Subscores Grid (Matching the Backside design)
+        const subScoreFields = [
             { key: 'scoreGameplay', label: 'Gameplay' },
             { key: 'scorePresentation', label: 'Presentation' },
             { key: 'scoreNarrative', label: 'Narrative' },
-            { key: 'scoreQuality', label: 'Quality' },
             { key: 'scoreSound', label: 'Sound' },
             { key: 'scoreContent', label: 'Content' },
             { key: 'scorePacing', label: 'Pacing' },
             { key: 'scoreBalance', label: 'Balance' },
+            { key: 'scoreQuality', label: 'Quality' },
             { key: 'scoreUIUX', label: 'UI/UX' },
             { key: 'scoreImpression', label: 'Impression' }
         ];
 
-        const col1X = contentStartX;
-        const col2X = contentStartX + 160;
-        let startY = 80;
-        const rowHeight = 22;
+        // Filter out 0 scores as in EntryCardComponent.buildSubScores
+        const activeSubScores = subScoreFields
+            .map(f => ({ label: f.label, value: (record[f.key as keyof GameRecord] as number) || 0 }))
+            .filter(s => s.value > 0);
 
-        allScoreFields.forEach((field, index) => {
-            const score = record[field.key as keyof GameRecord] as number || 0;
+        const gridX = contentStartX + 20;
+        const gridY = 60;
+        const gridWidth = contentWidth - 40;
+        const rowHeight = 28;
+        const colWidth = gridWidth / 2;
 
-            const x = index % 2 === 0 ? col1X : col2X;
-            const currentY = startY + Math.floor(index / 2) * rowHeight;
+        ctx.textBaseline = 'alphabetic';
+        activeSubScores.forEach((s, index) => {
+            const col = index % 2;
+            const row = Math.floor(index / 2);
+            const x = gridX + (col * colWidth);
+            const y = gridY + (row * rowHeight);
 
+            // Label
             ctx.fillStyle = '#9ca3af';
-            ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
-            ctx.fillText(`${field.label}:`, x, currentY);
+            ctx.font = '14px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(s.label, x, y + 18);
 
-            if (score === 0) {
-                ctx.fillStyle = '#6b7280';
-                ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
-                ctx.fillText('-', x + 110, currentY);
-            } else {
-                ctx.fillStyle = primaryColor;
-                ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
-                ctx.fillText(score.toString(), x + 110, currentY);
-            }
+            // Value
+            ctx.fillStyle = primaryColor;
+            ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(`${s.value}`, x + colWidth - 30, y + 18);
+
+            // Dotted border
+            ctx.save();
+            ctx.setLineDash([2, 2]);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.beginPath();
+            ctx.moveTo(x, y + rowHeight - 2);
+            ctx.lineTo(x + colWidth - 20, y + rowHeight - 2);
+            ctx.stroke();
+            ctx.restore();
         });
 
-        const replayValueLabels = ['No replay value', 'Maybe someday', 'Would replay', 'Definitely again', "Can't stop playing!"];
-        const replayValue = record.replayValue || 1;
-        const replayLabel = replayValueLabels[replayValue - 1] || 'Unknown';
-
-        ctx.font = 'bold 13px system-ui, -apple-system, sans-serif';
-        ctx.fillStyle = '#9ca3af';
-        ctx.textAlign = 'left';
-
-        const footerStartY = height - 55;
-
-        if (record.playtime) {
-            const ph = Math.floor(record.playtime / 60);
-            const pm = record.playtime % 60;
-            const playtimeFooterStr = ph === 0 ? `${pm}m` : (pm === 0 ? `${ph}h` : `${ph}h ${pm}m`);
-            ctx.fillText(`Playtime:`, contentStartX, footerStartY);
-            ctx.fillStyle = primaryColor;
-            ctx.fillText(playtimeFooterStr, contentStartX + ctx.measureText('Playtime: ').width, footerStartY);
+        if (activeSubScores.length === 0) {
             ctx.fillStyle = '#9ca3af';
+            ctx.font = 'italic 14px system-ui, -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('No scores available', contentStartX + contentWidth / 2, height / 2);
+        } else {
+            // Add Replay and Playtime below the categories if space allows
+            const lastRow = Math.ceil(activeSubScores.length / 2);
+            const extraStatsY = gridY + (lastRow * rowHeight) + 10;
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '14px system-ui, -apple-system, sans-serif';
+
+            if (record.replayValue !== undefined && record.replayValue !== null && record.replayValue > 0) {
+                const label = this.translateService.instant(`detail.replay_values.${record.replayValue}`);
+                ctx.fillText(label, gridX, extraStatsY + 14);
+            }
+            if (record.playtime) {
+                const h = (record.playtime / 60).toFixed(1);
+                const playtimeY = (record.replayValue !== undefined && record.replayValue !== null && record.replayValue > 0) ? extraStatsY + 32 : extraStatsY + 14;
+                ctx.fillText(`Playtime: ${h} hours`, gridX, playtimeY);
+            }
         }
 
-        ctx.fillStyle = '#9ca3af';
-        ctx.fillText(`Replay value:`, contentStartX, footerStartY + 18);
-        ctx.fillStyle = primaryColor;
-        ctx.fillText(`${replayLabel}`, contentStartX + ctx.measureText('Replay value: ').width, footerStartY + 18);
+        // Footer Metadata
+        const footerY = height - 20;
+        ctx.textAlign = 'left';
+        ctx.font = '14px system-ui, -apple-system, sans-serif'; // Matching subscore label font
+        ctx.fillStyle = '#9ca3af'; // Matching subscore label color
 
+        let footerParts = [];
         if (record.finishDate) {
             const finishDate = new Date(record.finishDate);
             const dateString = finishDate.toLocaleDateString('en-GB', {
                 day: 'numeric',
-                month: 'long',
+                month: 'short',
                 year: 'numeric'
             });
 
             const year = finishDate.getFullYear();
-            let footerText = `#${countInYear} of ${year} | ${dateString}`;
-
-            if (record.canceled === 1) {
-                footerText += ' | CANCELED';
-            } else if (record.mainQuestDone === 1) {
-                footerText += ' | Main Quest finished';
-            }
-
-            if (record.backlogItem === 1) {
-                footerText += ' | Backlog';
-            }
-
-            if (record.replay === 1) {
-                footerText += ' | Replay';
-            }
-
-            ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
-            ctx.fillStyle = '#6b7280';
-            ctx.textAlign = 'left';
-            ctx.fillText(footerText, contentStartX, height - 15);
+            footerParts.push(`#${countInYear} of ${year}`);
+            footerParts.push(dateString);
         }
 
+        if (record.canceled === 1) {
+            footerParts.push('Canceled');
+        } else if (record.mainQuestDone === 1) {
+            footerParts.push('Main Quest finished');
+        }
+
+        if (record.backlogItem === 1) {
+            footerParts.push('Backlog');
+        }
+
+        ctx.fillText(footerParts.join(' | '), contentStartX + 20, footerY);
+
+        // Version/Branding (Tilted Banner)
         const version = this.versionService.getVersion();
-        ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
-        ctx.fillStyle = '#4b5563';
-        ctx.textAlign = 'right';
-        ctx.fillText(`GG.DB ${version}`, width - 20, height - 15);
+        const bannerText = `GG.DB ${version}`;
+        ctx.font = '11px system-ui, -apple-system, sans-serif';
+        const bannerPadding = 8;
+        const bannerTextWidth = ctx.measureText(bannerText).width;
+        const bannerWidth = bannerTextWidth + (bannerPadding * 10); // Much wider to ensure it cuts off
+        const bannerHeight = 22;
+
+        ctx.save();
+        // Position higher and to the left to avoid clipping
+        const angle = -Math.PI / 4; // 45 degrees
+        ctx.translate(width - 25, height - 25);
+        ctx.rotate(angle);
+
+        // Draw Banner background
+        ctx.fillStyle = '#9ca3af'; // Same as narrative, gameplay label color
+        // Offset it so the text is centered along the diagonal
+        ctx.fillRect(-bannerWidth/2, -bannerHeight, bannerWidth, bannerHeight);
+
+        // Draw text
+        ctx.fillStyle = '#000000'; // Black color for the font
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(bannerText, 0, -bannerHeight/2);
+        ctx.restore();
 
         return canvas;
     }
