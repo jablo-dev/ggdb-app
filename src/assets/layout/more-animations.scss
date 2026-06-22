@@ -6,7 +6,8 @@
    optional and toggled via the profile switch.
    ========================================================================== */
 
-body.more-animations {
+body.more-animations,
+body.animated-background {
     /* Sci-fi accent palette (uses the app's primary as base) */
     --ls-accent: var(--p-primary-color, #38bdf8);
     --ls-accent-soft: color-mix(in srgb, var(--ls-accent) 35%, transparent);
@@ -130,13 +131,9 @@ body.more-animations {
         opacity: 0.85;
     }
 
-    /* Keep content above overlays and clickable. The ::before/::after on
-       .layout-wrapper are pointer-events:none, but we still need to make sure
-       the topbar (a custom element) participates in stacking properly so its
-       buttons receive clicks. */
+    /* Keep the topbar above the background overlays */
     app-topbar {
         display: block;
-        position: relative;
         z-index: 10;
     }
 
@@ -144,7 +141,9 @@ body.more-animations {
         position: relative;
         z-index: 2;
     }
+}
 
+body.more-animations {
     /* ----- Cards: no scan, just keep base ----- */
     .card {
         position: relative;
@@ -221,28 +220,89 @@ body.more-animations {
         animation: ls-stripes 1.2s linear infinite;
     }
 
-    /* ----- Topbar: bottom HUD line ----- */
-    app-topbar {
-        position: relative;
+    /* ----- Topbar: sci-fi chip background layer ----- */
+    app-topbar .layout-topbar {
+        isolation: isolate;
     }
 
-    app-topbar::after {
+    /* Circuit-board chip pattern via layered gradients */
+    app-topbar .layout-topbar::before {
         content: '';
         position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 1px;
-        background: linear-gradient(
-            90deg,
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        /* Horizontal traces */
+        background-image:
+            linear-gradient(90deg, var(--ls-grid) 1px, transparent 1px),
+            linear-gradient(var(--ls-grid) 1px, transparent 1px),
+            /* Larger cell grid */
+            linear-gradient(90deg, color-mix(in srgb, var(--ls-accent) 8%, transparent) 1px, transparent 1px),
+            linear-gradient(color-mix(in srgb, var(--ls-accent) 8%, transparent) 1px, transparent 1px),
+            /* Diagonal accent traces */
+            repeating-linear-gradient(
+                -45deg,
+                transparent 0px,
+                transparent 14px,
+                color-mix(in srgb, var(--ls-accent) 6%, transparent) 14px,
+                color-mix(in srgb, var(--ls-accent) 6%, transparent) 15px
+            );
+        background-size:
+            12px 12px,
+            12px 12px,
+            48px 48px,
+            48px 48px,
+            100% 100%;
+        /* Fade out toward the edges so it doesn't look harsh */
+        mask-image: linear-gradient(
+            to bottom,
             transparent 0%,
-            var(--ls-accent) 50%,
+            rgba(0,0,0,0.6) 20%,
+            rgba(0,0,0,0.6) 80%,
             transparent 100%
         );
-        background-size: 200% 100%;
-        animation: ls-scan 5s linear infinite;
-        opacity: 0.65;
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(0,0,0,0.6) 20%,
+            rgba(0,0,0,0.6) 80%,
+            transparent 100%
+        );
+        opacity: 0.55;
+        animation: ls-chip-drift 30s linear infinite;
+    }
+
+    /* Dot nodes at grid intersections (via radial-gradient overlay) */
+    app-topbar .layout-topbar::after {
+        content: '';
+        position: absolute;
+        inset: 0;
         pointer-events: none;
+        z-index: 0;
+        background-image:
+            /* Intersection dots */
+            radial-gradient(circle, color-mix(in srgb, var(--ls-accent) 45%, transparent) 1px, transparent 1px),
+            /* Bottom HUD scan line */
+            linear-gradient(
+                90deg,
+                transparent 0%,
+                var(--ls-accent) 50%,
+                transparent 100%
+            );
+        background-size:
+            48px 48px,
+            200% 1px;
+        background-position:
+            0 0,
+            -100% bottom;
+        opacity: 0.5;
+        animation: ls-chip-nodes 30s linear infinite, ls-scan 5s linear infinite;
+    }
+
+    /* Ensure topbar content sits above the decorative layers */
+    app-topbar .layout-topbar > * {
+        position: relative;
+        z-index: 1;
     }
 
     /* ----- Entry cards (game cards): subtle hover lift + one-shot scan ----- */
@@ -287,13 +347,23 @@ body.more-animations {
 
     /* Reduced motion: keep the look, drop the movement */
     @media (prefers-reduced-motion: reduce) {
-        .layout-wrapper::before,
-        .layout-wrapper::after,
         app-entry-card::before,
         .p-button::after,
-        app-topbar::after,
+        app-topbar .layout-topbar::before,
+        app-topbar .layout-topbar::after,
         .ls-title,
         .p-progressbar .p-progressbar-value {
+            animation: none !important;
+        }
+    }
+}
+
+body.more-animations,
+body.animated-background {
+    /* Reduced motion: keep the look, drop the movement */
+    @media (prefers-reduced-motion: reduce) {
+        .layout-wrapper::before,
+        .layout-wrapper::after {
             animation: none !important;
         }
     }
@@ -335,6 +405,16 @@ body.more-animations {
 @keyframes ls-scan {
     0%   { background-position: -100% 0; }
     100% { background-position: 200% 0; }
+}
+
+@keyframes ls-chip-drift {
+    0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+    100% { background-position: 12px 12px, 12px 12px, 48px 48px, 48px 48px, 0 0; }
+}
+
+@keyframes ls-chip-nodes {
+    0%   { background-position: 0 0, -100% bottom; }
+    100% { background-position: 48px 48px, -100% bottom; }
 }
 
 @keyframes ls-flicker {

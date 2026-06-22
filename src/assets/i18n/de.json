@@ -50,8 +50,11 @@
         "rpg_rarity_desc": "Verwende RPG-Seltenheitsstufen (Selten, Episch, Legendär) anstelle von Medaillen für die Bewertung",
         "card_flip": "Flip-Animation auf Karten verwenden",
         "card_flip_desc": "Klicke auf eine Karte, um sie umzudrehen und die detaillierten Kategoriebewertungen zu sehen. Wenn deaktiviert, öffnet ein Klick direkt die Detailseite.",
+        "animated_background": "Animierter Hintergrund",
+        "animated_background_desc": "Zeigt ein animiertes Sternfeld und Gitter-Overlay im Hintergrund. Rein kosmetisch, ohne Einfluss auf das Tracking.",
+        "more_animations_needs_bg": "Animierter Hintergrund erforderlich",
         "more_animations": "Mehr-Animationen-Modus",
-        "more_animations_desc": "Aktiviere ein dezentes Sci-Fi-Feeling mit Neon-Glanz, animiertem Gitter-Hintergrund, Scanlines und schimmernden Buttons. Rein kosmetisch, ohne Einfluss auf das Tracking."
+        "more_animations_desc": "Aktiviere ein dezentes Sci-Fi-Feeling mit Neon-Glanz, Scanlines und schimmernden Buttons. Rein kosmetisch, ohne Einfluss auf das Tracking."
     },
     "dashboard": {
         "all_time_completed": "Insgesamt abgeschlossen",
@@ -95,6 +98,7 @@
         "replay": "Wiederholung",
         "favorite": "Favorit",
         "open_detail": "Detail",
+        "copy_to_clipboard": "In Zwischenablage kopieren",
         "total_score": "Gesamt",
         "no_scores": "Keine Kategoriebewertungen verfügbar",
         "score_gameplay": "Gameplay",
@@ -106,7 +110,13 @@
         "score_balance": "Balance",
         "score_quality": "Qualität",
         "score_uiux": "UI / UX",
-        "score_impression": "Eindruck"
+        "score_impression": "Eindruck",
+        "tier_gold": "Gold",
+        "tier_silver": "Silber",
+        "tier_bronze": "Bronze",
+        "tier_legendary": "Legendär",
+        "tier_epic": "Episch",
+        "tier_rare": "Selten"
     },
     "configurator": {
         "primary": "Primär",

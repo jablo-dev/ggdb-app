@@ -61,6 +61,9 @@ export class AppLayout {
             if (localStorage.getItem('moreAnimationsEnabled') === 'true') {
                 document.body.classList.add('more-animations');
             }
+            if (localStorage.getItem('animatedBackgroundEnabled') === 'true') {
+                document.body.classList.add('animated-background');
+            }
         } catch (_) { /* ignore */ }
     }
 

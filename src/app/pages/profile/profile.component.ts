@@ -67,6 +67,23 @@ export class ProfileComponent {
         }
     }
 
+    get animatedBackgroundEnabled(): boolean {
+        return localStorage.getItem('animatedBackgroundEnabled') === 'true';
+    }
+
+    set animatedBackgroundEnabled(value: boolean) {
+        localStorage.setItem('animatedBackgroundEnabled', value ? 'true' : 'false');
+        if (value) {
+            document.body.classList.add('animated-background');
+        } else {
+            document.body.classList.remove('animated-background');
+            // Also disable more animations since it depends on animated background
+            if (this.moreAnimationsEnabled) {
+                this.moreAnimationsEnabled = false;
+            }
+        }
+    }
+
     togglePlaytime(event: any) {
         const enabled = event.checked;
 

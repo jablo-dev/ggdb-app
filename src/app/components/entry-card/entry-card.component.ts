@@ -8,6 +8,8 @@ import { DataDisplayService } from '../../service/data-display.service';
 import { ScrollService } from '../../service/scroll.service';
 import { LayoutService } from '../../layout/service/layout.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ClipboardService } from '../../service/clipboard.service';
+import { ToastService } from '../../service/toast.service';
 
 @Component({
     selector: 'app-entry-card',
@@ -23,6 +25,9 @@ export class EntryCardComponent {
     display = inject(DataDisplayService);
     scrollService = inject(ScrollService);
     layoutService = inject(LayoutService);
+    clipboardService = inject(ClipboardService);
+    toastService = inject(ToastService);
+    isCopying: boolean = false;
     imageError: boolean = false;
     flipped: boolean = false;
 
@@ -115,6 +120,20 @@ export class EntryCardComponent {
     onDetailClick(event: MouseEvent): void {
         event.stopPropagation();
         this.goToDetail();
+    }
+
+    async onCopyClick(event: MouseEvent): Promise<void> {
+        event.stopPropagation();
+        if (!this.gameRecord || this.isCopying) return;
+        this.isCopying = true;
+        try {
+            await this.clipboardService.generateAndCopyCardToClipboard(this.gameRecord, this.score);
+            this.toastService.success('Copied!', 'Game card copied to clipboard as PNG');
+        } catch (_) {
+            this.toastService.success('Downloaded', 'Clipboard not supported. Image downloaded instead.');
+        } finally {
+            this.isCopying = false;
+        }
     }
 
     getRecordTypeLabel(type: string | undefined): string {
