@@ -55,6 +55,13 @@ export class AppLayout {
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
             this.hideMenu();
         });
+
+        // Apply "More Animations" sci-fi mode if previously enabled
+        try {
+            if (localStorage.getItem('moreAnimationsEnabled') === 'true') {
+                document.body.classList.add('more-animations');
+            }
+        } catch (_) { /* ignore */ }
     }
 
     isOutsideClicked(event: MouseEvent) {

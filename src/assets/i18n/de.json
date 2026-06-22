@@ -49,7 +49,9 @@
         "rpg_rarity": "RPG-Seltenheitssystem",
         "rpg_rarity_desc": "Verwende RPG-Seltenheitsstufen (Selten, Episch, Legendär) anstelle von Medaillen für die Bewertung",
         "card_flip": "Flip-Animation auf Karten verwenden",
-        "card_flip_desc": "Klicke auf eine Karte, um sie umzudrehen und die detaillierten Kategoriebewertungen zu sehen. Wenn deaktiviert, öffnet ein Klick direkt die Detailseite."
+        "card_flip_desc": "Klicke auf eine Karte, um sie umzudrehen und die detaillierten Kategoriebewertungen zu sehen. Wenn deaktiviert, öffnet ein Klick direkt die Detailseite.",
+        "more_animations": "Mehr-Animationen-Modus",
+        "more_animations_desc": "Aktiviere ein dezentes Sci-Fi-Feeling mit Neon-Glanz, animiertem Gitter-Hintergrund, Scanlines und schimmernden Buttons. Rein kosmetisch, ohne Einfluss auf das Tracking."
     },
     "dashboard": {
         "all_time_completed": "Insgesamt abgeschlossen",

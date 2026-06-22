@@ -49,7 +49,9 @@
         "rpg_rarity": "RPG Rarity System",
         "rpg_rarity_desc": "Use RPG rarity tiers (Rare, Epic, Legendary) instead of medals for ranking",
         "card_flip": "Use flip animation on card",
-        "card_flip_desc": "Click an entry card to flip it and see detailed category scores. When disabled, clicking opens the detail page directly."
+        "card_flip_desc": "Click an entry card to flip it and see detailed category scores. When disabled, clicking opens the detail page directly.",
+        "more_animations": "More Animations Mode",
+        "more_animations_desc": "Activate a subtle sci-fi vibe with neon glows, animated grid background, scanlines and shimmering buttons. Pure cosmetic, no gameplay impact."
     },
     "dashboard": {
         "all_time_completed": "All time completed",

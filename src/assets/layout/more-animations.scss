@@ -1,0 +1,300 @@
+/* ==========================================================================
+   "More Animations" Sci-Fi Mode
+   --------------------------------------------------------------------------
+   A subtle but fancy sci-fi / game-UI vibe, layered on top of the existing
+   theme. Everything is scoped under body.more-animations so it is fully
+   optional and toggled via the profile switch.
+   ========================================================================== */
+
+body.more-animations {
+    /* Sci-fi accent palette (uses the app's primary as base) */
+    --ls-accent: var(--p-primary-color, #38bdf8);
+    --ls-accent-soft: color-mix(in srgb, var(--ls-accent) 35%, transparent);
+    --ls-accent-glow: color-mix(in srgb, var(--ls-accent) 55%, transparent);
+    --ls-grid: color-mix(in srgb, var(--ls-accent) 15%, transparent);
+
+    /* ----- Animated starfield background overlay ----- */
+    .layout-wrapper {
+        position: relative;
+        isolation: isolate;
+    }
+
+    .layout-wrapper::before,
+    .layout-wrapper::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Subtle parallax grid */
+    .layout-wrapper::before {
+        background-image:
+            linear-gradient(var(--ls-grid) 1px, transparent 1px),
+            linear-gradient(90deg, var(--ls-grid) 1px, transparent 1px);
+        background-size: 48px 48px, 48px 48px;
+        mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, transparent 75%);
+        -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, transparent 75%);
+        animation: ls-grid-drift 40s linear infinite;
+        opacity: 0.55;
+    }
+
+    /* Twinkling stars + scanlines */
+    .layout-wrapper::after {
+        background-image:
+            radial-gradient(1px 1px at 4% 8%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 12% 22%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1.2px 1.2px at 18% 44%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 22% 72%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1px 1px at 28% 12%, #ffffff 50%, transparent 51%),
+            radial-gradient(1.5px 1.5px at 35% 78%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1px 1px at 40% 32%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 46% 58%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1.2px 1.2px at 52% 8%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 58% 28%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1px 1px at 62% 65%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 68% 48%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1.3px 1.3px at 72% 82%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 78% 15%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 82% 38%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1px 1px at 86% 70%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 88% 88%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1px 1px at 92% 18%, #ffffff 50%, transparent 51%),
+            radial-gradient(1.4px 1.4px at 95% 52%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1px 1px at 98% 80%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 6% 60%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 14% 92%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1.2px 1.2px at 30% 96%, #ffffff 50%, transparent 51%),
+            radial-gradient(1px 1px at 48% 88%, var(--ls-accent) 50%, transparent 51%),
+            radial-gradient(1px 1px at 66% 4%, #ffffff 50%, transparent 51%),
+            repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent 3px,
+                rgba(255, 255, 255, 0.02) 3px,
+                rgba(255, 255, 255, 0.02) 4px
+            );
+        animation: ls-twinkle 6s ease-in-out infinite alternate;
+        opacity: 0.85;
+    }
+
+    /* Keep content above overlays and clickable. The ::before/::after on
+       .layout-wrapper are pointer-events:none, but we still need to make sure
+       the topbar (a custom element) participates in stacking properly so its
+       buttons receive clicks. */
+    app-topbar {
+        display: block;
+        position: relative;
+        z-index: 10;
+    }
+
+    .layout-main-container {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ----- Cards: no scan, just keep base ----- */
+    .card {
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    /* ----- Headings get a subtle glitch / glow ----- */
+    h1, h2, h3 {
+        text-shadow:
+            0 0 8px var(--ls-accent-glow),
+            0 0 1px var(--ls-accent-soft);
+        letter-spacing: 0.02em;
+    }
+
+    /* Title in the profile "less serious" row gets full glitch */
+    .ls-title {
+        position: relative;
+        color: var(--ls-accent);
+        text-shadow:
+            0 0 4px var(--ls-accent-glow),
+            0 0 12px var(--ls-accent-soft);
+        animation: ls-flicker 4.5s infinite;
+    }
+
+    /* ----- Buttons: scanning shimmer ----- */
+    .p-button,
+    button.p-button {
+        position: relative;
+        overflow: hidden;
+        transition: box-shadow 0.3s ease, transform 0.15s ease;
+        box-shadow: 0 0 12px -4px var(--ls-accent-glow);
+    }
+
+    .p-button::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(
+            100deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.18) 50%,
+            transparent 100%
+        );
+        transform: skewX(-20deg);
+        pointer-events: none;
+        animation: ls-shimmer 4.5s ease-in-out infinite;
+    }
+
+    .p-button:hover {
+        box-shadow: 0 0 22px -2px var(--ls-accent-glow);
+        transform: translateY(-1px);
+    }
+
+    /* ----- Toggle switches: glow when checked ----- */
+    .p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
+        box-shadow: 0 0 12px -2px var(--ls-accent-glow);
+    }
+
+    /* ----- Progress bars: animated stripes ----- */
+    .p-progressbar .p-progressbar-value {
+        background-image: linear-gradient(
+            45deg,
+            var(--ls-accent) 25%,
+            var(--ls-accent-soft) 25%,
+            var(--ls-accent-soft) 50%,
+            var(--ls-accent) 50%,
+            var(--ls-accent) 75%,
+            var(--ls-accent-soft) 75%
+        ) !important;
+        background-size: 18px 18px !important;
+        animation: ls-stripes 1.2s linear infinite;
+    }
+
+    /* ----- Topbar: bottom HUD line ----- */
+    app-topbar {
+        position: relative;
+    }
+
+    app-topbar::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            var(--ls-accent) 50%,
+            transparent 100%
+        );
+        background-size: 200% 100%;
+        animation: ls-scan 5s linear infinite;
+        opacity: 0.65;
+        pointer-events: none;
+    }
+
+    /* ----- Entry cards (game cards): subtle hover lift + one-shot scan ----- */
+    app-entry-card {
+        position: relative;
+        display: block;
+        transition: transform 0.3s ease;
+        overflow: hidden;
+    }
+
+    app-entry-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -2px;
+        height: 2px;
+        background: var(--ls-accent);
+        box-shadow:
+            0 0 8px var(--ls-accent),
+            0 0 18px var(--ls-accent-glow);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 5;
+        will-change: top, opacity;
+    }
+
+    app-entry-card:hover {
+        transform: translateY(-2px);
+    }
+
+    app-entry-card:hover::before {
+        animation: ls-card-scan 0.6s ease-in-out 1 forwards;
+    }
+
+    /* Interrupt the scan when the card is flipped (flip-mode active) */
+    app-entry-card:has(.entry-card-flip.flipped)::before,
+    app-entry-card:hover:has(.entry-card-flip.flipped)::before {
+        animation: none !important;
+        opacity: 0 !important;
+    }
+
+    /* Reduced motion: keep the look, drop the movement */
+    @media (prefers-reduced-motion: reduce) {
+        .layout-wrapper::before,
+        .layout-wrapper::after,
+        app-entry-card::before,
+        .p-button::after,
+        app-topbar::after,
+        .ls-title,
+        .p-progressbar .p-progressbar-value {
+            animation: none !important;
+        }
+    }
+}
+
+/* ==========================================================================
+   Keyframes (kept outside the body scope so they're always defined)
+   ========================================================================== */
+
+@keyframes ls-grid-drift {
+    0%   { background-position: 0 0, 0 0; }
+    100% { background-position: 48px 96px, 96px 48px; }
+}
+
+@keyframes ls-twinkle {
+    0%   { opacity: 0.45; }
+    50%  { opacity: 0.85; }
+    100% { opacity: 0.55; }
+}
+
+@keyframes ls-card-scan {
+    0%   { top: -2px; opacity: 0; }
+    10%  { opacity: 0.9; }
+    90%  { opacity: 0.9; }
+    100% { top: 100%; opacity: 0; }
+}
+
+@keyframes ls-shimmer {
+    0%   { left: -120%; }
+    60%  { left: 120%; }
+    100% { left: 120%; }
+}
+
+@keyframes ls-stripes {
+    0%   { background-position: 0 0; }
+    100% { background-position: 18px 0; }
+}
+
+@keyframes ls-scan {
+    0%   { background-position: -100% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes ls-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+        text-shadow:
+            0 0 4px var(--ls-accent-glow),
+            0 0 12px var(--ls-accent-soft);
+    }
+    20%, 24%, 55% {
+        opacity: 0.82;
+        text-shadow: none;
+    }
+}

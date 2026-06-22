@@ -54,6 +54,19 @@ export class ProfileComponent {
         localStorage.setItem('cardFlipEnabled', value ? 'true' : 'false');
     }
 
+    get moreAnimationsEnabled(): boolean {
+        return localStorage.getItem('moreAnimationsEnabled') === 'true';
+    }
+
+    set moreAnimationsEnabled(value: boolean) {
+        localStorage.setItem('moreAnimationsEnabled', value ? 'true' : 'false');
+        if (value) {
+            document.body.classList.add('more-animations');
+        } else {
+            document.body.classList.remove('more-animations');
+        }
+    }
+
     togglePlaytime(event: any) {
         const enabled = event.checked;
 
