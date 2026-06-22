@@ -1,4 +1,7 @@
-<div class="entry-card-container relative rounded-xl overflow-hidden h-full group cursor-pointer flex" (click)="goToDetail()">
+<div class="entry-card-flip h-full" [class.flipped]="flipped" [class.flip-enabled]="cardFlipEnabled" (click)="onCardClick($event)">
+<div class="entry-card-inner h-full">
+<div class="entry-card-face entry-card-front">
+<div class="entry-card-container relative rounded-xl overflow-hidden h-full group cursor-pointer flex">
     <!-- Left side: Cover Image (if available) -->
     <div *ngIf="gameRecord?.cover && !imageError" class="cover-image-container flex-shrink-0 relative">
         <img [src]="gameRecord?.cover" class="h-full w-full object-cover" [alt]="gameRecord?.name" (error)="imageError = true">
@@ -132,4 +135,44 @@
             </div>
         </div>
     </div>
+</div>
+</div>
+
+<div class="entry-card-face entry-card-back">
+    <div class="entry-card-container entry-card-back-container relative rounded-xl overflow-hidden h-full flex flex-col cursor-pointer">
+        <div class="back-header flex items-center justify-between px-3 py-2">
+            <span class="back-title truncate font-bold">{{ gameRecord?.name }}</span>
+            <button
+                type="button"
+                class="back-detail-btn flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold"
+                (click)="onDetailClick($event)"
+                [title]="'entry_card.open_detail' | translate"
+            >
+                <i class="pi pi-external-link text-xs"></i>
+                <span>{{ 'entry_card.open_detail' | translate }}</span>
+            </button>
+        </div>
+
+        <div class="back-content flex-grow overflow-hidden px-3 pb-3">
+            <div *ngIf="subScores.length > 0; else noScores" class="subscore-grid grid grid-cols-2 gap-x-3 gap-y-1">
+                <div *ngFor="let s of subScores" class="subscore-row flex items-center justify-between text-xs">
+                    <span class="subscore-label truncate">{{ s.label | translate }}</span>
+                    <span class="subscore-value font-bold" [ngStyle]="{ 'color': display.getScoreTextColor(s.value * 10) }">{{ s.value }}/10</span>
+                </div>
+            </div>
+            <ng-template #noScores>
+                <div class="flex items-center justify-center h-full text-xs text-muted-color italic">
+                    {{ 'entry_card.no_scores' | translate }}
+                </div>
+            </ng-template>
+        </div>
+
+        <div class="back-footer flex items-center justify-between px-3 py-2 text-xs">
+            <span class="text-muted-color">{{ 'entry_card.total_score' | translate }}</span>
+            <span class="font-bold text-base" [ngStyle]="{ 'color': display.getScoreTextColor(score) }">{{ score }}</span>
+        </div>
+    </div>
+</div>
+
+</div>
 </div>

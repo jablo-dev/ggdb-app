@@ -46,6 +46,14 @@ export class ProfileComponent {
         localStorage.setItem('rpgRarityEnabled', value ? 'true' : 'false');
     }
 
+    get cardFlipEnabled(): boolean {
+        return localStorage.getItem('cardFlipEnabled') === 'true';
+    }
+
+    set cardFlipEnabled(value: boolean) {
+        localStorage.setItem('cardFlipEnabled', value ? 'true' : 'false');
+    }
+
     togglePlaytime(event: any) {
         const enabled = event.checked;
 

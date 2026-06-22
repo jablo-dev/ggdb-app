@@ -23,6 +23,7 @@ export class EntryCardComponent {
     scrollService = inject(ScrollService);
     layoutService = inject(LayoutService);
     imageError: boolean = false;
+    flipped: boolean = false;
 
     score: number = 0;
 
@@ -30,11 +31,51 @@ export class EntryCardComponent {
         return this.layoutService.layoutConfig().playtimeEnabled ?? false;
     }
 
+    get cardFlipEnabled(): boolean {
+        return localStorage.getItem('cardFlipEnabled') === 'true';
+    }
+
+    subScores: { key: string; label: string; value: number }[] = [];
+
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['gameRecord'] && this.gameRecord) {
             this.score = this.display.getTotalScore(this.gameRecord);
             this.imageError = false; // Reset error flag when record changes
+            this.flipped = false;
+            this.subScores = this.buildSubScores(this.gameRecord);
         }
+    }
+
+    private buildSubScores(record: GameRecord): { key: string; label: string; value: number }[] {
+        const map: { key: keyof GameRecord; label: string }[] = [
+            { key: 'scoreGameplay', label: 'entry_card.score_gameplay' },
+            { key: 'scorePresentation', label: 'entry_card.score_presentation' },
+            { key: 'scoreNarrative', label: 'entry_card.score_narrative' },
+            { key: 'scoreSound', label: 'entry_card.score_sound' },
+            { key: 'scoreContent', label: 'entry_card.score_content' },
+            { key: 'scorePacing', label: 'entry_card.score_pacing' },
+            { key: 'scoreBalance', label: 'entry_card.score_balance' },
+            { key: 'scoreQuality', label: 'entry_card.score_quality' },
+            { key: 'scoreUIUX', label: 'entry_card.score_uiux' },
+            { key: 'scoreImpression', label: 'entry_card.score_impression' }
+        ];
+        return map
+            .map((m) => ({ key: m.key as string, label: m.label, value: (record[m.key] as number) ?? 0 }))
+            .filter((s) => s.value > 0);
+    }
+
+    onCardClick(event: MouseEvent): void {
+        if (this.cardFlipEnabled) {
+            event.stopPropagation();
+            this.flipped = !this.flipped;
+        } else {
+            this.goToDetail();
+        }
+    }
+
+    onDetailClick(event: MouseEvent): void {
+        event.stopPropagation();
+        this.goToDetail();
     }
 
     getRecordTypeLabel(type: string | undefined): string {

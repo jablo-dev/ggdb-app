@@ -47,7 +47,9 @@
         "language_desc": "Wähle deine bevorzugte Sprache",
         "language_placeholder": "Sprache wählen",
         "rpg_rarity": "RPG-Seltenheitssystem",
-        "rpg_rarity_desc": "Verwende RPG-Seltenheitsstufen (Selten, Episch, Legendär) anstelle von Medaillen für die Bewertung"
+        "rpg_rarity_desc": "Verwende RPG-Seltenheitsstufen (Selten, Episch, Legendär) anstelle von Medaillen für die Bewertung",
+        "card_flip": "Flip-Animation auf Karten verwenden",
+        "card_flip_desc": "Klicke auf eine Karte, um sie umzudrehen und die detaillierten Kategoriebewertungen zu sehen. Wenn deaktiviert, öffnet ein Klick direkt die Detailseite."
     },
     "dashboard": {
         "all_time_completed": "Insgesamt abgeschlossen",
@@ -89,7 +91,20 @@
         "story_completed": "Story abgeschlossen",
         "backlog": "Backlog",
         "replay": "Wiederholung",
-        "favorite": "Favorit"
+        "favorite": "Favorit",
+        "open_detail": "Detail",
+        "total_score": "Gesamt",
+        "no_scores": "Keine Kategoriebewertungen verfügbar",
+        "score_gameplay": "Gameplay",
+        "score_presentation": "Präsentation",
+        "score_narrative": "Erzählung",
+        "score_sound": "Sound",
+        "score_content": "Inhalt",
+        "score_pacing": "Tempo",
+        "score_balance": "Balance",
+        "score_quality": "Qualität",
+        "score_uiux": "UI / UX",
+        "score_impression": "Eindruck"
     },
     "configurator": {
         "primary": "Primär",
