@@ -140,13 +140,17 @@ export class ClipboardService {
             }
             displayTitle += '...';
         }
-        ctx.fillText(displayTitle, contentStartX + titlePadding, 20);
+        ctx.fillText(displayTitle, contentStartX + titlePadding, 32);
 
         // Score Badge (Top Right)
         const scoreStr = totalScore.toString();
         ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
         const scoreWidth = ctx.measureText(scoreStr).width + 30;
         const scoreHeight = 40;
+        const scoreRadius = 12;
+        const scoreMargin = 12;
+        const scoreX = width - scoreWidth - scoreMargin;
+        const scoreY = scoreMargin;
 
         ctx.save();
         if (totalScore >= 85) {
@@ -154,49 +158,51 @@ export class ClipboardService {
             const rpgRarity = localStorage.getItem('rpgRarityEnabled') === 'true';
             if (rpgRarity) {
                 if (totalScore >= 95) {
-                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
+                    gradient = ctx.createLinearGradient(scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight);
                     gradient.addColorStop(0, '#FFD700');
                     gradient.addColorStop(0.5, '#FFC200');
                     gradient.addColorStop(1, '#B8860B');
                 } else if (totalScore >= 90) {
-                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
+                    gradient = ctx.createLinearGradient(scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight);
                     gradient.addColorStop(0, '#BF5FFF');
                     gradient.addColorStop(0.5, '#9B30FF');
                     gradient.addColorStop(1, '#7B00FF');
                 } else {
-                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
+                    gradient = ctx.createLinearGradient(scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight);
                     gradient.addColorStop(0, '#4FC3F7');
                     gradient.addColorStop(0.5, '#1E88E5');
                     gradient.addColorStop(1, '#1565C0');
                 }
             } else {
                 if (totalScore >= 95) {
-                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
+                    gradient = ctx.createLinearGradient(scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight);
                     gradient.addColorStop(0, '#FFD700');
                     gradient.addColorStop(0.5, '#FFA500');
                     gradient.addColorStop(1, '#FF8C00');
                 } else if (totalScore >= 90) {
-                    gradient = ctx.createLinearGradient(width - scoreWidth, 0, width, scoreHeight);
+                    gradient = ctx.createLinearGradient(scoreX, scoreY, scoreX + scoreWidth, scoreY + scoreHeight);
                     gradient.addColorStop(0, '#E8E8E8');
                     gradient.addColorStop(0.5, '#C0C0C0');
                     gradient.addColorStop(1, '#A8A8A8');
                 } else {
-                    gradient = ctx.createRadialGradient(width - scoreWidth/2, scoreHeight/2, 5, width - scoreWidth/2, scoreHeight/2, 20);
+                    gradient = ctx.createRadialGradient(scoreX + scoreWidth/2, scoreY + scoreHeight/2, 5, scoreX + scoreWidth/2, scoreY + scoreHeight/2, 20);
                     gradient.addColorStop(0, '#e49a6e');
                     gradient.addColorStop(1, '#b4693e');
                 }
             }
             ctx.fillStyle = gradient;
-            ctx.fillRect(width - scoreWidth, 0, scoreWidth, scoreHeight);
+            this.drawRoundedRect(ctx, scoreX, scoreY, scoreWidth, scoreHeight, scoreRadius);
+            ctx.fill();
             ctx.fillStyle = '#000000';
         } else {
             ctx.fillStyle = surfaceColors.darker || 'rgba(0, 0, 0, 0.3)';
-            ctx.fillRect(width - scoreWidth, 0, scoreWidth, scoreHeight);
+            this.drawRoundedRect(ctx, scoreX, scoreY, scoreWidth, scoreHeight, scoreRadius);
+            ctx.fill();
             ctx.fillStyle = primaryColor;
         }
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(scoreStr, width - scoreWidth / 2, scoreHeight / 2);
+        ctx.fillText(scoreStr, scoreX + scoreWidth / 2, scoreY + scoreHeight / 2);
         ctx.restore();
 
         // Subscores Grid (Matching the Backside design)
