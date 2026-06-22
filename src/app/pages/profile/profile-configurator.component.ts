@@ -11,6 +11,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { LayoutService } from '../../layout/service/layout.service';
 import { DataService } from '../../service/data.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 const presets = {
     Aura,
@@ -41,17 +42,17 @@ declare type SurfacesType = {
 @Component({
     selector: 'app-profile-configurator',
     standalone: true,
-    imports: [CommonModule, FormsModule, SelectButtonModule, ToggleSwitchModule],
+    imports: [CommonModule, FormsModule, SelectButtonModule, ToggleSwitchModule, TranslatePipe],
     template: `
         <div class="flex flex-col gap-6">
             <div>
-                <span class="text-sm text-muted-color font-semibold">Primary Colors</span>
+                <span class="text-sm text-muted-color font-semibold">{{ 'configurator.primary' | translate }}</span>
                 <div class="pt-2 grid gap-x-4 gap-y-2" [style]="{'grid-template-rows': 'repeat(5, minmax(0, 1fr))', 'grid-auto-flow': 'column', 'grid-template-columns': 'repeat(' + gridColumns() + ', minmax(0, 1fr))'}">
                     @for (primaryColor of primaryColors(); track primaryColor.name) {
                         <div class="flex items-center gap-2">
                             <button
                                 type="button"
-                                [title]="primaryColor.name"
+                                [title]="('colors.' + primaryColor.name) | translate"
                                 (click)="updateColors($event, 'primary', primaryColor)"
                                 [ngClass]="{ 'outline-primary': primaryColor.name === selectedPrimaryColor() }"
                                 class="border-none w-6 h-6 rounded-full p-0 cursor-pointer outline-none outline-offset-2 outline-2 hover:scale-110 transition-transform duration-200 flex-shrink-0"
@@ -59,19 +60,19 @@ declare type SurfacesType = {
                                     'background-color': primaryColor?.name === 'noir' ? 'var(--text-color)' : primaryColor?.palette?.['500']
                                 }"
                             ></button>
-                            <span class="text-sm capitalize truncate">{{ primaryColor.name }}</span>
+                            <span class="text-sm capitalize truncate">{{ ('colors.' + primaryColor.name) | translate }}</span>
                         </div>
                     }
                 </div>
             </div>
             <div>
-                <span class="text-sm text-muted-color font-semibold">Surface Colors</span>
+                <span class="text-sm text-muted-color font-semibold">{{ 'configurator.surface' | translate }}</span>
                 <div class="pt-2 grid gap-x-4 gap-y-2" [style]="{'grid-template-rows': 'repeat(5, minmax(0, 1fr))', 'grid-auto-flow': 'column', 'grid-template-columns': 'repeat(' + gridColumns() + ', minmax(0, 1fr))'}">
                     @for (surface of surfaces; track surface.name) {
                         <div class="flex items-center gap-2">
                             <button
                                 type="button"
-                                [title]="surface.name"
+                                [title]="('colors.' + surface.name) | translate"
                                 (click)="updateColors($event, 'surface', surface)"
                                 [ngClass]="{ 'outline-primary': selectedSurfaceColor() ? selectedSurfaceColor() === surface.name : surface.name === 'zinc' }"
                                 class="border-none w-6 h-6 rounded-full p-0 cursor-pointer outline-none outline-offset-2 outline-2 hover:scale-110 transition-transform duration-200 flex-shrink-0"
@@ -79,12 +80,12 @@ declare type SurfacesType = {
                                     'background-color': surface?.name === 'noir' ? 'var(--text-color)' : surface?.palette?.['500']
                                 }"
                             ></button>
-                            <span class="text-sm capitalize truncate">{{ surface.name }}{{ surface.name === 'ocean' ? '*' : '' }}</span>
+                            <span class="text-sm capitalize truncate">{{ ('colors.' + surface.name) | translate }}{{ surface.name === 'ocean' ? '*' : '' }}</span>
                         </div>
                     }
                 </div>
                 <p class="text-xs text-muted-color mt-4 italic">
-                    * Ocean is currently a test-run for more vivid surface colors and can provide issues with the viewing experience
+                    {{ 'configurator.ocean_note' | translate }}
                 </p>
             </div>
         </div>

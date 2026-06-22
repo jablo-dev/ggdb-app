@@ -26,10 +26,9 @@
                             <span class="text-[10px] text-muted-color font-medium opacity-70">v{{ version }}</span>
                         </div>
                     </div>
-                    <h2 class="text-2xl font-semibold mb-2 text-primary">Track Your Gaming Journey</h2>
+                    <h2 class="text-2xl font-semibold mb-2 text-primary">{{ 'login.header' | translate }}</h2>
                     <p class="text-base mb-4 text-muted-color">
-                        Keep a comprehensive record of every game you complete, rate them across multiple categories,
-                        and build your personal gaming database.
+                        {{ 'login.description' | translate }}
                     </p>
 
                     <div class="grid grid-cols-1 gap-2">
@@ -39,8 +38,8 @@
                                 <i [class]="feature.icon + ' text-base text-primary'"></i>
                             </div>
                             <div>
-                                <h3 class="text-base font-bold mb-0.5 text-surface-900 dark:text-surface-0">{{ feature.title }}</h3>
-                                <p class="text-sm text-muted-color">{{ feature.description }}</p>
+                                <h3 class="text-base font-bold mb-0.5 text-surface-900 dark:text-surface-0">{{ feature.title | translate }}</h3>
+                                <p class="text-sm text-muted-color">{{ feature.description | translate }}</p>
                             </div>
                         </div>
                     </div>
@@ -49,8 +48,8 @@
                         <div class="absolute top-0 right-0 bg-primary text-primary-contrast text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">
                             Invite Only
                         </div>
-                        <h2 class="text-xl font-bold mb-1 text-surface-900 dark:text-surface-0">Ready to Start Tracking?</h2>
-                        <p class="text-base text-muted-color mb-4">Join other gamers building their personal playthrough databases</p>
+                        <h2 class="text-xl font-bold mb-1 text-surface-900 dark:text-surface-0">{{ 'login.ready' | translate }}</h2>
+                        <p class="text-base text-muted-color mb-4">{{ 'login.join_message' | translate }}</p>
 
                         <div class="pt-4 border-t border-surface-200 dark:border-surface-800">
                             <p class="text-sm text-surface-700 dark:text-surface-200 font-semibold italic">

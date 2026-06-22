@@ -7,9 +7,9 @@
                 [(ngModel)]="selectedFilters"
                 optionLabel="label"
                 optionValue="value"
-                placeholder="Filter"
+                [placeholder]="'overview.filter' | translate"
                 [maxSelectedLabels]="0"
-                selectedItemsLabel="Filter"
+                [selectedItemsLabel]="'overview.filter' | translate"
                 [filter]="false"
                 (onChange)="filterRecords()"
                 styleClass="w-40"
@@ -61,14 +61,14 @@
 
         <div class="flex flex-wrap items-center gap-2 justify-end">
             <div class="flex items-center gap-1">
-                <p-button icon="pi pi-th-large" [outlined]="displayMode !== 'Cards'" (click)="setDisplayMode('Cards')" label="Cards" size="small"></p-button>
-                <p-button icon="pi pi-clock" [outlined]="displayMode !== 'Timeline'" (click)="setDisplayMode('Timeline')" label="Timeline" size="small" class="hidden sm:inline-block"></p-button>
-                <p-button icon="pi pi-table" [outlined]="displayMode !== 'Table'" (click)="setDisplayMode('Table')" label="Table" size="small" class="hidden sm:inline-block"></p-button>
+                <p-button icon="pi pi-th-large" [outlined]="displayMode !== 'Cards'" (click)="setDisplayMode('Cards')" [label]="'overview.cards' | translate" size="small"></p-button>
+                <p-button icon="pi pi-clock" [outlined]="displayMode !== 'Timeline'" (click)="setDisplayMode('Timeline')" [label]="'overview.timeline' | translate" size="small" class="hidden sm:inline-block"></p-button>
+                <p-button icon="pi pi-table" [outlined]="displayMode !== 'Table'" (click)="setDisplayMode('Table')" [label]="'overview.table' | translate" size="small" class="hidden sm:inline-block"></p-button>
             </div>
 
             <p-iconfield>
                 <p-inputicon styleClass="pi pi-search" />
-                <input type="text" pInputText placeholder="Search..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-28 sm:w-40 md:w-60" />
+                <input type="text" pInputText [placeholder]="'overview.search' | translate" [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-28 sm:w-40 md:w-60" />
             </p-iconfield>
         </div>
     </div>
@@ -79,8 +79,8 @@
         <div class="pt-2" [ngClass]="{ 'px-4': displayMode !== 'Table' }">
             <div class="max-w-none mx-auto">
                 <div *ngIf="(displayMode === 'Timeline' || displayMode === 'Table') && isMobile()" class="block sm:hidden text-center py-8">
-                    <p class="text-lg opacity-70">This view is not available on mobile.</p>
-                    <p-button label="Switch to Card View" (click)="setDisplayMode('Cards')" severity="primary" class="mt-4"></p-button>
+                    <p class="text-lg opacity-70">{{ 'overview.mobile_not_available' | translate }}</p>
+                    <p-button [label]="'overview.switch_to_card_view' | translate" (click)="setDisplayMode('Cards')" severity="primary" class="mt-4"></p-button>
                 </div>
 
     <ng-container *ngIf="displayMode === 'Cards'">
@@ -139,25 +139,25 @@
                 <tr class="text-base font-bold">
                     <th class="w-[80px] py-4 text-center text-primary cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('score')">
                         <div class="flex items-center justify-center gap-2">
-                            Score
+                            {{ 'overview.score' | translate }}
                             <i class="pi text-xs" [ngClass]="sortField === 'score' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
                         </div>
                     </th>
                     <th class="w-[100px] py-4"></th>
-                    <th class="py-4 text-primary">Game</th>
+                    <th class="py-4 text-primary">{{ 'overview.game' | translate }}</th>
                     <th class="w-[180px] py-4 text-primary cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('finishDate')">
                         <div class="flex items-center gap-2">
-                            Finished
+                            {{ 'overview.finished' | translate }}
                             <i class="pi text-xs" [ngClass]="sortField === 'finishDate' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
                         </div>
                     </th>
                     <th class="w-[250px] py-4 text-primary text-center cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('platform')">
                         <div class="flex items-center justify-center gap-2">
-                            Platform
+                            {{ 'overview.platform' | translate }}
                             <i class="pi text-xs" [ngClass]="sortField === 'platform' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
                         </div>
                     </th>
-                    <th class="w-[100px] py-4 text-primary text-center">Status</th>
+                    <th class="w-[100px] py-4 text-primary text-center">{{ 'overview.status' | translate }}</th>
                 </tr>
             </ng-template>
 
@@ -169,7 +169,7 @@
                                 <i class="pi text-primary text-sm" [ngClass]="isYearCollapsed(group.year) ? 'pi-chevron-right' : 'pi-chevron-down'"></i>
                                 <span class="text-primary">{{ group.year }}</span>
                             </div>
-                            <span class="text-sm font-normal opacity-60">{{ group.yearCount }} games finished</span>
+                            <span class="text-sm font-normal opacity-60">{{ 'overview.games_finished' | translate: { count: group.yearCount } }}</span>
                         </div>
                     </td>
                 </tr>
@@ -229,12 +229,12 @@
                             <i
                                 class="pi text-lg"
                                 [ngClass]="group.gameRecord.mainQuestDone === 1 ? 'pi-check-circle text-green-500' : 'pi-times-circle text-red-500'"
-                                [title]="group.gameRecord.mainQuestDone === 1 ? 'Story Completed' : 'Story Not Completed'"
+                                [title]="group.gameRecord.mainQuestDone === 1 ? ('overview.story_completed' | translate) : ('overview.story_not_completed' | translate)"
                             ></i>
                             <i
                                 *ngIf="group.gameRecord.replay"
                                 class="pi pi-sync text-primary text-lg"
-                                title="Replayed"
+                                [title]="'overview.replayed' | translate"
                             ></i>
                         </div>
                     </td>
@@ -243,7 +243,7 @@
 
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="6" class="text-center py-8 opacity-50">No games found.</td>
+                    <td colspan="6" class="text-center py-8 opacity-50">{{ 'overview.no_games_found' | translate }}</td>
                 </tr>
             </ng-template>
         </p-table>
@@ -255,10 +255,10 @@
 
 <div><br /><br /><br /></div>
 
-<p-dialog header="Icon Legend" [(visible)]="showLegend" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
+<p-dialog [header]="'overview.icon_legend' | translate" [(visible)]="showLegend" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
     <div class="flex flex-col gap-4 text-sm">
         <div>
-            <h3 class="text-base font-semibold mb-2">Platforms</h3>
+            <h3 class="text-base font-semibold mb-2">{{ 'overview.platforms' | translate }}</h3>
             <div class="grid grid-cols-2 gap-y-2">
                 <div class="flex items-center gap-2">
                     <i class="bi bi-steam text-primary"></i>
@@ -278,63 +278,63 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <i class="bi bi-controller text-primary"></i>
-                    <span>Retro Consoles</span>
+                    <span>{{ 'overview.platform_names.retro' | translate }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <i class="bi bi-device-hdd text-primary"></i>
-                    <span>Handhelds</span>
+                    <span>{{ 'overview.platform_names.handhelds' | translate }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <i class="bi bi-pc-display text-primary"></i>
-                    <span>PC / Launchers</span>
+                    <span>{{ 'overview.platform_names.pc' | translate }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <i class="bi bi-disc text-primary"></i>
-                    <span>Other</span>
+                    <span>{{ 'overview.platform_names.other' | translate }}</span>
                 </div>
             </div>
         </div>
 
         <div>
-            <h3 class="text-base font-semibold mb-2">Game Progress</h3>
+            <h3 class="text-base font-semibold mb-2">{{ 'overview.game_progress' | translate }}</h3>
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-2">
                     <i class="pi pi-calendar text-primary"></i>
-                    <span><strong>Date:</strong> Month and year the game was finished.</span>
+                    <span [innerHTML]="'overview.date_description' | translate"></span>
                 </div>
                 <div class="flex items-center gap-2">
                     <i class="pi pi-check-square text-primary"></i>
-                    <span><strong>Story completed:</strong> The main quest, story, or campaign is finished.</span>
+                    <span [innerHTML]="'overview.story_completed_description' | translate"></span>
                 </div>
                 <div class="flex items-center gap-2">
                     <i class="pi pi-clipboard text-primary"></i>
-                    <span><strong>Note:</strong> Custom note with personal info or highlights.</span>
+                    <span [innerHTML]="'overview.note_description' | translate"></span>
                 </div>
             </div>
         </div>
 
         <div>
-            <h3 class="text-base font-semibold mb-2">Replay</h3>
+            <h3 class="text-base font-semibold mb-2">{{ 'overview.replay' | translate }}</h3>
             <div class="flex items-center gap-2">
                 <i class="bi bi-fire text-green-400"></i>
-                <span><strong>Replay:</strong> The game was played again after completion.</span>
+                <span [innerHTML]="'overview.replay_description' | translate"></span>
             </div>
         </div>
 
         <div>
-            <h3 class="text-base font-semibold mb-2">Score & Tiers</h3>
+            <h3 class="text-base font-semibold mb-2">{{ 'overview.score_and_tiers' | translate }}</h3>
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-2">
                     <i class="bi bi-stars text-yellow-400"></i>
-                    <span><strong>Tier Score:</strong> Shown when total score is 85 or higher.</span>
+                    <span [innerHTML]="'overview.tier_score_description' | translate"></span>
                 </div>
                 <div>
                     <ul class="list-disc list-inside ml-6">
-                        <li><strong>85–89:</strong> Bronze tier</li>
-                        <li><strong>90–94:</strong> Silver tier</li>
-                        <li><strong>95–100:</strong> Gold tier</li>
+                        <li><strong>85–89:</strong> {{ 'overview.bronze_tier' | translate }}</li>
+                        <li><strong>90–94:</strong> {{ 'overview.silver_tier' | translate }}</li>
+                        <li><strong>95–100:</strong> {{ 'overview.gold_tier' | translate }}</li>
                     </ul>
-                    <p class="mt-1 text-gray-400 text-xs">The score is scaled from 1–10 ratings per category and normalized to a 10–100 scale.</p>
+                    <p class="mt-1 text-gray-400 text-xs">{{ 'overview.score_scale_description' | translate }}</p>
                 </div>
             </div>
         </div>

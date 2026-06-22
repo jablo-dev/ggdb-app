@@ -46,36 +46,36 @@
                 <div class="user-status-glow flex items-center mr-4 px-3 py-1 border-l-4 border-surface-400 dark:border-surface-600 bg-surface-100 dark:bg-surface-800 rounded-r-md skew-x-[-10deg]">
                     <div class="skew-x-[10deg] flex items-center">
                         <div class="flex flex-col">
-                            <span class="text-[10px] uppercase tracking-widest text-muted-color font-bold opacity-70 leading-none">Authorized User</span>
+                            <span class="text-[10px] uppercase tracking-widest text-muted-color font-bold opacity-70 leading-none">{{ 'topbar.authorized_user' | translate }}</span>
                             <span class="font-bold text-surface-900 dark:text-surface-0 tracking-tighter">{{ username }}</span>
                         </div>
                     </div>
                 </div>
 
-                <button type="button" class="layout-topbar-action" (click)="openDashboard()" [class.active]="isActive('/')">
-                    <i class="pi pi-home"></i>
-                    <span>Dashboard</span>
-                </button>
-                <button type="button" class="layout-topbar-action" (click)="openOverview()" [class.active]="isActive('/overview')">
-                    <i class="pi pi-database"></i>
-                    <span>Playthroughs</span>
-                </button>
-                <button type="button" class="layout-topbar-action" (click)="openBacklog()" [class.active]="isActive('/backlog')">
-                    <i class="pi pi-book"></i>
-                    <span>Backlog</span>
-                </button>
-                <button type="button" class="layout-topbar-action" (click)="openProfile()" [class.active]="isActive('/profile')">
-                    <i class="pi pi-user"></i>
-                    <span>Profile</span>
-                </button>
-                <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action" (click)="openAdmin()" [class.active]="isActive('/admin')">
-                    <i class="pi pi-cog"></i>
-                    <span>Control</span>
-                </button>
-                <button type="button" class="layout-topbar-action" (click)="logout()">
-                    <i class="pi pi-power-off"></i>
-                    <span>Logout</span>
-                </button>
+                    <button type="button" class="layout-topbar-action" (click)="openDashboard()" [class.active]="isActive('/')">
+                        <i class="pi pi-home"></i>
+                        <span>{{ 'topbar.dashboard' | translate }}</span>
+                    </button>
+                    <button type="button" class="layout-topbar-action" (click)="openOverview()" [class.active]="isActive('/overview')">
+                        <i class="pi pi-database"></i>
+                        <span>{{ 'topbar.playthroughs' | translate }}</span>
+                    </button>
+                    <button type="button" class="layout-topbar-action" (click)="openBacklog()" [class.active]="isActive('/backlog')">
+                        <i class="pi pi-book"></i>
+                        <span>{{ 'topbar.backlog' | translate }}</span>
+                    </button>
+                    <button type="button" class="layout-topbar-action" (click)="openProfile()" [class.active]="isActive('/profile')">
+                        <i class="pi pi-user"></i>
+                        <span>{{ 'topbar.profile' | translate }}</span>
+                    </button>
+                    <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action" (click)="openAdmin()" [class.active]="isActive('/admin')">
+                        <i class="pi pi-cog"></i>
+                        <span>{{ 'topbar.control' | translate }}</span>
+                    </button>
+                    <button type="button" class="layout-topbar-action" (click)="logout()">
+                        <i class="pi pi-power-off"></i>
+                        <span>{{ 'topbar.logout' | translate }}</span>
+                    </button>
             </div>
         </div>
 
@@ -88,27 +88,27 @@
 
                 <button type="button" class="layout-topbar-action-mobile" (click)="openDashboard()" [class.active]="isActive('/')">
                     <i class="pi pi-home"></i>
-                    <span class="hidden sm:inline">Dashboard</span>
+                    <span class="hidden sm:inline">{{ 'topbar.dashboard' | translate }}</span>
                 </button>
                 <button type="button" class="layout-topbar-action-mobile" (click)="openOverview()" [class.active]="isActive('/overview')">
                     <i class="pi pi-database"></i>
-                    <span class="hidden sm:inline">Playthroughs</span>
+                    <span class="hidden sm:inline">{{ 'topbar.playthroughs' | translate }}</span>
                 </button>
                 <button type="button" class="layout-topbar-action-mobile" (click)="openBacklog()" [class.active]="isActive('/backlog')">
                     <i class="pi pi-book"></i>
-                    <span class="hidden sm:inline">Backlog</span>
+                    <span class="hidden sm:inline">{{ 'topbar.backlog' | translate }}</span>
                 </button>
                 <button type="button" class="layout-topbar-action-mobile" (click)="openProfile()" [class.active]="isActive('/profile')">
                     <i class="pi pi-user"></i>
-                    <span class="hidden sm:inline">Profile</span>
+                    <span class="hidden sm:inline">{{ 'topbar.profile' | translate }}</span>
                 </button>
                 <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action-mobile" (click)="openAdmin()" [class.active]="isActive('/admin')">
                     <i class="pi pi-cog"></i>
-                    <span class="hidden sm:inline">Control</span>
+                    <span class="hidden sm:inline">{{ 'topbar.control' | translate }}</span>
                 </button>
                 <button type="button" class="layout-topbar-action-mobile" (click)="logout()">
                     <i class="pi pi-power-off"></i>
-                    <span class="hidden sm:inline">Logout</span>
+                    <span class="hidden sm:inline">{{ 'topbar.logout' | translate }}</span>
                 </button>
             </div>
         </div>

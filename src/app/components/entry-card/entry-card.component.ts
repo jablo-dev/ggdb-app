@@ -7,11 +7,12 @@ import { Router } from '@angular/router';
 import { DataDisplayService } from '../../service/data-display.service';
 import { ScrollService } from '../../service/scroll.service';
 import { LayoutService } from '../../layout/service/layout.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-entry-card',
     standalone: true,
-    imports: [CardModule, NgIf, DatePipe, NgClass, NgStyle, CommonModule],
+    imports: [CardModule, NgIf, DatePipe, NgClass, NgStyle, CommonModule, TranslatePipe],
     templateUrl: './entry-card.component.html',
     styleUrl: './entry-card.component.scss'
 })

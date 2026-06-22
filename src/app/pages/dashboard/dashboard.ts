@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model'
@@ -11,7 +12,7 @@ import { VersionService } from '../../service/version.service';
     selector: 'app-dashboard',
     standalone: true,
     providers: [StatService],
-    imports: [CommonModule, GameCompletionChartComponent, MedalPieChartComponent],
+    imports: [CommonModule, GameCompletionChartComponent, MedalPieChartComponent, TranslatePipe],
     templateUrl: 'dashboard.html'
 })
 export class Dashboard implements OnInit {

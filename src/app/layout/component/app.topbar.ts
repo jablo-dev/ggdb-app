@@ -11,11 +11,12 @@ import { ProgressBar } from 'primeng/progressbar';
 import { VersionService } from '../../service/version.service';
 import { ScrollService } from '../../service/scroll.service';
 import { AppSubTopbar } from './app.sub-topbar';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, ToastModule, ProgressBar, AppSubTopbar],
+    imports: [RouterModule, CommonModule, ToastModule, ProgressBar, AppSubTopbar, TranslatePipe],
     templateUrl: 'app.topbar.html'
 })
 export class AppTopbar {

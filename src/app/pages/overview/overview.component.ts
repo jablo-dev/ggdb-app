@@ -1,4 +1,6 @@
 import { Component, inject, OnInit, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { CardModule } from 'primeng/card';
@@ -35,7 +37,8 @@ interface GameRecordGroup {
     imports: [
         CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent,
         FormsModule, InputText, ReactiveFormsModule, IconField, InputIcon,
-        Dialog, Button, TableModule, TimelineModule, MultiSelectModule, SelectModule
+        Dialog, Button, TableModule, TimelineModule, MultiSelectModule, SelectModule,
+        TranslatePipe
     ],
     templateUrl: './overview.component.html',
     styleUrl: './overview.component.scss'
@@ -61,21 +64,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
     displayMode: 'Cards' | 'Table' | 'Timeline' = 'Cards';
     expandedRows: { [id: number]: boolean } = {};
 
-    filterOptions = [
-        { label: 'Default', value: 'all', icon: 'pi pi-th-large' },
-        { label: 'Favorites', value: 'fav', icon: 'pi pi-star-fill' },
-        { label: 'Canceled', value: 'canceled', icon: 'pi pi-times-circle' }
-    ];
+    filterOptions: any[] = [];
     selectedFilters: string[] = ['all', 'fav', 'canceled'];
 
-    sortOptions = [
-        { label: 'Finished (Newest)', value: 'finishDate-desc', icon: 'pi pi-calendar', field: 'finishDate', order: -1 },
-        { label: 'Finished (Oldest)', value: 'finishDate-asc', icon: 'pi pi-calendar', field: 'finishDate', order: 1 },
-        { label: 'Score (High)', value: 'score-desc', icon: 'pi pi-sort-amount-down', field: 'score', order: -1 },
-        { label: 'Score (Low)', value: 'score-asc', icon: 'pi pi-sort-amount-up', field: 'score', order: 1 },
-        { label: 'Platform (A-Z)', value: 'platform-asc', icon: 'pi pi-sort-alpha-down', field: 'platform', order: 1 },
-        { label: 'Platform (Z-A)', value: 'platform-desc', icon: 'pi pi-sort-alpha-up', field: 'platform', order: -1 }
-    ];
+    sortOptions: any[] = [];
     selectedSort: string = 'finishDate-desc';
 
     timelineRecords: any[] = [];
@@ -126,7 +118,30 @@ export class OverviewComponent implements OnInit, OnDestroy {
         return label;
     }
 
+    private readonly translate = inject(TranslateService);
+    private langChangeSubscription: Subscription = new Subscription();
+
+    updateOptions() {
+        this.filterOptions = [
+            { label: this.translate.instant('overview.filters.default'), value: 'all', icon: 'pi pi-th-large' },
+            { label: this.translate.instant('overview.filters.favorites'), value: 'fav', icon: 'pi pi-star-fill' },
+            { label: this.translate.instant('overview.filters.canceled'), value: 'canceled', icon: 'pi pi-times-circle' }
+        ];
+
+        this.sortOptions = [
+            { label: this.translate.instant('overview.sorts.finished_newest'), value: 'finishDate-desc', icon: 'pi pi-calendar', field: 'finishDate', order: -1 },
+            { label: this.translate.instant('overview.sorts.finished_oldest'), value: 'finishDate-asc', icon: 'pi pi-calendar', field: 'finishDate', order: 1 },
+            { label: this.translate.instant('overview.sorts.score_high'), value: 'score-desc', icon: 'pi pi-sort-amount-down', field: 'score', order: -1 },
+            { label: this.translate.instant('overview.sorts.score_low'), value: 'score-asc', icon: 'pi pi-sort-amount-up', field: 'score', order: 1 },
+            { label: this.translate.instant('overview.sorts.platform_az'), value: 'platform-asc', icon: 'pi pi-sort-alpha-down', field: 'platform', order: 1 },
+            { label: this.translate.instant('overview.sorts.platform_za'), value: 'platform-desc', icon: 'pi pi-sort-alpha-up', field: 'platform', order: -1 }
+        ];
+    }
+
     ngOnInit(): void {
+        this.updateOptions();
+        this.langChangeSubscription = this.translate.onLangChange.subscribe(() => this.updateOptions());
+
         const savedFilters = localStorage.getItem('ggdb_selected_filters');
         if (savedFilters) {
             try {
@@ -487,6 +502,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.langChangeSubscription.unsubscribe();
         this.toolbarService.setTemplate(null);
         if (this.displayMode === 'Table' && this.table) {
             const scrollableElement = this.table.el.nativeElement.querySelector('.p-datatable-viewport');

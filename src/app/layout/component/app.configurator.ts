@@ -9,6 +9,7 @@ import Nora from '@primeng/themes/nora';
 import { PrimeNG } from 'primeng/config';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { LayoutService } from '../service/layout.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 const presets = {
     Aura,
@@ -39,16 +40,16 @@ declare type SurfacesType = {
 @Component({
     selector: 'app-configurator',
     standalone: true,
-    imports: [CommonModule, FormsModule, SelectButtonModule],
+    imports: [CommonModule, FormsModule, SelectButtonModule, TranslatePipe],
     template: `
         <div class="flex flex-col gap-4">
             <div>
-                <span class="text-sm text-muted-color font-semibold">Primary</span>
+                <span class="text-sm text-muted-color font-semibold">{{ 'configurator.primary' | translate }}</span>
                 <div class="pt-2 flex gap-2 flex-wrap justify-start">
                     @for (primaryColor of primaryColors(); track primaryColor.name) {
                         <button
                             type="button"
-                            [title]="primaryColor.name"
+                            [title]="('colors.' + primaryColor.name) | translate"
                             (click)="updateColors($event, 'primary', primaryColor)"
                             [ngClass]="{ 'outline-primary': primaryColor.name === selectedPrimaryColor() }"
                             class="border-none w-5 h-5 rounded-full p-0 cursor-pointer outline-none outline-offset-1"
@@ -60,12 +61,12 @@ declare type SurfacesType = {
                 </div>
             </div>
             <div>
-                <span class="text-sm text-muted-color font-semibold">Surface</span>
+                <span class="text-sm text-muted-color font-semibold">{{ 'configurator.surface' | translate }}</span>
                 <div class="pt-2 flex gap-2 flex-wrap justify-start">
                     @for (surface of surfaces; track surface.name) {
                         <button
                             type="button"
-                            [title]="surface.name"
+                            [title]="('colors.' + surface.name) | translate"
                             (click)="updateColors($event, 'surface', surface)"
                             [ngClass]="{ 'outline-primary': selectedSurfaceColor() ? selectedSurfaceColor() === surface.name : surface.name === 'zinc' }"
                             class="border-none w-5 h-5 rounded-full p-0 cursor-pointer outline-none outline-offset-1"

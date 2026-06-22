@@ -6,14 +6,14 @@
 
         <!-- Big Canceled Stamp -->
         <div *ngIf="gameRecord?.canceled === 1" class="canceled-stamp-container absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-            <div class="canceled-stamp">CANCELED</div>
+            <div class="canceled-stamp">{{ 'entry_card.canceled' | translate }}</div>
         </div>
     </div>
 
     <div class="card-content-wrapper relative flex-grow overflow-hidden flex flex-col">
         <!-- Big Canceled Stamp (when no cover) -->
         <div *ngIf="(!gameRecord?.cover || imageError) && gameRecord?.canceled === 1" class="canceled-stamp-container absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-[20]">
-            <div class="canceled-stamp">CANCELED</div>
+            <div class="canceled-stamp">{{ 'entry_card.canceled' | translate }}</div>
         </div>
         <div
             *ngIf="score !== null"
@@ -62,19 +62,19 @@
                     <!-- Story completion status -->
                     <div class="completion-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.mainQuestDone === 1 && gameRecord?.canceled !== 1 && gameRecord?.backlogItem !== 1">
                         <i class="pi pi-book text-primary"></i>
-                        <span class="text-base truncate">Story completed</span>
+                        <span class="text-base truncate">{{ 'entry_card.story_completed' | translate }}</span>
                     </div>
 
                     <!-- Canceled status -->
                     <div class="completion-section flex items-center gap-2 text-red-400" *ngIf="gameRecord?.canceled === 1 && gameRecord?.backlogItem !== 1">
                         <i class="pi pi-times-circle text-red-500"></i>
-                        <span class="text-base font-semibold truncate">Canceled</span>
+                        <span class="text-base font-semibold truncate">{{ 'entry_card.canceled' | translate }}</span>
                     </div>
 
                     <!-- Backlog status -->
                     <div class="completion-section flex items-center gap-2 text-orange-400" *ngIf="gameRecord?.backlogItem === 1">
                         <i class="pi pi-bookmark text-orange-500"></i>
-                        <span class="text-base font-semibold truncate">Backlog</span>
+                        <span class="text-base font-semibold truncate">{{ 'entry_card.backlog' | translate }}</span>
                     </div>
                 </div>
 
@@ -92,7 +92,7 @@
                     <!-- Replay indicator -->
                     <div class="replay-section flex items-center gap-2 text-gray-300 min-v-mobile:hidden" *ngIf="gameRecord?.replay === 1">
                         <i class="pi pi-refresh text-base"></i>
-                        <span class="text-base truncate">Replay</span>
+                        <span class="text-base truncate">{{ 'entry_card.replay' | translate }}</span>
                     </div>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                 <i
                     *ngIf="gameRecord?.fav === 1"
                     class="favorite-star pi pi-star-fill text-yellow-400 text-lg"
-                    title="Favorite"
+                    title="{{ 'entry_card.favorite' | translate }}"
                 ></i>
 
                 <!-- Playtime Badge -->
