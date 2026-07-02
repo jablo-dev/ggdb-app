@@ -28,6 +28,18 @@ export class ToastService {
         this.toastSubject.next(message);
     }
 
+    info(summary: string, detail: string): void {
+        console.log('[Toast] info fired');
+        const message: ToastMessage = { severity: 'info', summary, detail, id: ++this.currentId };
+        this.toastSubject.next(message);
+    }
+
+    warn(summary: string, detail: string): void {
+        console.log('[Toast] warn fired');
+        const message: ToastMessage = { severity: 'warn', summary, detail, id: ++this.currentId };
+        this.toastSubject.next(message);
+    }
+
     clear() {
         this.toastSubject.next(null);
     }

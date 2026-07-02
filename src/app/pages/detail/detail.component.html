@@ -369,19 +369,36 @@
     </div>
 
     <!-- Cover grid -->
-    <div *ngIf="!coverSearchLoading && coverResults.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-2">
-        <div
-            *ngFor="let cover of coverResults"
-            class="flex flex-col items-center gap-2 cursor-pointer rounded-lg p-2 border border-transparent hover:border-[var(--primary-color)] transition-all"
-            (click)="selectCover(cover)"
-        >
-            <img
-                [src]="'https:' + cover.url.replace('t_thumb', 't_cover_big')"
-                [alt]="cover.game_name"
-                class="w-full rounded shadow object-cover"
-                style="aspect-ratio: 3/4"
-            />
-            <span class="text-xs text-center opacity-80 line-clamp-2">{{ cover.game_name }}</span>
+    <div *ngIf="!coverSearchLoading && coverResults.length > 0">
+        <div class="max-h-[60vh] overflow-y-auto pr-2">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-2">
+                <div
+                    *ngFor="let cover of coverResults"
+                    class="flex flex-col items-center gap-2 cursor-pointer rounded-lg p-2 border border-transparent hover:border-[var(--primary-color)] transition-all"
+                    (click)="selectCover(cover)"
+                >
+                    <img
+                        [src]="'https:' + cover.url.replace('t_thumb', 't_cover_big')"
+                        [alt]="cover.game_name"
+                        class="w-full rounded shadow object-cover"
+                        style="aspect-ratio: 3/4"
+                    />
+                    <span class="text-xs text-center opacity-80 line-clamp-2">{{ cover.game_name }}</span>
+                </div>
+            </div>
+
+            <!-- Load more button -->
+            <div class="flex justify-center mt-4 mb-2">
+                <button
+                    pButton
+                    type="button"
+                    [label]="'detail.load_more' | translate"
+                    class="p-button-outlined p-button-sm"
+                    [icon]="loadingMoreCovers ? 'pi pi-spin pi-spinner' : 'pi pi-plus'"
+                    [disabled]="loadingMoreCovers"
+                    (click)="loadMoreCovers()"
+                ></button>
+            </div>
         </div>
     </div>
 </p-dialog>

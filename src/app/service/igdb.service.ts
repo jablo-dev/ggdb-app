@@ -21,8 +21,8 @@ export class IgdbService {
     private apiUrl = 'https://api.ggdb.app/request';
     private http = inject(HttpClient);
 
-    searchCovers(name: string, username: string): Observable<IgdbCover[]> {
-        const url = `${this.apiUrl}?action=igdb-covers&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}`;
+    searchCovers(name: string, username: string, offset: number = 0): Observable<IgdbCover[]> {
+        const url = `${this.apiUrl}?action=igdb-covers&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&offset=${offset}`;
         return this.http.get<IgdbCover[]>(url, { withCredentials: true }).pipe(
             catchError(() => of([]))
         );

@@ -194,6 +194,7 @@
         "impression": "Impression",
         "searching_igdb": "Searching IGDB...",
         "no_covers_found": "No covers found for \"{{name}}\".",
+        "load_more": "Load more",
         "add_playtime": "Add Playtime",
         "add_hours_desc": "Add hours to your total playtime for {{name}}",
         "custom_hours": "Custom Hours",

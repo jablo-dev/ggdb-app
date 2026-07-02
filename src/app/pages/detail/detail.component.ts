@@ -70,6 +70,8 @@ export class DetailComponent implements OnInit, OnDestroy {
     coverSearchLoading = false;
     coverResults: IgdbCover[] = [];
     selectedCoverUrl: string | null = null;
+    coverOffset = 0;
+    loadingMoreCovers = false;
 
     gameSuggestions: IgdbGame[] = [];
 
@@ -417,8 +419,9 @@ export class DetailComponent implements OnInit, OnDestroy {
         this.coverDialogVisible = true;
         this.coverSearchLoading = true;
         this.coverResults = [];
+        this.coverOffset = 0;
 
-        this.igdbService.searchCovers(name, username).subscribe({
+        this.igdbService.searchCovers(name, username, this.coverOffset).subscribe({
             next: (covers) => {
                 this.coverResults = covers;
                 this.coverSearchLoading = false;
@@ -426,6 +429,29 @@ export class DetailComponent implements OnInit, OnDestroy {
             error: () => {
                 this.coverSearchLoading = false;
                 this.toast.error('IGDB Error', 'Failed to fetch cover images.');
+            }
+        });
+    }
+
+    loadMoreCovers(): void {
+        const name = this.form.get('name')?.value;
+        const username = this.dataService.loginService.getUsername();
+        if (!name || !username || this.loadingMoreCovers) return;
+
+        this.loadingMoreCovers = true;
+        this.coverOffset += 10;
+
+        this.igdbService.searchCovers(name, username, this.coverOffset).subscribe({
+            next: (covers) => {
+                this.coverResults = [...this.coverResults, ...covers];
+                this.loadingMoreCovers = false;
+                if (covers.length === 0) {
+                    this.toast.info('No more covers', 'No additional covers found.');
+                }
+            },
+            error: () => {
+                this.loadingMoreCovers = false;
+                this.toast.error('IGDB Error', 'Failed to fetch more cover images.');
             }
         });
     }
