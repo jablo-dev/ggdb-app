@@ -1,23 +1,7 @@
-import { Component, OnInit, inject, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
+import { MaterialUiModule } from '../../ui/material-ui';
+import { Component, OnInit, inject, TemplateRef, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
-// PrimeNG Modules
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { DatePickerModule } from 'primeng/datepicker';
-import { TextareaModule } from 'primeng/textarea';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { SliderModule } from 'primeng/slider';
-import { ButtonModule } from 'primeng/button';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { Rating } from 'primeng/rating';
-import { RadioButton } from 'primeng/radiobutton';
-import { TooltipModule } from 'primeng/tooltip';
-import { FieldsetModule } from 'primeng/fieldset';
-import { DialogModule } from 'primeng/dialog';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { RecordType } from '../../enum/type.enum';
 import { Locations } from '../../enum/location.enum';
@@ -26,12 +10,10 @@ import { LayoutService } from '../../layout/service/layout.service';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { ToastService } from '../../service/toast.service';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from '../../ui/confirmation.service';
 import { StatService } from '../../service/stat.service';
-import { Toolbar } from 'primeng/toolbar';
 import { ClipboardService } from '../../service/clipboard.service';
 import { IgdbService, IgdbCover, IgdbGame } from '../../service/igdb.service';
-import { AutoComplete } from 'primeng/autocomplete';
 import { ToolbarService } from '../../service/toolbar.service';
 import { DataDisplayService } from '../../service/data-display.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -40,9 +22,10 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, InputNumberModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, TooltipModule, FieldsetModule, DialogModule, ProgressSpinnerModule, AutoComplete, TranslatePipe],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslatePipe, MaterialUiModule],
     providers: [StatService],
     templateUrl: './detail.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './detail.component.scss'
 })
 export class DetailComponent implements OnInit, OnDestroy {
@@ -56,7 +39,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     isGeneratingCard = false;
     dataService = inject(DataService);
     recordTypes = Object.values(RecordType);
-    locationTypes = Object.keys(Locations).map(key => ({
+    locationTypes = Object.keys(Locations).map((key) => ({
         label: Locations[key as keyof typeof Locations],
         value: key
     }));
@@ -117,7 +100,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     ) {}
 
     getReplayValueLabel(value: number): string {
-        const option = this.replayValueOptions.find(opt => opt.value === value);
+        const option = this.replayValueOptions.find((opt) => opt.value === value);
         return option ? option.label : '';
     }
 
@@ -325,7 +308,7 @@ export class DetailComponent implements OnInit, OnDestroy {
         this.confirmationService.confirm({
             message: 'Are you sure you want to delete this playthrough?',
             header: 'Confirm Deletion',
-            icon: 'pi pi-exclamation-triangle',
+            icon: 'bi bi-exclamation-triangle',
             accept: () => {
                 this.performDelete();
             }
@@ -481,7 +464,7 @@ export class DetailComponent implements OnInit, OnDestroy {
         const query = event.query;
         const username = this.dataService.getUsername();
         if (query && username) {
-            this.igdbService.suggestGames(query, username).subscribe(games => {
+            this.igdbService.suggestGames(query, username).subscribe((games) => {
                 this.gameSuggestions = games;
             });
         }

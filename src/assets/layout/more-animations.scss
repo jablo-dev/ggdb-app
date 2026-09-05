@@ -9,7 +9,7 @@
 body.more-animations,
 body.animated-background {
     /* Sci-fi accent palette (uses the app's primary as base) */
-    --ls-accent: var(--p-primary-color, #38bdf8);
+    --ls-accent: var(--gg-primary-color, #38bdf8);
     --ls-accent-soft: color-mix(in srgb, var(--ls-accent) 35%, transparent);
     --ls-accent-glow: color-mix(in srgb, var(--ls-accent) 55%, transparent);
     --ls-grid: color-mix(in srgb, var(--ls-accent) 15%, transparent);
@@ -169,15 +169,15 @@ body.more-animations {
     }
 
     /* ----- Buttons: scanning shimmer ----- */
-    .p-button,
-    button.p-button {
+    .mat-mdc-button-base,
+    button.mat-mdc-button-base {
         position: relative;
         overflow: hidden;
         transition: box-shadow 0.3s ease, transform 0.15s ease;
         box-shadow: 0 0 12px -4px var(--ls-accent-glow);
     }
 
-    .p-button::after {
+    .mat-mdc-button-base::after {
         content: '';
         position: absolute;
         top: 0;
@@ -195,18 +195,18 @@ body.more-animations {
         animation: ls-shimmer 4.5s ease-in-out infinite;
     }
 
-    .p-button:hover {
+    .mat-mdc-button-base:hover {
         box-shadow: 0 0 22px -2px var(--ls-accent-glow);
         transform: translateY(-1px);
     }
 
     /* ----- Toggle switches: glow when checked ----- */
-    .p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
+    .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked {
         box-shadow: 0 0 12px -2px var(--ls-accent-glow);
     }
 
     /* ----- Progress bars: animated stripes ----- */
-    .p-progressbar .p-progressbar-value {
+    .mat-mdc-progress-bar {
         background-image: linear-gradient(
             45deg,
             var(--ls-accent) 25%,
@@ -348,11 +348,11 @@ body.more-animations {
     /* Reduced motion: keep the look, drop the movement */
     @media (prefers-reduced-motion: reduce) {
         app-entry-card::before,
-        .p-button::after,
+        .mat-mdc-button-base::after,
         app-topbar .layout-topbar::before,
         app-topbar .layout-topbar::after,
         .ls-title,
-        .p-progressbar .p-progressbar-value {
+        .mat-mdc-progress-bar {
             animation: none !important;
         }
     }

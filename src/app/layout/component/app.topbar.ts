@@ -1,4 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -6,7 +8,6 @@ import { LayoutService } from '../service/layout.service';
 import { DataService } from '../../service/data.service';
 import { LoginService } from '../../service/login.service';
 import { LoadingService } from '../../service/loading.service';
-import { ProgressBar } from 'primeng/progressbar';
 import { VersionService } from '../../service/version.service';
 import { ScrollService } from '../../service/scroll.service';
 import { AppSubTopbar } from './app.sub-topbar';
@@ -16,7 +17,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, ProgressBar, AppSubTopbar, AppToastBar, TranslatePipe],
+    imports: [RouterModule, CommonModule, AppSubTopbar, AppToastBar, TranslatePipe, MatButtonModule, MatProgressBarModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: 'app.topbar.html'
 })
 export class AppTopbar {
@@ -42,7 +44,7 @@ export class AppTopbar {
     private loadCurrentUser(): void {
         const rawUsername = this.loginService.getUsername();
         if (rawUsername) {
-            this.dataService.getCurrentUser(rawUsername).subscribe(response => {
+            this.dataService.getCurrentUser(rawUsername).subscribe((response) => {
                 if (response.success && response.user) {
                     // Use the properly capitalized username from the API response
                     this.username = response.user.username;
@@ -50,7 +52,7 @@ export class AppTopbar {
                     // Load user settings into layout service
                     if (response.user.playtimeEnabled !== undefined) {
                         const playtimeEnabled = response.user.playtimeEnabled === 1;
-                        this.layoutService.layoutConfig.update(state => ({
+                        this.layoutService.layoutConfig.update((state) => ({
                             ...state,
                             playtimeEnabled
                         }));
@@ -64,7 +66,7 @@ export class AppTopbar {
     }
 
     ngOnInit() {
-        this.isLoading$.subscribe(v => console.log('Loading:', v));
+        this.isLoading$.subscribe((v) => console.log('Loading:', v));
     }
 
     isActive(path: string): boolean {

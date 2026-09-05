@@ -1,5 +1,5 @@
-import { Component, inject, Input, OnDestroy, SimpleChanges } from '@angular/core';
-import { CardModule } from 'primeng/card';
+import { MaterialUiModule } from '../../ui/material-ui';
+import { Component, inject, Input, OnDestroy, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { GameRecord } from '../../models/record.model';
 import { CommonModule, DatePipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { RecordType } from '../../enum/type.enum';
@@ -14,8 +14,9 @@ import { ToastService } from '../../service/toast.service';
 @Component({
     selector: 'app-entry-card',
     standalone: true,
-    imports: [CardModule, NgIf, DatePipe, NgClass, NgStyle, CommonModule, TranslatePipe],
+    imports: [NgIf, DatePipe, NgClass, NgStyle, CommonModule, TranslatePipe, MaterialUiModule],
     templateUrl: './entry-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './entry-card.component.scss'
 })
 export class EntryCardComponent {
@@ -90,12 +91,10 @@ export class EntryCardComponent {
             { key: 'scoreUIUX', label: 'entry_card.score_uiux' },
             { key: 'scoreImpression', label: 'entry_card.score_impression' }
         ];
-        return map
-            .map((m) => ({ key: m.key as string, label: m.label, value: (record[m.key] as number) ?? 0 }))
-            .filter((s) => s.value > 0);
+        return map.map((m) => ({ key: m.key as string, label: m.label, value: (record[m.key] as number) ?? 0 })).filter((s) => s.value > 0);
     }
 
-    onCardClick(event: MouseEvent): void {
+    onCardClick(event: Event): void {
         if (this.cardFlipEnabled) {
             event.stopPropagation();
             this.flipped = !this.flipped;

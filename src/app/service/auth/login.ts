@@ -1,14 +1,9 @@
-import { Component } from '@angular/core';
+import { MaterialUiModule } from '../../ui/material-ui';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
-import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { DataService } from '../data.service';
-import { DialogModule } from 'primeng/dialog';
 import { NgForOf, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { VersionService } from '../version.service';
@@ -17,8 +12,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, NgForOf, CommonModule, DialogModule, TranslatePipe],
+    imports: [FormsModule, AppFloatingConfigurator, NgForOf, CommonModule, TranslatePipe, MaterialUiModule],
     templateUrl: './login.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './login.scss'
 })
 export class Login {
@@ -33,32 +29,32 @@ export class Login {
 
     features = [
         {
-            icon: 'pi pi-list',
+            icon: 'bi bi-list',
             title: 'login.features.track.title',
             description: 'login.features.track.description'
         },
         {
-            icon: 'pi pi-history',
+            icon: 'bi bi-clock-history',
             title: 'login.features.backlog.title',
             description: 'login.features.backlog.description'
         },
         {
-            icon: 'pi pi-star',
+            icon: 'bi bi-star',
             title: 'login.features.rate.title',
             description: 'login.features.rate.description'
         },
         {
-            icon: 'pi pi-chart-line',
+            icon: 'bi bi-graph-up',
             title: 'login.features.stats.title',
             description: 'login.features.stats.description'
         },
         {
-            icon: 'pi pi-heart',
+            icon: 'bi bi-heart',
             title: 'login.features.favorites.title',
             description: 'login.features.favorites.description'
         },
         {
-            icon: 'pi pi-calendar',
+            icon: 'bi bi-calendar',
             title: 'login.features.timeline.title',
             description: 'login.features.timeline.description'
         }

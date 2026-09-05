@@ -458,3 +458,12 @@
         }
     }
 }
+
+// Match the application shell's Material surface and accent system.
+.landing-page { background:var(--mat-sys-surface); }
+.hero-section { background:radial-gradient(ellipse at 80% 20%,color-mix(in srgb,var(--mat-sys-primary) 10%,transparent),transparent 60%),var(--mat-sys-surface); }
+.hero-section .hero-content .app-brand-title { color:var(--mat-sys-primary); font-size:1rem; text-transform:uppercase; letter-spacing:.14em; }
+.hero-section .hero-content .hero-title { font-weight:600; letter-spacing:-.04em; }
+.hero-section .hero-buttons .get-started-btn, .cta-section .cta-button { background:var(--mat-sys-primary); color:var(--mat-sys-on-primary); }
+.features-section, .how-it-works-section, .cta-section { background:var(--mat-sys-surface); }
+.feature-card, .preview-card, .cta-container { border:1px solid var(--mat-sys-outline-variant); border-radius:20px; background:var(--mat-sys-surface-container-low); box-shadow:none; }

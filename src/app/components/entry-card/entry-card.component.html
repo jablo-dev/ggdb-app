@@ -1,208 +1,203 @@
-<div class="entry-card-flip h-full" [class.flipped]="isFlipped" [class.flip-enabled]="cardFlipEnabled || forceFlipped !== null" (click)="onCardClick($event)">
-<div class="entry-card-inner h-full">
-<div class="entry-card-face entry-card-front">
-<div class="entry-card-container relative rounded-xl overflow-hidden h-full group cursor-pointer flex">
-    <!-- Left side: Cover Image (if available) -->
-    <div *ngIf="gameRecord?.cover && !imageError" class="cover-image-container flex-shrink-0 relative">
-        <img [src]="gameRecord?.cover" class="h-full w-full object-cover" [alt]="gameRecord?.name" (error)="imageError = true">
-        <div class="cover-overlay absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+<div class="entry-card-flip h-full" [class.flipped]="isFlipped" [class.flip-enabled]="cardFlipEnabled || forceFlipped !== null" (click)="onCardClick($event)" tabindex="0" (keydown.enter)="onCardClick($event)" [attr.aria-label]="gameRecord?.name">
+    <div class="entry-card-inner h-full">
+        <div class="entry-card-face entry-card-front">
+            <div class="entry-card-container relative rounded-xl overflow-hidden h-full group cursor-pointer flex">
+                <!-- Left side: Cover Image (if available) -->
+                <div *ngIf="gameRecord?.cover && !imageError" class="cover-image-container flex-shrink-0 relative">
+                    <img [src]="$safeNavigationMigration(gameRecord?.cover)" class="h-full w-full object-cover" [alt]="$safeNavigationMigration(gameRecord?.name)" (error)="imageError = true" />
+                    <div class="cover-overlay absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
 
-        <!-- Big Canceled Stamp -->
-        <div *ngIf="gameRecord?.canceled === 1" class="canceled-stamp-container absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-            <div class="canceled-stamp">{{ 'entry_card.canceled' | translate }}</div>
-        </div>
-    </div>
-
-    <div class="card-content-wrapper relative flex-grow overflow-hidden flex flex-col">
-        <!-- Big Canceled Stamp (when no cover) -->
-        <div *ngIf="(!gameRecord?.cover || imageError) && gameRecord?.canceled === 1" class="canceled-stamp-container absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-[20]">
-            <div class="canceled-stamp">{{ 'entry_card.canceled' | translate }}</div>
-        </div>
-        <div
-            *ngIf="score !== null"
-            class="score-badge absolute top-0 right-0 px-3 py-2 font-bold text-lg"
-            [ngClass]="{
-                'tier-score': display.isTierScore(score),
-                'normal-score': !display.isTierScore(score)
-            }"
-            [attr.data-score-range]="getScoreRange(score)"
-            [ngStyle]="display.isTierScore(score) ? {
-                'background': display.getTierGradient(score),
-                'color': '#000'
-            } : {
-                'color': 'var(--text-color)'
-            }"
-        >
-            <i
-                *ngIf="display.isTierScore(score)"
-                class="text-lg mr-1"
-                [ngStyle]="{
-                    'color': '#000'
-                }"
-            ></i>
-            {{ score }}
-        </div>
-
-        <!-- Playtime Badge (moved to bottom right) -->
-
-        <div
-            class="title-badge absolute top-0 left-0 px-3 py-2 font-bold text-lg"
-            [ngClass]="{
-                'no-border': gameRecord?.cover && !imageError,
-                'long-title': (gameRecord?.name?.length ?? 0) > 25
-            }"
-        >
-            <span>{{ gameRecord?.name }}</span>
-        </div>
-        <div class="card-content h-full p-4 relative flex-grow overflow-hidden flex flex-col justify-between">
-            <div class="info-grid-section mb-1 grid grid-cols-2 gap-4 min-v-mobile:grid-cols-1 min-v-mobile:gap-1">
-                <div class="left-column flex flex-col gap-1">
-                    <div class="date-section flex items-center gap-2 text-gray-300">
-                        <i class="pi pi-calendar text-base"></i>
-                        <span class="text-base truncate">{{ gameRecord?.finishDate | date: 'MMM yyyy' }}</span>
-                    </div>
-
-                    <!-- Story completion status -->
-                    <div class="completion-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.mainQuestDone === 1 && gameRecord?.canceled !== 1 && gameRecord?.backlogItem !== 1">
-                        <i class="pi pi-book text-primary"></i>
-                        <span class="text-base truncate">{{ 'entry_card.story_completed' | translate }}</span>
-                    </div>
-
-                    <!-- Canceled status -->
-                    <div class="completion-section flex items-center gap-2 text-red-400" *ngIf="gameRecord?.canceled === 1 && gameRecord?.backlogItem !== 1">
-                        <i class="pi pi-times-circle text-red-500"></i>
-                        <span class="text-base font-semibold truncate">{{ 'entry_card.canceled' | translate }}</span>
-                    </div>
-
-                    <!-- Backlog status -->
-                    <div class="completion-section flex items-center gap-2 text-orange-400" *ngIf="gameRecord?.backlogItem === 1">
-                        <i class="pi pi-bookmark text-orange-500"></i>
-                        <span class="text-base font-semibold truncate">{{ 'entry_card.backlog' | translate }}</span>
+                    <!-- Big Canceled Stamp -->
+                    <div *ngIf="gameRecord?.canceled === 1" class="canceled-stamp-container absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+                        <div class="canceled-stamp">{{ 'entry_card.canceled' | translate }}</div>
                     </div>
                 </div>
 
-                <!-- Right column -->
-                <div class="right-column flex flex-col gap-1">
-                    <!-- Platform -->
-                    <div class="platform-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.location as loc">
-                        <i
-                            class="platform-icon text-base"
-                            [ngClass]="display.getPlatformIconClass(loc)"
+                <div class="card-content-wrapper relative flex-grow overflow-hidden flex flex-col">
+                    <!-- Big Canceled Stamp (when no cover) -->
+                    <div *ngIf="(!gameRecord?.cover || imageError) && gameRecord?.canceled === 1" class="canceled-stamp-container absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-[20]">
+                        <div class="canceled-stamp">{{ 'entry_card.canceled' | translate }}</div>
+                    </div>
+                    <div
+                        *ngIf="score !== null"
+                        class="score-badge absolute top-0 right-0 px-3 py-2 font-bold text-lg"
+                        [ngClass]="{
+                            'tier-score': display.isTierScore(score),
+                            'normal-score': !display.isTierScore(score)
+                        }"
+                        [attr.data-score-range]="getScoreRange(score)"
+                        [ngStyle]="
+                            display.isTierScore(score)
+                                ? {
+                                      background: display.getTierGradient(score),
+                                      color: '#000'
+                                  }
+                                : {
+                                      color: 'var(--text-color)'
+                                  }
+                        "
+                    >
+                        <i aria-hidden="true"
+                            *ngIf="display.isTierScore(score)"
+                            class="text-lg mr-1"
+                            [ngStyle]="{
+                                color: '#000'
+                            }"
                         ></i>
-                        <span class="text-base truncate">{{ display.getPlatformLabel(loc) }}</span>
+                        {{ score }}
                     </div>
 
-                    <!-- Replay indicator -->
-                    <div class="replay-section flex items-center gap-2 text-gray-300 min-v-mobile:hidden" *ngIf="gameRecord?.replay === 1">
-                        <i class="pi pi-refresh text-base"></i>
-                        <span class="text-base truncate">{{ 'entry_card.replay' | translate }}</span>
+                    <!-- Playtime Badge (moved to bottom right) -->
+
+                    <div
+                        class="title-badge absolute top-0 left-0 px-3 py-2 font-bold text-lg"
+                        [ngClass]="{
+                            'no-border': gameRecord?.cover && !imageError,
+                            'long-title': (gameRecord?.name?.length ?? 0) > 25
+                        }"
+                    >
+                        <span>{{ gameRecord?.name }}</span>
+                    </div>
+                    <div class="card-content h-full p-4 relative flex-grow overflow-hidden flex flex-col justify-between">
+                        <div class="info-grid-section mb-1 grid grid-cols-2 gap-4 min-v-mobile:grid-cols-1 min-v-mobile:gap-1">
+                            <div class="left-column flex flex-col gap-1">
+                                <div class="date-section flex items-center gap-2 text-gray-300">
+                                    <i aria-hidden="true" class="bi bi-calendar text-base"></i>
+                                    <span class="text-base truncate">{{ $safeNavigationMigration(gameRecord?.finishDate) | date: 'MMM yyyy' }}</span>
+                                </div>
+
+                                <!-- Story completion status -->
+                                <div class="completion-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.mainQuestDone === 1 && gameRecord?.canceled !== 1 && gameRecord?.backlogItem !== 1">
+                                    <i aria-hidden="true" class="bi bi-book text-primary"></i>
+                                    <span class="text-base truncate">{{ 'entry_card.story_completed' | translate }}</span>
+                                </div>
+
+                                <!-- Canceled status -->
+                                <div class="completion-section flex items-center gap-2 text-red-400" *ngIf="gameRecord?.canceled === 1 && gameRecord?.backlogItem !== 1">
+                                    <i aria-hidden="true" class="bi bi-x-circle text-red-500"></i>
+                                    <span class="text-base font-semibold truncate">{{ 'entry_card.canceled' | translate }}</span>
+                                </div>
+
+                                <!-- Backlog status -->
+                                <div class="completion-section flex items-center gap-2 text-orange-400" *ngIf="gameRecord?.backlogItem === 1">
+                                    <i aria-hidden="true" class="bi bi-bookmark text-orange-500"></i>
+                                    <span class="text-base font-semibold truncate">{{ 'entry_card.backlog' | translate }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Right column -->
+                            <div class="right-column flex flex-col gap-1">
+                                <!-- Platform -->
+                                <div class="platform-section flex items-center gap-2 text-gray-300" *ngIf="gameRecord?.location as loc">
+                                    <i aria-hidden="true" class="platform-icon text-base" [ngClass]="display.getPlatformIconClass(loc)"></i>
+                                    <span class="text-base truncate">{{ display.getPlatformLabel(loc) }}</span>
+                                </div>
+
+                                <!-- Replay indicator -->
+                                <div class="replay-section flex items-center gap-2 text-gray-300 min-v-mobile:hidden" *ngIf="gameRecord?.replay === 1">
+                                    <i aria-hidden="true" class="bi bi-arrow-clockwise text-base"></i>
+                                    <span class="text-base truncate">{{ 'entry_card.replay' | translate }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Note section -->
+                        <div class="note-section text-gray-300 overflow-hidden" *ngIf="gameRecord?.note && gameRecord?.note !== 'nan'">
+                            <div class="flex items-start gap-2 h-full">
+                                <i aria-hidden="true" class="bi bi-pencil-square text-base mt-1 flex-shrink-0"></i>
+                                <p class="text-base leading-relaxed line-clamp-3 md:line-clamp-3 sm:line-clamp-2 min-v-mobile:line-clamp-1">
+                                    {{ gameRecord?.note }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom-right corner: {type} {favorite} {playtime} -->
+                        <div class="absolute bottom-3 right-3 flex items-center gap-2">
+                            <!-- Type Badge -->
+                            <span
+                                *ngIf="gameRecord?.type && gameRecord?.type !== 'Full Release' && gameRecord?.type !== 'FULL'"
+                                class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-wider shadow-sm"
+                            >
+                                {{ gameRecord?.type }}
+                            </span>
+
+                            <!-- Favorite Star -->
+                            <i aria-hidden="true" *ngIf="gameRecord?.fav === 1" class="favorite-star bi bi-star-fill text-yellow-400 text-lg" title="{{ 'entry_card.favorite' | translate }}"></i>
+
+                            <!-- Playtime Badge -->
+                            <div *ngIf="playtimeEnabled && gameRecord?.playtime" class="playtime-badge px-2 py-1 rounded-md font-bold text-sm flex items-center gap-1.5">
+                                <i aria-hidden="true" class="bi bi-clock text-xs"></i>
+                                <span>{{ (gameRecord?.playtime || 0) / 60 | number: '1.0-1' }}h</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Note section -->
-            <div class="note-section text-gray-300 overflow-hidden" *ngIf="gameRecord?.note && gameRecord?.note !== 'nan'">
-                <div class="flex items-start gap-2 h-full">
-                    <i class="pi pi-file-edit text-base mt-1 flex-shrink-0"></i>
-                    <p class="text-base leading-relaxed line-clamp-3 md:line-clamp-3 sm:line-clamp-2 min-v-mobile:line-clamp-1">
-                        {{ gameRecord?.note }}
-                    </p>
+        <div class="entry-card-face entry-card-back">
+            <div class="entry-card-container entry-card-back-container relative rounded-xl overflow-hidden h-full flex flex-col cursor-pointer">
+                <div class="back-header flex items-center justify-between px-3 py-2">
+                    <span class="back-title truncate font-bold">{{ gameRecord?.name }}</span>
+                    <div class="flex items-center gap-1">
+                        <button type="button" class="back-copy-btn flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold" (click)="onCopyClick($event)" [title]="'entry_card.copy_to_clipboard' | translate" [disabled]="isCopying">
+                            <i aria-hidden="true" class="bi text-xs" [ngClass]="isCopying ? 'bi-arrow-repeat bi-arrow-repeat' : 'bi-copy'"></i>
+                        </button>
+                        <button type="button" class="back-detail-btn flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold" (click)="onDetailClick($event)" [title]="'entry_card.open_detail' | translate">
+                            <i aria-hidden="true" class="bi bi-box-arrow-up-right text-xs"></i>
+                            <span>{{ 'entry_card.open_detail' | translate }}</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Bottom-right corner: {type} {favorite} {playtime} -->
-            <div class="absolute bottom-3 right-3 flex items-center gap-2">
-                <!-- Type Badge -->
-                <span *ngIf="gameRecord?.type && gameRecord?.type !== 'Full Release' && gameRecord?.type !== 'FULL'" class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                    {{ gameRecord?.type }}
-                </span>
+                <div class="back-content flex-grow overflow-hidden px-3 pb-3">
+                    <div *ngIf="subScores.length > 0; else noScores" class="subscore-grid grid grid-cols-2 gap-x-3 gap-y-1">
+                        <div *ngFor="let s of subScores" class="subscore-row flex items-center justify-between text-xs">
+                            <span class="subscore-label truncate">{{ s.label | translate }}</span>
+                            <span class="subscore-value font-bold" style="color: var(--primary-color)">{{ s.value }}/10</span>
+                        </div>
+                    </div>
+                    <ng-template #noScores>
+                        <div class="flex items-center justify-center h-full text-xs text-muted-color italic">
+                            {{ 'entry_card.no_scores' | translate }}
+                        </div>
+                    </ng-template>
+                </div>
 
-                <!-- Favorite Star -->
-                <i
-                    *ngIf="gameRecord?.fav === 1"
-                    class="favorite-star pi pi-star-fill text-yellow-400 text-lg"
-                    title="{{ 'entry_card.favorite' | translate }}"
-                ></i>
-
-                <!-- Playtime Badge -->
-                <div
-                    *ngIf="playtimeEnabled && gameRecord?.playtime"
-                    class="playtime-badge px-2 py-1 rounded-md font-bold text-sm flex items-center gap-1.5"
-                >
-                    <i class="pi pi-clock text-xs"></i>
-                    <span>{{ (gameRecord?.playtime || 0) / 60 | number:'1.0-1' }}h</span>
+                <div class="back-footer flex items-center justify-between px-3 py-2 text-xs">
+                    <span class="text-muted-color">{{ 'entry_card.total_score' | translate }}</span>
+                    <!-- Tier badge for high scores -->
+                    <span
+                        *ngIf="display.isTierScore(score); else plainScore"
+                        class="tier-badge font-bold text-sm px-2 py-0.5 rounded"
+                        [ngStyle]="{
+                            background: display.getTierGradient(score),
+                            color: '#000'
+                        }"
+                    >
+                        <span class="tier-label text-[10px] font-semibold mr-1">
+                            {{
+                                (display.isRpgRarityEnabled()
+                                    ? score >= 95
+                                        ? 'entry_card.tier_legendary'
+                                        : score >= 90
+                                          ? 'entry_card.tier_epic'
+                                          : 'entry_card.tier_rare'
+                                    : score >= 95
+                                      ? 'entry_card.tier_gold'
+                                      : score >= 90
+                                        ? 'entry_card.tier_silver'
+                                        : 'entry_card.tier_bronze'
+                                ) | translate
+                            }}
+                        </span>
+                        {{ score }}
+                    </span>
+                    <ng-template #plainScore>
+                        <span class="font-bold text-base" style="color: var(--primary-color)">{{ score }}</span>
+                    </ng-template>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
-
-<div class="entry-card-face entry-card-back">
-    <div class="entry-card-container entry-card-back-container relative rounded-xl overflow-hidden h-full flex flex-col cursor-pointer">
-        <div class="back-header flex items-center justify-between px-3 py-2">
-            <span class="back-title truncate font-bold">{{ gameRecord?.name }}</span>
-            <div class="flex items-center gap-1">
-                <button
-                    type="button"
-                    class="back-copy-btn flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold"
-                    (click)="onCopyClick($event)"
-                    [title]="'entry_card.copy_to_clipboard' | translate"
-                    [disabled]="isCopying"
-                >
-                    <i class="pi text-xs" [ngClass]="isCopying ? 'pi-spin pi-spinner' : 'pi-copy'"></i>
-                </button>
-                <button
-                    type="button"
-                    class="back-detail-btn flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold"
-                    (click)="onDetailClick($event)"
-                    [title]="'entry_card.open_detail' | translate"
-                >
-                    <i class="pi pi-external-link text-xs"></i>
-                    <span>{{ 'entry_card.open_detail' | translate }}</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="back-content flex-grow overflow-hidden px-3 pb-3">
-            <div *ngIf="subScores.length > 0; else noScores" class="subscore-grid grid grid-cols-2 gap-x-3 gap-y-1">
-                <div *ngFor="let s of subScores" class="subscore-row flex items-center justify-between text-xs">
-                    <span class="subscore-label truncate">{{ s.label | translate }}</span>
-                    <span class="subscore-value font-bold" style="color: var(--primary-color)">{{ s.value }}/10</span>
-                </div>
-            </div>
-            <ng-template #noScores>
-                <div class="flex items-center justify-center h-full text-xs text-muted-color italic">
-                    {{ 'entry_card.no_scores' | translate }}
-                </div>
-            </ng-template>
-        </div>
-
-        <div class="back-footer flex items-center justify-between px-3 py-2 text-xs">
-            <span class="text-muted-color">{{ 'entry_card.total_score' | translate }}</span>
-            <!-- Tier badge for high scores -->
-            <span
-                *ngIf="display.isTierScore(score); else plainScore"
-                class="tier-badge font-bold text-sm px-2 py-0.5 rounded"
-                [ngStyle]="{
-                    'background': display.getTierGradient(score),
-                    'color': '#000'
-                }"
-            >
-                <span class="tier-label text-[10px] font-semibold mr-1">
-                    {{ (display.isRpgRarityEnabled()
-                        ? (score >= 95 ? 'entry_card.tier_legendary' : score >= 90 ? 'entry_card.tier_epic' : 'entry_card.tier_rare')
-                        : (score >= 95 ? 'entry_card.tier_gold' : score >= 90 ? 'entry_card.tier_silver' : 'entry_card.tier_bronze')
-                    ) | translate }}
-                </span>
-                {{ score }}
-            </span>
-            <ng-template #plainScore>
-                <span class="font-bold text-base" style="color: var(--primary-color)">{{ score }}</span>
-            </ng-template>
-        </div>
-    </div>
-</div>
-
-</div>
 </div>

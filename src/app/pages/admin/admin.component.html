@@ -1,50 +1,18 @@
 <div class="card">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold m-0">Control Logs</h2>
-        <button pButton icon="pi pi-refresh" (click)="loadLogs()" label="Refresh" class="p-button-outlined"></button>
+    <div class="flex justify-between items-center mb-6"><div><span class="text-xs uppercase tracking-widest text-primary">Administration</span><h2 class="text-2xl font-bold m-0">Control Logs</h2></div><button mat-stroked-button (click)="loadLogs()"><i aria-hidden="true" class="bi bi-arrow-clockwise"></i> Refresh</button></div>
+    <div class="overflow-auto">
+        <table mat-table [dataSource]="dataSource" matSort matSortActive="timestamp" matSortDirection="desc" class="w-full">
+            <ng-container matColumnDef="timestamp"><th mat-header-cell *matHeaderCellDef mat-sort-header>Timestamp</th><td mat-cell *matCellDef="let log">{{ log.timestamp }}</td></ng-container>
+            <ng-container matColumnDef="user"><th mat-header-cell *matHeaderCellDef mat-sort-header>User</th><td mat-cell *matCellDef="let log">{{ log.user }}</td></ng-container>
+            <ng-container matColumnDef="action"><th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th><td mat-cell *matCellDef="let log"><span class="px-3 py-1 rounded-full bg-primary/10 text-primary">{{ log.action }}</span></td></ng-container>
+            <ng-container matColumnDef="event"><th mat-header-cell *matHeaderCellDef>Event</th><td mat-cell *matCellDef="let log"><div [innerHTML]="formatLogMessage(log)"></div><button *ngIf="log.details" mat-button (click)="showDetails(log.details)">Details</button></td></ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr><tr mat-row *matRowDef="let row; columns: columns"></tr>
+            <tr *matNoDataRow><td colspan="4" class="p-8 text-center">No logs found.</td></tr>
+        </table>
     </div>
-
-    <p-table [value]="logs" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
-             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-             [rowsPerPageOptions]="[10, 25, 50]" [responsiveLayout]="'scroll'"
-             sortField="timestamp" [sortOrder]="-1">
-        <ng-template pTemplate="header">
-            <tr>
-                <th pSortableColumn="timestamp" style="width: 20%">Timestamp <p-sortIcon field="timestamp"></p-sortIcon></th>
-                <th pSortableColumn="user" style="width: 15%">User <p-sortIcon field="user"></p-sortIcon></th>
-                <th pSortableColumn="action" style="width: 15%">Action <p-sortIcon field="action"></p-sortIcon></th>
-                <th style="width: 50%">Event</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-log>
-            <tr>
-                <td>{{ log.timestamp }}</td>
-                <td>{{ log.user }}</td>
-                <td>
-                    <p-tag [value]="log.action" [severity]="getSeverity(log.action)"></p-tag>
-                </td>
-                <td>
-                    <div [innerHTML]="formatLogMessage(log)"></div>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td colspan="4">No logs found.</td>
-            </tr>
-        </ng-template>
-    </p-table>
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons aria-label="Log pages" />
 </div>
-
-<div *ngIf="selectedDetails" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" (click)="selectedDetails = null">
-    <div class="bg-surface-0 dark:bg-surface-900 p-6 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-auto shadow-xl" (click)="$event.stopPropagation()">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold">Action Details</h3>
-            <div class="flex gap-2">
-                <button pButton icon="pi pi-copy" (click)="copyToClipboard(selectedDetails)" tooltipPosition="bottom" pTooltip="Copy JSON" class="p-button-rounded p-button-text"></button>
-                <button pButton icon="pi pi-times" (click)="selectedDetails = null" class="p-button-rounded p-button-text"></button>
-            </div>
-        </div>
-        <pre class="bg-surface-100 dark:bg-surface-800 p-4 rounded text-sm overflow-x-auto whitespace-pre-wrap break-all">{{ selectedDetails | json }}</pre>
-    </div>
-</div>
+<app-dialog header="Action Details" [visible]="!!selectedDetails" (visibleChange)="!$event && (selectedDetails = null)">
+    <button mat-stroked-button (click)="copyToClipboard(selectedDetails)"><i aria-hidden="true" class="bi bi-copy"></i> Copy JSON</button>
+    <pre class="mt-4 p-4 rounded text-sm overflow-x-auto whitespace-pre-wrap break-all">{{ selectedDetails | json }}</pre>
+</app-dialog>

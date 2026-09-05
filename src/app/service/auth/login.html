@@ -1,7 +1,7 @@
 ﻿<div class="flex flex-col md:flex-row min-h-screen">
     <!-- Left Half: Application Info (Scrollable) -->
     <div *ngIf="isInfoVisible" class="hidden md:flex md:w-1/2 bg-surface-50 dark:bg-surface-950 overflow-y-auto h-screen border-r border-surface-200 dark:border-surface-800 relative">
-        <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-sm absolute top-4 left-4 z-20" (click)="toggleInfo()"></button>
+        <button mat-stroked-button class="   absolute top-4 left-4 z-20" (click)="toggleInfo()" aria-label="Action"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
         <div class="p-12 w-full min-h-full flex flex-col items-center">
             <div class="max-w-2xl mx-auto relative w-full my-auto py-8">
 
@@ -35,7 +35,7 @@
                         <div *ngFor="let feature of features"
                              class="flex gap-3 p-3 rounded-xl bg-surface-0 dark:bg-surface-900 shadow-sm border border-transparent">
                             <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <i [class]="feature.icon + ' text-base text-primary'"></i>
+                                <i aria-hidden="true" [class]="feature.icon + ' text-base text-primary'"></i>
                             </div>
                             <div>
                                 <h3 class="text-base font-bold mb-0.5 text-surface-900 dark:text-surface-0">{{ feature.title | translate }}</h3>
@@ -65,12 +65,10 @@
                     <div class="flex items-center justify-between mb-8 sticky top-0 bg-surface-50 dark:bg-surface-950 z-10 py-2 border-b border-surface-200 dark:border-surface-800 -mx-4 px-4">
                         <h2 class="text-3xl font-bold text-surface-900 dark:text-surface-0">Patch Notes</h2>
                         <button
-                            pButton
-                            icon="pi pi-arrow-left"
-                            label="Return"
-                            class="p-button-outlined p-button-sm"
+                            mat-stroked-button
+                            class=" "
                             (click)="showPatchnotes = false"
-                        ></button>
+                        ><i class="bi bi-arrow-left" aria-hidden="true"></i>Return</button>
                     </div>
 
                     <div class="flex flex-col gap-6 mt-8">
@@ -96,39 +94,17 @@
 
     <!-- Right Half: Login Form (Non-scrollable) -->
     <div [ngClass]="{'md:w-1/2': isInfoVisible, 'w-full': !isInfoVisible}" class="flex-1 flex items-center justify-center bg-surface-0 dark:bg-surface-900 overflow-hidden relative">
-        <!-- Background Decorations -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[80px] animate-pulse"></div>
-            <div class="absolute -bottom-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] rounded-full bg-primary/5 blur-[120px]"></div>
-
-            <!-- Gaming-like floating icons -->
-            <div class="absolute top-[15%] left-[10%] text-primary/10 text-6xl animate-float-slow">
-                <i class="pi pi-map"></i>
-            </div>
-            <div class="absolute top-[60%] left-[15%] text-primary/10 text-4xl animate-float" style="animation-delay: -2s">
-                <i class="pi pi-play"></i>
-            </div>
-            <div class="absolute top-[25%] right-[15%] text-primary/10 text-5xl animate-float-slow" style="animation-delay: -5s">
-                <i class="pi pi-bolt"></i>
-            </div>
-            <div class="absolute bottom-[20%] right-[10%] text-primary/10 text-7xl animate-float" style="animation-delay: -3s">
-                <i class="pi pi-trophy"></i>
-            </div>
-            <div class="absolute bottom-[40%] left-[40%] text-primary/5 text-8xl animate-float-slow" style="animation-delay: -7s">
-                <i class="pi pi-objects-column"></i>
-            </div>
-        </div>
+        <div class="orbital-background" aria-hidden="true"><span></span><span></span><span></span></div>
 
         <app-floating-configurator />
 
         <div class="w-full max-w-[30rem] px-8 py-12 relative z-10 animate-fadeinup">
-            <div class="bg-surface-0/40 dark:bg-surface-950/40 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+            <div class="bg-surface-0/40 dark:bg-surface-950/40 backdrop-blur-2xl border border-white/20 dark:border-white/10 rounded-3xl p-8 shadow-lg relative overflow-hidden">
                 <!-- Glossy overlay -->
                 <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
                 <div class="text-center mb-8">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
-                        <i class="pi pi-user text-3xl text-primary"></i>
+                        <i aria-hidden="true" class="bi bi-person text-3xl text-primary"></i>
                     </div>
                     <div class="text-surface-900 dark:text-surface-0 text-3xl font-bold mb-2">Welcome Back</div>
                     <span class="text-muted-color font-medium">Please enter your details</span>
@@ -137,41 +113,37 @@
                 <div>
                     <div class="flex flex-col gap-2 mb-4">
                         <label for="user" class="text-sm font-semibold text-surface-900 dark:text-surface-0">Username</label>
-                        <input pInputText id="user" type="text" placeholder="Enter your username" class="w-full" [(ngModel)]="email" />
+                        <input matInput id="user" type="text" placeholder="Enter your username" class="w-full" [(ngModel)]="email" />
                     </div>
 
                     <div class="flex flex-col gap-2 mb-8">
                         <label for="password1" class="text-sm font-semibold text-surface-900 dark:text-surface-0">Password</label>
-                        <p-password id="password1" [(ngModel)]="password" placeholder="Enter your password" [toggleMask]="true" styleClass="w-full" [fluid]="true" [feedback]="false"> </p-password>
+                        <app-password inputId="password1" [(ngModel)]="password" placeholder="Enter your password" styleClass="w-full"> </app-password>
                     </div>
 
-                    <p-button label="Sign In" styleClass="w-full mb-4 shadow-lg shadow-primary/20" (onClick)="login()"> </p-button>
+                    <app-action label="Sign In" styleClass="w-full mb-4 shadow-lg shadow-primary/20" (onClick)="login()"> </app-action>
 
-                    <p-button label="Request Invite" [plain]="true" [text]="true" styleClass="w-full p-button-secondary" (onClick)="join()"> </p-button>
+                    <app-action label="Request Invite" [plain]="true" [text]="true" styleClass="w-full " (onClick)="join()"> </app-action>
 
                     <div *ngIf="loginError" class="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-center text-red-500 text-sm animate-shake">
                         Invalid username or password
                     </div>
 
                     <div class="mt-8 pt-6 border-t border-surface-200 dark:border-surface-800 text-center flex flex-col items-center gap-2">
-                        <span *ngIf="isLatestMajor" class="bg-primary text-primary-contrast text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-blink">Major Update!</span>
+                        <span *ngIf="isLatestMajor" class="bg-primary text-primary-contrast text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ">Major Update!</span>
                         <button
-                            pButton
-                            icon="pi pi-receipt"
-                            class="p-button-rounded p-button-text p-button-sm p-button-secondary"
-                            pTooltip="Patch Notes"
-                            tooltipPosition="top"
-                            pButtonLabel=""
+                            mat-stroked-button
+                            class="   "
+                            matTooltip="Patch Notes"
+                            matTooltipPosition="above"
                             (click)="showPatchnotes = true"
-                        >View Patch Notes</button>
+                         aria-label="Patch Notes"><i class="bi bi-receipt" aria-hidden="true"></i>View Patch Notes</button>
                         <button
                             *ngIf="!isInfoVisible"
-                            pButton
-                            icon="pi pi-info-circle"
-                            label="Show App Info"
-                            class="p-button-text p-button-sm p-button-secondary"
+                            mat-stroked-button
+                            class="  "
                             (click)="toggleInfo()"
-                        ></button>
+                        ><i class="bi bi-info-circle" aria-hidden="true"></i>Show App Info</button>
                     </div>
 
                     <!-- Mobile Features Overview -->
@@ -181,7 +153,7 @@
                             <div *ngFor="let feature of features"
                                  class="flex gap-3 p-3 rounded-xl bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-800">
                                 <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <i [class]="feature.icon + ' text-sm text-primary'"></i>
+                                    <i aria-hidden="true" [class]="feature.icon + ' text-sm text-primary'"></i>
                                 </div>
                                 <div>
                                     <h3 class="text-sm font-bold mb-0.5 text-surface-900 dark:text-surface-0">{{ feature.title }}</h3>
@@ -205,12 +177,9 @@
 </div>
 
 <!-- Mobile Patch Notes Dialog -->
-<p-dialog
+<app-dialog
     [(visible)]="showPatchnotes"
-    [modal]="true"
-    [draggable]="false"
-    [resizable]="false"
-    [style]="{ width: '90vw', maxWidth: '450px' }"
+    [dialogStyle]="{ width: '90vw', maxWidth: '450px' }"
     header="Patch Notes"
     class="md:hidden"
     styleClass="patchnotes-dialog"
@@ -228,7 +197,7 @@
             </ul>
         </div>
     </div>
-    <ng-template pTemplate="footer">
-        <p-button label="Close" icon="pi pi-check" (onClick)="showPatchnotes = false" />
-    </ng-template>
-</p-dialog>
+    <div class="dialog-actions">
+        <app-action label="Close" icon="bi bi-check" (onClick)="showPatchnotes = false" />
+    </div>
+</app-dialog>

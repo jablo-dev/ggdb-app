@@ -1,11 +1,12 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { ChartComponent } from '../../ui/chart.component';
+import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { GameRecord } from '../../models/record.model';
-import { UIChart } from 'primeng/chart';
 
 @Component({
     selector: 'app-game-completion-chart',
-    imports: [UIChart],
+    imports: [ChartComponent],
     templateUrl: './game-completion-chart.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './game-completion-chart.component.scss'
 })
 export class GameCompletionChartComponent implements OnChanges {
@@ -31,7 +32,7 @@ export class GameCompletionChartComponent implements OnChanges {
             datasets: [
                 {
                     label: 'Games Finished',
-                    backgroundColor: documentStyle.getPropertyValue('--p-primary-400'),
+                    backgroundColor: documentStyle.getPropertyValue('--gg-primary-400'),
                     data: Object.values(recordsPerYear),
                     barThickness: 40
                 }
@@ -86,7 +87,7 @@ export class GameCompletionChartComponent implements OnChanges {
         const filteredYearCounts: { [year: string]: number } = {};
         Object.keys(yearCounts)
             .sort((a, b) => parseInt(a) - parseInt(b))
-            .forEach(year => {
+            .forEach((year) => {
                 if (yearCounts[year] > 0) {
                     filteredYearCounts[year] = yearCounts[year];
                 }

@@ -52,28 +52,28 @@
                     </div>
                 </div>
 
-                    <button type="button" class="layout-topbar-action" (click)="openDashboard()" [class.active]="isActive('/')">
-                        <i class="pi pi-home"></i>
+                    <button mat-button type="button" class="layout-topbar-action" (click)="openDashboard()" [attr.aria-label]="'topbar.dashboard' | translate" [class.active]="isActive('/')">
+                        <i aria-hidden="true" class="bi bi-house"></i>
                         <span>{{ 'topbar.dashboard' | translate }}</span>
                     </button>
-                    <button type="button" class="layout-topbar-action" (click)="openOverview()" [class.active]="isActive('/overview')">
-                        <i class="pi pi-database"></i>
+                    <button mat-button type="button" class="layout-topbar-action" (click)="openOverview()" [attr.aria-label]="'topbar.playthroughs' | translate" [class.active]="isActive('/overview')">
+                        <i aria-hidden="true" class="bi bi-database"></i>
                         <span>{{ 'topbar.playthroughs' | translate }}</span>
                     </button>
-                    <button type="button" class="layout-topbar-action" (click)="openBacklog()" [class.active]="isActive('/backlog')">
-                        <i class="pi pi-book"></i>
+                    <button mat-button type="button" class="layout-topbar-action" (click)="openBacklog()" [attr.aria-label]="'topbar.backlog' | translate" [class.active]="isActive('/backlog')">
+                        <i aria-hidden="true" class="bi bi-book"></i>
                         <span>{{ 'topbar.backlog' | translate }}</span>
                     </button>
-                    <button type="button" class="layout-topbar-action" (click)="openProfile()" [class.active]="isActive('/profile')">
-                        <i class="pi pi-user"></i>
+                    <button mat-button type="button" class="layout-topbar-action" (click)="openProfile()" [attr.aria-label]="'topbar.profile' | translate" [class.active]="isActive('/profile')">
+                        <i aria-hidden="true" class="bi bi-person"></i>
                         <span>{{ 'topbar.profile' | translate }}</span>
                     </button>
-                    <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action" (click)="openAdmin()" [class.active]="isActive('/admin')">
-                        <i class="pi pi-cog"></i>
+                    <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action" (click)="openAdmin()" [attr.aria-label]="'topbar.control' | translate" [class.active]="isActive('/admin')">
+                        <i aria-hidden="true" class="bi bi-gear"></i>
                         <span>{{ 'topbar.control' | translate }}</span>
                     </button>
-                    <button type="button" class="layout-topbar-action" (click)="logout()">
-                        <i class="pi pi-power-off"></i>
+                    <button mat-button type="button" class="layout-topbar-action" (click)="logout()" [attr.aria-label]="'topbar.logout' | translate">
+                        <i aria-hidden="true" class="bi bi-power"></i>
                         <span>{{ 'topbar.logout' | translate }}</span>
                     </button>
             </div>
@@ -86,37 +86,37 @@
                     <span class="text-xs font-bold text-surface-900 dark:text-surface-0 tracking-tighter skew-x-[10deg]">{{ username }}</span>
                 </div>
 
-                <button type="button" class="layout-topbar-action-mobile" (click)="openDashboard()" [class.active]="isActive('/')">
-                    <i class="pi pi-home"></i>
+                <button mat-button type="button" class="layout-topbar-action-mobile" (click)="openDashboard()" [attr.aria-label]="'topbar.dashboard' | translate" [class.active]="isActive('/')">
+                    <i aria-hidden="true" class="bi bi-house"></i>
                     <span class="hidden sm:inline">{{ 'topbar.dashboard' | translate }}</span>
                 </button>
-                <button type="button" class="layout-topbar-action-mobile" (click)="openOverview()" [class.active]="isActive('/overview')">
-                    <i class="pi pi-database"></i>
+                <button mat-button type="button" class="layout-topbar-action-mobile" (click)="openOverview()" [attr.aria-label]="'topbar.playthroughs' | translate" [class.active]="isActive('/overview')">
+                    <i aria-hidden="true" class="bi bi-database"></i>
                     <span class="hidden sm:inline">{{ 'topbar.playthroughs' | translate }}</span>
                 </button>
-                <button type="button" class="layout-topbar-action-mobile" (click)="openBacklog()" [class.active]="isActive('/backlog')">
-                    <i class="pi pi-book"></i>
+                <button mat-button type="button" class="layout-topbar-action-mobile" (click)="openBacklog()" [attr.aria-label]="'topbar.backlog' | translate" [class.active]="isActive('/backlog')">
+                    <i aria-hidden="true" class="bi bi-book"></i>
                     <span class="hidden sm:inline">{{ 'topbar.backlog' | translate }}</span>
                 </button>
-                <button type="button" class="layout-topbar-action-mobile" (click)="openProfile()" [class.active]="isActive('/profile')">
-                    <i class="pi pi-user"></i>
+                <button mat-button type="button" class="layout-topbar-action-mobile" (click)="openProfile()" [attr.aria-label]="'topbar.profile' | translate" [class.active]="isActive('/profile')">
+                    <i aria-hidden="true" class="bi bi-person"></i>
                     <span class="hidden sm:inline">{{ 'topbar.profile' | translate }}</span>
                 </button>
-                <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action-mobile" (click)="openAdmin()" [class.active]="isActive('/admin')">
-                    <i class="pi pi-cog"></i>
+                <button *ngIf="dataService.getIsAdmin()" type="button" class="layout-topbar-action-mobile" (click)="openAdmin()" [attr.aria-label]="'topbar.control' | translate" [class.active]="isActive('/admin')">
+                    <i aria-hidden="true" class="bi bi-gear"></i>
                     <span class="hidden sm:inline">{{ 'topbar.control' | translate }}</span>
                 </button>
-                <button type="button" class="layout-topbar-action-mobile" (click)="logout()">
-                    <i class="pi pi-power-off"></i>
+                <button mat-button type="button" class="layout-topbar-action-mobile" (click)="logout()" [attr.aria-label]="'topbar.logout' | translate">
+                    <i aria-hidden="true" class="bi bi-power"></i>
                     <span class="hidden sm:inline">{{ 'topbar.logout' | translate }}</span>
                 </button>
             </div>
         </div>
     </div>
-    <p-progressBar
+    <mat-progress-bar
         *ngIf="isLoading$ | async"
         mode="indeterminate"
-        styleClass="!h-1 !m-0 !rounded-none"
+        class="!h-1 !m-0 !rounded-none"
         [style]="{
         position: 'absolute',
         top: '100%',
@@ -124,7 +124,7 @@
         width: '100%',
         zIndex: 20
     }"
-    />
+     />
 </div>
 
 <app-sub-topbar></app-sub-topbar>

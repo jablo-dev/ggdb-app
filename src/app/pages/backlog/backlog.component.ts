@@ -1,22 +1,19 @@
-import { Component, inject, OnInit, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MaterialUiModule } from '../../ui/material-ui';
+import { Component, inject, OnInit, TemplateRef, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { DataDisplayService } from '../../service/data-display.service';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { ToolbarModule } from 'primeng/toolbar';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { ToolbarService } from '../../service/toolbar.service';
 
 @Component({
     selector: 'app-backlog',
     standalone: true,
-    imports: [CommonModule, ButtonModule, CardModule, ToolbarModule, IconFieldModule, InputIconModule, InputTextModule, FormsModule],
+    imports: [TranslatePipe, CommonModule, FormsModule, MaterialUiModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './backlog.component.html'
 })
 export class BacklogComponent implements OnInit, OnDestroy {

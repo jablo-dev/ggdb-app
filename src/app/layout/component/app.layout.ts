@@ -1,25 +1,28 @@
-import { Component, Renderer2, ViewChild } from '@angular/core';
+import { Component, Renderer2, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { AppTopbar } from './app.topbar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
-import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ToolbarService } from '../../service/toolbar.service';
 import { ToastService } from '../../service/toast.service';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, RouterModule, ConfirmDialog],
+    imports: [CommonModule, AppTopbar, RouterModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
         <div class="layout-wrapper" [ngClass]="containerClass">
             <app-topbar></app-topbar>
-            <p-confirmDialog></p-confirmDialog>
-            <div class="layout-main-container" [ngClass]="{
-                'has-sub-topbar': toolbarService.hasToolbar$ | async
-            }">
+
+            <div
+                class="layout-main-container"
+                [ngClass]="{
+                    'has-sub-topbar': toolbarService.hasToolbar$ | async
+                }"
+            >
                 <div class="layout-main">
                     <router-outlet></router-outlet>
                 </div>
@@ -68,7 +71,9 @@ export class AppLayout {
             if (localStorage.getItem('animatedBackgroundEnabled') === 'true') {
                 document.body.classList.add('animated-background');
             }
-        } catch (_) { /* ignore */ }
+        } catch (_) {
+            /* ignore */
+        }
     }
 
     isOutsideClicked(event: MouseEvent) {

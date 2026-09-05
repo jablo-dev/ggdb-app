@@ -80,7 +80,9 @@
         "peak_silver": "Silber-Höchststand",
         "year_with_most_silver": "Jahr mit dem meisten Silber",
         "games_finished_per_year": "Spiele pro Jahr abgeschlossen",
-        "yearly_progress": "Jährliche Fortschrittsverfolgung"
+        "yearly_progress": "Jährliche Fortschrittsverfolgung",
+        "eyebrow": "Missionsübersicht",
+        "description": "Deine Gaming-Reise auf einen Blick."
     },
     "topbar": {
         "authorized_user": "Autorisierter Benutzer",
@@ -288,6 +290,15 @@
         "rare_tier": "85–89: Selten",
         "epic_tier": "90–94: Episch",
         "legendary_tier": "95–100: Legendär",
-        "score_scale_description": "Die Punktzahl wird von 1–10 Bewertungen pro Kategorie skaliert und auf eine Skala von 10–100 normalisiert."
+        "score_scale_description": "Die Punktzahl wird von 1–10 Bewertungen pro Kategorie skaliert und auf eine Skala von 10–100 normalisiert.",
+        "filter_label": "Anzeigen",
+        "sort_label": "Sortieren nach",
+        "add": "Spiel hinzufügen",
+        "eyebrow": "Dein Archiv",
+        "description": "Jede erkundete Welt. Jede abgeschlossene Geschichte."
+    },
+    "backlog": {
+        "eyebrow": "Als Nächstes",
+        "description": "Neue Welten warten darauf, entdeckt zu werden."
     }
 }

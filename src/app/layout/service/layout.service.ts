@@ -1,18 +1,10 @@
+import { accentPalettes } from './theme-palettes';
 import { Injectable, effect, signal, computed, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Subject } from 'rxjs';
-import { $t, updatePreset, updateSurfacePalette } from '@primeng/themes';
-import Aura from '@primeng/themes/aura';
-import Lara from '@primeng/themes/lara';
-import Nora from '@primeng/themes/nora';
 
-const presets = {
-    Aura,
-    Lara,
-    Nora
-} as const;
 
-type KeyOfType<T> = keyof T extends infer U ? U : never;
+
 
 export interface layoutConfig {
     preset?: string;
@@ -41,9 +33,9 @@ interface MenuChangeEvent {
 })
 export class LayoutService {
     _config: layoutConfig = {
-        preset: 'Aura',
-        primary: 'emerald',
-        surface: null,
+        preset: 'Material',
+        primary: 'cyan',
+        surface: 'slate',
         darkTheme: true,
         playtimeEnabled: false,
         menuMode: 'overlay'
@@ -235,9 +227,7 @@ export class LayoutService {
     ];
 
     primaryColors = computed(() => {
-        const config = this.layoutConfig();
-        const preset = config.preset as KeyOfType<typeof presets>;
-        const presetPalette = presets[preset].primitive;
+        const presetPalette = accentPalettes;
         const colors = [
             'red',
             'orange',
@@ -305,7 +295,7 @@ export class LayoutService {
                 });
                 return;
             }
-            const palette = presetPalette?.[color as KeyOfType<typeof presetPalette>];
+            const palette = presetPalette?.[color as keyof typeof presetPalette];
             if (palette) {
                 palettes.push({
                     name: color,
@@ -400,125 +390,25 @@ export class LayoutService {
 
     applyFullTheme() {
         const config = this.layoutConfig();
-        if (!config) return;
-
-        // Apply Preset and Primary Color logic
-        const preset = presets[config.preset as KeyOfType<typeof presets>];
-        const surfacePalette = this.surfaces.find((s) => s.name === config.surface)?.palette;
-
-        $t()
-            .preset(preset)
-            .preset(this.getPresetExt())
-            .surfacePalette(surfacePalette)
-            .use({ useDefaultOptions: true });
-
-        // Apply Dark Mode
+        const primary = this.primaryColors().find(c => c.name === config.primary)?.palette || accentPalettes.cyan;
+        const surface = this.surfaces.find(c => c.name === config.surface)?.palette || this.surfaces[0].palette;
+        const style = document.documentElement.style;
+        for (const [tone, color] of Object.entries(primary)) style.setProperty('--gg-primary-' + tone, String(color));
+        for (const [tone, color] of Object.entries(surface)) style.setProperty('--gg-surface-' + tone, String(color));
+        const rgb = (hex: string) => hex.replace('#', '').match(/.{2}/g)!.map(n => parseInt(n, 16)).join(' ');
+        style.setProperty('--gg-primary-rgb', rgb(primary[300]));
+        style.setProperty('--primary-color-rgb', rgb(primary[300]).replaceAll(' ', ', '));
+        for (const [tone, color] of Object.entries(surface)) style.setProperty('--gg-surface-rgb-' + tone, rgb(String(color)));
+        style.setProperty('--mat-sys-primary', primary[300]);
+        style.setProperty('--mat-sys-on-primary', primary[950]);
+        style.setProperty('--mat-sys-primary-container', primary[900]);
+        style.setProperty('--mat-sys-on-primary-container', primary[100]);
+        style.setProperty('--mat-sys-surface', surface[950]);
+        style.setProperty('--mat-sys-surface-container-low', 'color-mix(in srgb, ' + surface[900] + ', ' + surface[950] + ' 35%)');
+        style.setProperty('--mat-sys-surface-container', surface[900]);
+        style.setProperty('--mat-sys-surface-container-high', 'color-mix(in srgb, ' + surface[800] + ', ' + surface[900] + ' 60%)');
+        style.setProperty('--mat-sys-outline-variant', surface[700]);
         this.toggleDarkMode();
-    }
-
-    getPresetExt() {
-        const config = this.layoutConfig();
-        const preset = config.preset as KeyOfType<typeof presets>;
-        const presetPalette = presets[preset].primitive;
-        const colorName = config.primary;
-
-        const customPalettes: any = {
-            ash: {
-                50: '#f9fafb',
-                100: '#f3f4f6',
-                200: '#e5e7eb',
-                300: '#d1d5db',
-                400: '#9ca3af',
-                500: '#6b7280',
-                600: '#4b5563',
-                700: '#374151',
-                800: '#1f2937',
-                900: '#111827',
-                950: '#030712'
-            },
-            gold: {
-                50: '#fdfbeb',
-                100: '#fcf6cd',
-                200: '#f8ea9a',
-                300: '#f4da67',
-                400: '#f1cc34',
-                500: '#eab308',
-                600: '#ca8a04',
-                700: '#a16207',
-                800: '#854d0e',
-                900: '#713f12',
-                950: '#422006'
-            }
-        };
-
-        const color: any = {
-            name: colorName,
-            palette: customPalettes[colorName as string] || presetPalette?.[colorName as KeyOfType<typeof presetPalette>]
-        };
-
-        const shadowStyles = {
-            colorScheme: {
-                dark: {
-                    content: {
-                        shadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                        border: '1px solid {surface.700}'
-                    },
-                    inputtext: {
-                        border: '1px solid {surface.700}'
-                    }
-                }
-            }
-        };
-
-        if (preset === 'Nora') {
-            return {
-                semantic: {
-                    primary: color.palette,
-                    ...shadowStyles,
-                    colorScheme: {
-                        dark: {
-                            ...shadowStyles.colorScheme.dark,
-                            primary: {
-                                color: '{primary.500}',
-                                contrastColor: '{surface.900}',
-                                hoverColor: '{primary.400}',
-                                activeColor: '{primary.300}'
-                            },
-                            highlight: {
-                                background: '{primary.500}',
-                                focusBackground: '{primary.400}',
-                                color: '{surface.900}',
-                                focusColor: '{surface.900}'
-                            }
-                        }
-                    }
-                }
-            };
-        } else {
-            return {
-                semantic: {
-                    primary: color.palette,
-                    ...shadowStyles,
-                    colorScheme: {
-                        dark: {
-                            ...shadowStyles.colorScheme.dark,
-                            primary: {
-                                color: '{primary.400}',
-                                contrastColor: '{surface.900}',
-                                hoverColor: '{primary.300}',
-                                activeColor: '{primary.200}'
-                            },
-                            highlight: {
-                                background: 'color-mix(in srgb, {primary.400}, transparent 84%)',
-                                focusBackground: 'color-mix(in srgb, {primary.400}, transparent 76%)',
-                                color: 'rgba(255,255,255,.87)',
-                                focusColor: 'rgba(255,255,255,.87)'
-                            }
-                        }
-                    }
-                }
-            };
-        }
     }
 
     onMenuStateChange(event: MenuChangeEvent) {

@@ -1,89 +1,63 @@
 <ng-template #toolbarTemplate>
     <div class="flex items-center justify-between w-full">
         <div class="flex flex-wrap items-center gap-2">
-            <p-button icon="pi pi-plus-circle" (click)="openAdd()"></p-button>
-            <p-multiselect
+            <app-action icon="bi bi-plus-circle" [label]="'overview.add' | translate" (click)="openAdd()"></app-action>
+            <app-select [multiple]="true"
                 [options]="filterOptions"
                 [(ngModel)]="selectedFilters"
                 optionLabel="label"
                 optionValue="value"
-                [placeholder]="'overview.filter' | translate"
-                [maxSelectedLabels]="0"
-                [selectedItemsLabel]="'overview.filter' | translate"
+                [placeholder]="'overview.filter_label' | translate"
                 [filter]="false"
                 (onChange)="filterRecords()"
                 styleClass="w-40"
-                display="chip"
-                [showToggleAll]="false"
-                [showHeader]="false"
-                [panelStyle]="{ 'max-height': '300px' }"
-                [appendTo]="'body'"
             >
-                <ng-template let-value pTemplate="selectedItems">
-                    <div class="flex items-center gap-2 text-surface-600 dark:text-surface-400">
-                        <i class="pi pi-filter"></i>
-                        <span>{{ selectedFiltersLabel }}</span>
-                    </div>
-                </ng-template>
-                <ng-template let-option pTemplate="item">
-                    <div class="flex items-center gap-2">
-                        <i [class]="option.icon" [ngClass]="{'text-primary': option.value === 'all', 'text-yellow-400': option.value === 'fav', 'text-red-500': option.value === 'canceled'}"></i>
-                        <span>{{ option.label }}</span>
-                    </div>
-                </ng-template>
-            </p-multiselect>
+
+
+            </app-select>
             <div *ngIf="displayMode !== 'Timeline'" class="flex items-center flex-wrap gap-1">
 
-                <p-select
-                    [options]="sortOptions"
+                <app-select
+                    [options]="sortOptions" [ariaLabel]="'overview.sort_label' | translate"
                     [(ngModel)]="selectedSort"
                     optionLabel="label"
                     optionValue="value"
                     (onChange)="onSortChange()"
                     styleClass="w-56"
-                    [appendTo]="'body'"
                 >
-                    <ng-template let-value pTemplate="selectedItem">
-                        <div class="flex items-center gap-2 text-surface-600 dark:text-surface-400">
-                            <i class="pi pi-sort-alt"></i>
-                            <span>{{ value.label }}</span>
-                        </div>
-                    </ng-template>
-                    <ng-template let-option pTemplate="item">
-                        <div class="flex items-center gap-2">
-                            <i [class]="option.icon" class="text-primary"></i>
-                            <span>{{ option.label }}</span>
-                        </div>
-                    </ng-template>
-                </p-select>
+
+
+                </app-select>
             </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-2 justify-end">
             <div class="flex items-center gap-1">
-                <p-button icon="pi pi-th-large" [outlined]="displayMode !== 'Cards'" (click)="setDisplayMode('Cards')" [label]="'overview.cards' | translate" size="small"></p-button>
-                <p-button icon="pi pi-clock" [outlined]="displayMode !== 'Timeline'" (click)="setDisplayMode('Timeline')" [label]="'overview.timeline' | translate" size="small" class="hidden sm:inline-block"></p-button>
-                <p-button icon="pi pi-table" [outlined]="displayMode !== 'Table'" (click)="setDisplayMode('Table')" [label]="'overview.table' | translate" size="small" class="hidden sm:inline-block"></p-button>
+                <app-action icon="bi bi-grid" [outlined]="displayMode !== 'Cards'" (click)="setDisplayMode('Cards')" [label]="'overview.cards' | translate" size="small"></app-action>
+                <app-action icon="bi bi-clock" [outlined]="displayMode !== 'Timeline'" (click)="setDisplayMode('Timeline')" [label]="'overview.timeline' | translate" size="small" class="hidden sm:inline-block"></app-action>
+                <app-action icon="bi bi-table" [outlined]="displayMode !== 'Table'" (click)="setDisplayMode('Table')" [label]="'overview.table' | translate" size="small" class="hidden sm:inline-block"></app-action>
             </div>
 
-            <p-iconfield>
-                <p-inputicon styleClass="pi pi-search" />
-                <input type="text" pInputText [placeholder]="'overview.search' | translate" [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-28 sm:w-40 md:w-60" />
-            </p-iconfield>
+            <div>
+                <i class="bi bi-search" aria-hidden="true"></i>
+                <input type="text" matInput [placeholder]="'overview.search' | translate" [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-28 sm:w-40 md:w-60" />
+            </div>
         </div>
     </div>
 </ng-template>
 
+<header class="page-heading"><span class="section-eyebrow">{{ 'overview.eyebrow' | translate }}</span><h1>{{ 'topbar.playthroughs' | translate }}</h1><p>{{ 'overview.description' | translate }}</p></header>
 <div [ngClass]="{ 'table-view-active': displayMode === 'Table' }">
     <div class="max-w-none mx-auto">
         <div class="pt-2" [ngClass]="{ 'px-4': displayMode !== 'Table' }">
             <div class="max-w-none mx-auto">
                 <div *ngIf="(displayMode === 'Timeline' || displayMode === 'Table') && isMobile()" class="block sm:hidden text-center py-8">
                     <p class="text-lg opacity-70">{{ 'overview.mobile_not_available' | translate }}</p>
-                    <p-button [label]="'overview.switch_to_card_view' | translate" (click)="setDisplayMode('Cards')" severity="primary" class="mt-4"></p-button>
+                    <app-action [label]="'overview.switch_to_card_view' | translate" (click)="setDisplayMode('Cards')" severity="primary" class="mt-4"></app-action>
                 </div>
 
     <ng-container *ngIf="displayMode === 'Cards'">
+        @if (!visibleCardRecords.length) { <div class="card text-center py-12">{{ 'overview.no_games_found' | translate }}</div> }
         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pt-0">
             <ng-container *ngFor="let item of visibleCardRecords">
                 <ng-container *ngIf="item.year !== null">
@@ -98,49 +72,29 @@
 
     <ng-container *ngIf="displayMode === 'Timeline'">
         <div class="timeline-container mt-4 px-4 hidden sm:block">
-            <p-timeline [value]="timelineRecords" align="alternate" styleClass="custom-timeline">
-                <ng-template pTemplate="marker" let-event>
-                    <div
-                        *ngIf="event.isYearHeader; else normalMarker"
-                        class="flex items-center justify-center bg-surface-100 dark:bg-surface-800 text-primary font-bold rounded-md px-3 py-1.5 shadow-sm border border-primary/20 z-10 cursor-pointer hover:bg-primary hover:text-white transition-all min-w-[60px]"
-                        [title]="event.year"
-                        (click)="toggleYearCollapse(event.year)"
-                    >
-                        <div class="flex items-center gap-2 leading-none">
-                            <span class="text-sm tracking-wider">{{ event.year }}</span>
-                            <i class="pi text-[10px]" [ngClass]="isYearCollapsed(event.year) ? 'pi-chevron-down' : 'pi-chevron-up'"></i>
-                        </div>
-                    </div>
-                    <ng-template #normalMarker>
-                        <div class="flex items-center justify-center bg-surface-ground border-2 border-primary rounded-full w-4 h-4 z-10 mt-2"></div>
-                    </ng-template>
-                </ng-template>
-
-                <ng-template pTemplate="opposite" let-event>
-                    <div *ngIf="!event.isYearHeader" class="text-xl font-bold text-primary opacity-60 mt-1">
-                        {{ event.date | date: 'MMMM yyyy' }}
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="content" let-event>
-                    <div *ngIf="!event.isYearHeader" class="flex flex-col gap-4 mb-8">
-                        <div *ngFor="let record of event.monthRecords">
-                            <app-entry-card [gameRecord]="record"></app-entry-card>
-                        </div>
-                    </div>
-                </ng-template>
-            </p-timeline>
+            <div class="mission-timeline">
+                @for (event of timelineRecords; track $index) {
+                    <section class="timeline-event" [class.timeline-year]="event.isYearHeader">
+                        @if (event.isYearHeader) {
+                            <button mat-stroked-button (click)="toggleYearCollapse(event.year)" [attr.aria-expanded]="!isYearCollapsed(event.year)">{{ event.year }} <i aria-hidden="true" class="bi" [class.bi-chevron-down]="!isYearCollapsed(event.year)" [class.bi-chevron-right]="isYearCollapsed(event.year)"></i></button>
+                        } @else {
+                            <h3>{{ event.date | date:'MMMM yyyy' }}</h3>
+                            <div class="timeline-cards">@for (record of event.monthRecords; track record.id) { <app-entry-card [gameRecord]="record" /> }</div>
+                        }
+                    </section>
+                }
+            </div>
         </div>
     </ng-container>
 
     <div *ngIf="displayMode === 'Table'" class="table-container hidden sm:block">
-        <p-table #dt [value]="visibleTableRecords" dataKey="id" scrollable="true" scrollHeight="flex" styleClass="custom-scroll sticky-header p-datatable-sm w-full border-none">
-            <ng-template pTemplate="header">
+        <div #dt class="library-table-scroll"><table class="library-table mat-elevation-z1">
+            <thead>
                 <tr class="text-base font-bold">
                     <th class="w-[80px] py-4 text-center text-primary cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('score')">
                         <div class="flex items-center justify-center gap-2">
                             {{ 'overview.score' | translate }}
-                            <i class="pi text-xs" [ngClass]="sortField === 'score' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
+                            <i aria-hidden="true" class="bi text-xs" [ngClass]="sortField === 'score' ? (sortOrder === 1 ? 'bi-sort-up' : 'bi-sort-down') : 'bi-arrow-down-up'"></i>
                         </div>
                     </th>
                     <th class="w-[100px] py-4"></th>
@@ -148,25 +102,25 @@
                     <th class="w-[180px] py-4 text-primary cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('finishDate')">
                         <div class="flex items-center gap-2">
                             {{ 'overview.finished' | translate }}
-                            <i class="pi text-xs" [ngClass]="sortField === 'finishDate' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
+                            <i aria-hidden="true" class="bi text-xs" [ngClass]="sortField === 'finishDate' ? (sortOrder === 1 ? 'bi-sort-up' : 'bi-sort-down') : 'bi-arrow-down-up'"></i>
                         </div>
                     </th>
                     <th class="w-[250px] py-4 text-primary text-center cursor-pointer hover:bg-primary/10 transition-colors" (click)="sort('platform')">
                         <div class="flex items-center justify-center gap-2">
                             {{ 'overview.platform' | translate }}
-                            <i class="pi text-xs" [ngClass]="sortField === 'platform' ? (sortOrder === 1 ? 'pi-sort-amount-up' : 'pi-sort-amount-down') : 'pi-sort'"></i>
+                            <i aria-hidden="true" class="bi text-xs" [ngClass]="sortField === 'platform' ? (sortOrder === 1 ? 'bi-sort-up' : 'bi-sort-down') : 'bi-arrow-down-up'"></i>
                         </div>
                     </th>
                     <th class="w-[100px] py-4 text-primary text-center">{{ 'overview.status' | translate }}</th>
                 </tr>
-            </ng-template>
+            </thead>
 
-            <ng-template pTemplate="body" let-group>
+            <tbody><ng-container *ngFor="let group of visibleTableRecords">
                 <tr *ngIf="group.year !== null" class="cursor-pointer" (click)="toggleYearCollapse(group.year)">
                     <td colspan="6" class="year-header py-3 px-6 bg-surface-100 dark:bg-surface-800 text-lg font-bold border-b border-primary/20 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
                         <div class="flex items-center justify-between w-full">
                             <div class="flex items-center gap-3">
-                                <i class="pi text-primary text-sm" [ngClass]="isYearCollapsed(group.year) ? 'pi-chevron-right' : 'pi-chevron-down'"></i>
+                                <i aria-hidden="true" class="bi text-primary text-sm" [ngClass]="isYearCollapsed(group.year) ? 'bi-chevron-right' : 'bi-chevron-down'"></i>
                                 <span class="text-primary">{{ group.year }}</span>
                             </div>
                             <span class="text-sm font-normal opacity-60">{{ 'overview.games_finished' | translate: { count: group.yearCount } }}</span>
@@ -174,7 +128,7 @@
                     </td>
                 </tr>
 
-                <tr *ngIf="group.year === null || !isYearCollapsed(group.year)" (click)="goToDetail(group.gameRecord)" class="cursor-pointer hover:bg-primary/5 transition-colors group">
+                <tr *ngIf="group.year === null" (click)="goToDetail(group.gameRecord)" class="cursor-pointer hover:bg-primary/5 transition-colors group">
                     <td class="text-center w-[80px]">
                         <div class="flex flex-col items-center justify-center">
                             <div
@@ -199,7 +153,7 @@
                                 [alt]="group.gameRecord.name"
                             >
                             <div *ngIf="!group.gameRecord.cover" class="w-full h-full flex items-center justify-center opacity-20">
-                                <i class="pi pi-image text-2xl"></i>
+                                <i aria-hidden="true" class="bi bi-image text-2xl"></i>
                             </div>
                         </div>
                     </td>
@@ -208,45 +162,45 @@
                             <span class="text-lg font-bold group-hover:text-primary transition-colors">{{ group.gameRecord.name }}</span>
                             <div class="flex items-center gap-2 text-sm opacity-60">
                                 <span class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">{{ resolveTypeLabel(group.gameRecord.type) }}</span>
-                                <i *ngIf="group.gameRecord.fav === 1" class="pi pi-star-fill text-yellow-400 text-xs"></i>
+                                <i aria-hidden="true" *ngIf="group.gameRecord.fav === 1" class="bi bi-star-fill text-yellow-400 text-xs"></i>
                             </div>
                         </div>
                     </td>
                     <td class="text-sm w-[180px]">
                         <div class="flex items-center gap-2 opacity-80">
-                            <i class="pi pi-calendar text-primary"></i>
+                            <i aria-hidden="true" class="bi bi-calendar text-primary"></i>
                             {{ group.gameRecord.finishDate | date: 'MMMM d, yyyy' }}
                         </div>
                     </td>
                     <td class="w-[250px]">
                         <div class="flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-surface-100 dark:bg-surface-800 border border-white/5">
-                            <i [ngClass]="dataDisplay.getPlatformIconClass(group.gameRecord.location)" class="text-lg text-primary"></i>
+                            <i aria-hidden="true" [ngClass]="dataDisplay.getPlatformIconClass(group.gameRecord.location)" class="text-lg text-primary"></i>
                             <span class="text-sm font-medium">{{ dataDisplay.getPlatformLabel(group.gameRecord.location) }}</span>
                         </div>
                     </td>
                     <td class="w-[100px]">
                         <div class="flex items-center justify-center gap-3">
-                            <i
-                                class="pi text-lg"
-                                [ngClass]="group.gameRecord.mainQuestDone === 1 ? 'pi-check-circle text-green-500' : 'pi-times-circle text-red-500'"
+                            <i aria-hidden="true"
+                                class="bi text-lg"
+                                [ngClass]="group.gameRecord.mainQuestDone === 1 ? 'bi-check-circle text-green-500' : 'bi-x-circle text-red-500'"
                                 [title]="group.gameRecord.mainQuestDone === 1 ? ('overview.story_completed' | translate) : ('overview.story_not_completed' | translate)"
                             ></i>
-                            <i
+                            <i aria-hidden="true"
                                 *ngIf="group.gameRecord.replay"
-                                class="pi pi-sync text-primary text-lg"
+                                class="bi bi-arrow-repeat text-primary text-lg"
                                 [title]="'overview.replayed' | translate"
                             ></i>
                         </div>
                     </td>
                 </tr>
-            </ng-template>
+            </ng-container></tbody>
 
-            <ng-template pTemplate="emptymessage">
+            <tbody *ngIf="!visibleTableRecords.length">
                 <tr>
                     <td colspan="6" class="text-center py-8 opacity-50">{{ 'overview.no_games_found' | translate }}</td>
                 </tr>
-            </ng-template>
-        </p-table>
+            </tbody>
+        </table></div>
     </div>
             </div>
         </div>
@@ -255,41 +209,41 @@
 
 <div><br /><br /><br /></div>
 
-<p-dialog [header]="'overview.icon_legend' | translate" [(visible)]="showLegend" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
+<app-dialog [header]="'overview.icon_legend' | translate" [(visible)]="showLegend" [dialogStyle]="{ width: '28rem' }" [closable]="true" [dismissableMask]="true">
     <div class="flex flex-col gap-4 text-sm">
         <div>
             <h3 class="text-base font-semibold mb-2">{{ 'overview.platforms' | translate }}</h3>
             <div class="grid grid-cols-2 gap-y-2">
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-steam text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-steam text-primary"></i>
                     <span>Steam</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-playstation text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-playstation text-primary"></i>
                     <span>PlayStation</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-xbox text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-xbox text-primary"></i>
                     <span>Xbox</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-nintendo-switch text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-nintendo-switch text-primary"></i>
                     <span>Switch</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-controller text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-controller text-primary"></i>
                     <span>{{ 'overview.platform_names.retro' | translate }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-device-hdd text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-device-hdd text-primary"></i>
                     <span>{{ 'overview.platform_names.handhelds' | translate }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-pc-display text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-pc-display text-primary"></i>
                     <span>{{ 'overview.platform_names.pc' | translate }}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-disc text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-disc text-primary"></i>
                     <span>{{ 'overview.platform_names.other' | translate }}</span>
                 </div>
             </div>
@@ -299,15 +253,15 @@
             <h3 class="text-base font-semibold mb-2">{{ 'overview.game_progress' | translate }}</h3>
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-2">
-                    <i class="pi pi-calendar text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-calendar text-primary"></i>
                     <span [innerHTML]="'overview.date_description' | translate"></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="pi pi-check-square text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-check-square text-primary"></i>
                     <span [innerHTML]="'overview.story_completed_description' | translate"></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <i class="pi pi-clipboard text-primary"></i>
+                    <i aria-hidden="true" class="bi bi-clipboard text-primary"></i>
                     <span [innerHTML]="'overview.note_description' | translate"></span>
                 </div>
             </div>
@@ -316,7 +270,7 @@
         <div>
             <h3 class="text-base font-semibold mb-2">{{ 'overview.replay' | translate }}</h3>
             <div class="flex items-center gap-2">
-                <i class="bi bi-fire text-green-400"></i>
+                <i aria-hidden="true" class="bi bi-fire text-green-400"></i>
                 <span [innerHTML]="'overview.replay_description' | translate"></span>
             </div>
         </div>
@@ -325,7 +279,7 @@
             <h3 class="text-base font-semibold mb-2">{{ 'overview.score_and_tiers' | translate }}</h3>
             <div class="flex flex-col gap-2">
                 <div class="flex items-center gap-2">
-                    <i class="bi bi-stars text-yellow-400"></i>
+                    <i aria-hidden="true" class="bi bi-stars text-yellow-400"></i>
                     <span [innerHTML]="'overview.tier_score_description' | translate"></span>
                 </div>
                 <div>
@@ -344,4 +298,4 @@
             </div>
         </div>
     </div>
-</p-dialog>
+</app-dialog>

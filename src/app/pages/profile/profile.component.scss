@@ -1,0 +1,10 @@
+:host { display:block; width:100%; min-width:0; }
+.card { min-width:0; width:100%; }
+.card > div { min-width:0; }
+.card .justify-between { gap:16px; }
+.card .justify-between > div { min-width:0; }
+mat-slide-toggle { flex-shrink:0; }
+@media(max-width:767px) {
+    .card .justify-between:has(app-select) { flex-direction:column; align-items:stretch; }
+    app-select { width:100%; }
+}

@@ -1,12 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-yearly-line-break',
-  imports: [CommonModule, TranslatePipe],
-  templateUrl: './yearly-line-break.component.html',
-  styleUrl: './yearly-line-break.component.scss'
+    selector: 'app-yearly-line-break',
+    imports: [CommonModule, TranslatePipe],
+    templateUrl: './yearly-line-break.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './yearly-line-break.component.scss'
 })
 export class YearlyLineBreakComponent {
     @Input() year: number | null | undefined;

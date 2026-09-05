@@ -1,19 +1,19 @@
-import { Component, inject } from '@angular/core';
+import { MaterialUiModule } from '../../ui/material-ui';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { SelectModule } from 'primeng/select';
 import { ProfileConfiguratorComponent } from './profile-configurator.component';
 import { LayoutService } from '../../layout/service/layout.service';
 import { DataService } from '../../service/data.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ToggleSwitchModule, SelectModule, ProfileConfiguratorComponent, TranslatePipe],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+    selector: 'app-profile',
+    standalone: true,
+    imports: [CommonModule, FormsModule, ProfileConfiguratorComponent, TranslatePipe, MaterialUiModule],
+    templateUrl: './profile.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
     layoutService: LayoutService = inject(LayoutService);

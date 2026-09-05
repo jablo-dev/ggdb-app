@@ -375,7 +375,7 @@
             color: var(--text-color);
             font-size: 0.875rem;
 
-            .pi-calendar {
+            .bi-calendar {
                 color: var(--primary-color);
             }
         }
@@ -394,7 +394,7 @@
             color: var(--text-color);
             font-size: 0.875rem;
 
-            .pi-check {
+            .bi-check {
                 color: var(--primary-color);
             }
         }
@@ -403,7 +403,7 @@
             color: var(--text-color);
             font-size: 0.875rem;
 
-            .pi-refresh {
+            .bi-arrow-clockwise {
                 color: var(--primary-color);
             }
         }
@@ -414,7 +414,7 @@
         font-size: 0.875rem;
         flex-grow: 1;
 
-        .pi-file-edit {
+        .bi-pencil-square {
             color: var(--primary-color);
         }
 
@@ -512,3 +512,13 @@
         }
     }
 }
+
+// Material surfaces and restrained mission-log accents.
+.entry-card-flip { height:220px; }
+.entry-card-container, .entry-card-back-container { border:1px solid var(--mat-sys-outline-variant); border-radius:16px; box-shadow:none; }
+.entry-card-container .score-badge, .entry-card-container .title-badge { border:0 !important; box-shadow:none !important; }
+.entry-card-container .title-badge { padding:16px; background:transparent; font-weight:600; }
+.entry-card-container .score-badge { top:12px; right:12px; border-radius:10px; min-width:44px; font-variant-numeric:tabular-nums; }
+.entry-card-container .card-content { padding:62px 16px 36px !important; }
+.entry-card-container:hover { border-color:var(--mat-sys-primary); box-shadow:0 8px 24px #00000020; }
+.entry-card-container::after { height:2px; }

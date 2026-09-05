@@ -1,25 +1,16 @@
-import { Component, inject, OnInit, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
+import { MaterialUiModule } from '../../ui/material-ui';
+import { Component, ElementRef, inject, OnInit, ViewChild, OnDestroy, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
-import { CardModule } from 'primeng/card';
 import { EntryCardComponent } from '../../components/entry-card/entry-card.component';
 import { YearlyLineBreakComponent } from '../../components/yearly-line-break/yearly-line-break.component';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../service/toast.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { InputText } from 'primeng/inputtext';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
 import { LoadingService } from '../../service/loading.service';
-import { Table, TableModule } from 'primeng/table';
-import { TimelineModule } from 'primeng/timeline';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { SelectModule } from 'primeng/select';
 import { DataDisplayService } from '../../service/data-display.service';
 import { ScrollService } from '../../service/scroll.service';
 import { ToolbarService } from '../../service/toolbar.service';
@@ -34,17 +25,13 @@ interface GameRecordGroup {
 @Component({
     selector: 'app-overview',
     standalone: true,
-    imports: [
-        CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent,
-        FormsModule, InputText, ReactiveFormsModule, IconField, InputIcon,
-        Dialog, Button, TableModule, TimelineModule, MultiSelectModule, SelectModule,
-        TranslatePipe
-    ],
+    imports: [CommonModule, EntryCardComponent, YearlyLineBreakComponent, FormsModule, ReactiveFormsModule, TranslatePipe, MaterialUiModule],
     templateUrl: './overview.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './overview.component.scss'
 })
 export class OverviewComponent implements OnInit, OnDestroy {
-    @ViewChild('dt') table!: Table;
+    @ViewChild('dt') table!: ElementRef<HTMLElement>;
     @ViewChild('toolbarTemplate', { static: true }) toolbarTemplate!: TemplateRef<any>;
 
     private readonly dataService = inject(DataService);
@@ -143,9 +130,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         }
 
         // Use the order from filterOptions to find the first selected one
-        const firstSelectedOption = this.filterOptions.find(option =>
-            this.selectedFilters.includes(option.value)
-        );
+        const firstSelectedOption = this.filterOptions.find((option) => this.selectedFilters.includes(option.value));
 
         const label = firstSelectedOption ? firstSelectedOption.label : 'Filter';
 
@@ -161,18 +146,18 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     updateOptions() {
         this.filterOptions = [
-            { label: this.translate.instant('overview.filters.default'), value: 'all', icon: 'pi pi-th-large' },
-            { label: this.translate.instant('overview.filters.favorites'), value: 'fav', icon: 'pi pi-star-fill' },
-            { label: this.translate.instant('overview.filters.canceled'), value: 'canceled', icon: 'pi pi-times-circle' }
+            { label: this.translate.instant('overview.filters.default'), value: 'all', icon: 'bi bi-grid' },
+            { label: this.translate.instant('overview.filters.favorites'), value: 'fav', icon: 'bi bi-star-fill' },
+            { label: this.translate.instant('overview.filters.canceled'), value: 'canceled', icon: 'bi bi-x-circle' }
         ];
 
         this.sortOptions = [
-            { label: this.translate.instant('overview.sorts.finished_newest'), value: 'finishDate-desc', icon: 'pi pi-calendar', field: 'finishDate', order: -1 },
-            { label: this.translate.instant('overview.sorts.finished_oldest'), value: 'finishDate-asc', icon: 'pi pi-calendar', field: 'finishDate', order: 1 },
-            { label: this.translate.instant('overview.sorts.score_high'), value: 'score-desc', icon: 'pi pi-sort-amount-down', field: 'score', order: -1 },
-            { label: this.translate.instant('overview.sorts.score_low'), value: 'score-asc', icon: 'pi pi-sort-amount-up', field: 'score', order: 1 },
-            { label: this.translate.instant('overview.sorts.platform_az'), value: 'platform-asc', icon: 'pi pi-sort-alpha-down', field: 'platform', order: 1 },
-            { label: this.translate.instant('overview.sorts.platform_za'), value: 'platform-desc', icon: 'pi pi-sort-alpha-up', field: 'platform', order: -1 }
+            { label: this.translate.instant('overview.sorts.finished_newest'), value: 'finishDate-desc', icon: 'bi bi-calendar', field: 'finishDate', order: -1 },
+            { label: this.translate.instant('overview.sorts.finished_oldest'), value: 'finishDate-asc', icon: 'bi bi-calendar', field: 'finishDate', order: 1 },
+            { label: this.translate.instant('overview.sorts.score_high'), value: 'score-desc', icon: 'bi bi-sort-down', field: 'score', order: -1 },
+            { label: this.translate.instant('overview.sorts.score_low'), value: 'score-asc', icon: 'bi bi-sort-up', field: 'score', order: 1 },
+            { label: this.translate.instant('overview.sorts.platform_az'), value: 'platform-asc', icon: 'bi bi-sort-alpha-down', field: 'platform', order: 1 },
+            { label: this.translate.instant('overview.sorts.platform_za'), value: 'platform-desc', icon: 'bi bi-sort-alpha-up', field: 'platform', order: -1 }
         ];
     }
 
@@ -192,7 +177,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         const savedSort = localStorage.getItem('ggdb_selected_sort');
         if (savedSort) {
             this.selectedSort = savedSort;
-            const option = this.sortOptions.find(o => o.value === this.selectedSort);
+            const option = this.sortOptions.find((o) => o.value === this.selectedSort);
             if (option) {
                 this.sortField = option.field;
                 this.sortOrder = option.order;
@@ -244,7 +229,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
             setTimeout(() => {
                 if (this.displayMode === 'Table' && this.table) {
                     const savedPosition = this.scrollService.getScrollPosition('overview_table');
-                    const scrollableElement = this.table.el.nativeElement.querySelector('.p-datatable-viewport');
+                    const scrollableElement = this.table.nativeElement;
                     if (scrollableElement) {
                         scrollableElement.scrollTop = savedPosition;
                     }
@@ -266,7 +251,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     onSortChange(): void {
         localStorage.setItem('ggdb_selected_sort', this.selectedSort);
-        const option = this.sortOptions.find(o => o.value === this.selectedSort);
+        const option = this.sortOptions.find((o) => o.value === this.selectedSort);
         if (option) {
             this.sortField = option.field;
             this.sortOrder = option.order;
@@ -296,9 +281,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     filterRecords(): void {
         localStorage.setItem('ggdb_selected_filters', JSON.stringify(this.selectedFilters));
         const term = this._searchTerm.trim().toLowerCase();
-        let filtered = term.length === 0
-            ? [...this.allRecords]
-            : this.allRecords.filter((r) => r.name.toLowerCase().includes(term));
+        let filtered = term.length === 0 ? [...this.allRecords] : this.allRecords.filter((r) => r.name.toLowerCase().includes(term));
 
         // Filter out backlog items from the overview
         filtered = filtered.filter((r) => r.backlogItem !== 1);
@@ -362,11 +345,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
         const result: GameRecordGroup[] = [];
         let lastYear: number | null = null;
 
-        const counts = records.reduce((map, record) => {
-            const year = new Date(record.finishDate).getFullYear();
-            map[year] = (map[year] || 0) + 1;
-            return map;
-        }, {} as Record<number, number>);
+        const counts = records.reduce(
+            (map, record) => {
+                const year = new Date(record.finishDate).getFullYear();
+                map[year] = (map[year] || 0) + 1;
+                return map;
+            },
+            {} as Record<number, number>
+        );
 
         for (const record of records) {
             const year = new Date(record.finishDate).getFullYear();
@@ -414,7 +400,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
             const year = current.getFullYear();
             const month = current.getMonth();
 
-            const monthRecords = sortedRecords.filter(r => {
+            const monthRecords = sortedRecords.filter((r) => {
                 const d = new Date(r.finishDate);
                 return d.getFullYear() === year && d.getMonth() === month;
             });
@@ -435,7 +421,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
         }
 
         const timeline: any[] = [];
-        const years = Object.keys(groupedByYear).map(Number).sort((a, b) => b - a);
+        const years = Object.keys(groupedByYear)
+            .map(Number)
+            .sort((a, b) => b - a);
 
         for (const year of years) {
             // Add a special record for the year header
@@ -465,7 +453,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
 
     private updateVisibleTimeline(): void {
-        this.timelineRecords = this.allTimelineRecords.filter(event => {
+        this.timelineRecords = this.allTimelineRecords.filter((event) => {
             if (event.isYearHeader) return true;
             return !this.isYearCollapsed(event.year);
         });
@@ -475,7 +463,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         let currentYearCollapsed = false;
         let lastYearInGroup: number | null = null;
 
-        this.visibleTableRecords = this.groupedGameRecords.filter(group => {
+        this.visibleTableRecords = this.groupedGameRecords.filter((group) => {
             if (group.year !== null) {
                 lastYearInGroup = group.year;
                 currentYearCollapsed = this.isYearCollapsed(group.year);
@@ -494,7 +482,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         let currentYearCollapsed = false;
         let lastYearInGroup: number | null = null;
 
-        this.visibleCardRecords = this.groupedGameRecords.filter(group => {
+        this.visibleCardRecords = this.groupedGameRecords.filter((group) => {
             if (group.year !== null) {
                 lastYearInGroup = group.year;
                 currentYearCollapsed = this.isYearCollapsed(group.year);
@@ -524,7 +512,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     goToDetail(record: GameRecord): void {
         if (this.displayMode === 'Table' && this.table) {
-            const scrollableElement = this.table.el.nativeElement.querySelector('.p-datatable-viewport');
+            const scrollableElement = this.table.nativeElement;
             if (scrollableElement) {
                 this.scrollService.setScrollPosition('overview_table', scrollableElement.scrollTop);
             }
@@ -543,7 +531,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.langChangeSubscription.unsubscribe();
         this.toolbarService.setTemplate(null);
         if (this.displayMode === 'Table' && this.table) {
-            const scrollableElement = this.table.el.nativeElement.querySelector('.p-datatable-viewport');
+            const scrollableElement = this.table.nativeElement;
             if (scrollableElement) {
                 this.scrollService.setScrollPosition('overview_table', scrollableElement.scrollTop);
             }

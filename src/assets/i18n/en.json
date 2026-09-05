@@ -80,7 +80,9 @@
         "peak_silver": "Peak silver",
         "year_with_most_silver": "Year with most silver",
         "games_finished_per_year": "Games Finished per Year",
-        "yearly_progress": "Yearly progress tracking"
+        "yearly_progress": "Yearly progress tracking",
+        "eyebrow": "Mission overview",
+        "description": "Your gaming journey, at a glance."
     },
     "topbar": {
         "authorized_user": "Authorized User",
@@ -288,6 +290,15 @@
         "rare_tier": "85–89: Rare",
         "epic_tier": "90–94: Epic",
         "legendary_tier": "95–100: Legendary",
-        "score_scale_description": "The score is scaled from 1–10 ratings per category and normalized to a 10–100 scale."
+        "score_scale_description": "The score is scaled from 1–10 ratings per category and normalized to a 10–100 scale.",
+        "filter_label": "Show",
+        "sort_label": "Sort by",
+        "add": "Add game",
+        "eyebrow": "Your archive",
+        "description": "Every world explored. Every story completed."
+    },
+    "backlog": {
+        "eyebrow": "Up next",
+        "description": "New worlds waiting to be explored."
     }
 }

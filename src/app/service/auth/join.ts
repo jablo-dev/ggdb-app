@@ -1,21 +1,17 @@
-import { Component } from '@angular/core';
+import { MaterialUiModule } from '../../ui/material-ui';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
-import { ButtonModule } from 'primeng/button';
-import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { DataService } from '../data.service';
-import { MessageService } from 'primeng/api';
-import { Toast } from 'primeng/toast';
+import { NotificationService } from '../../ui/notification.service';
 
 @Component({
     selector: 'app-join',
     standalone: true,
-    imports: [InputTextModule, PasswordModule, ButtonModule, RippleModule, FormsModule, AppFloatingConfigurator, Toast],
+    imports: [FormsModule, AppFloatingConfigurator, MaterialUiModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
-        <p-toast position="top-right" [style]="{ top: '50px' }" [breakpoints]="{ '600px': { top: '70px' } }" styleClass="z-[1100] right-6" />
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
             <div class="flex flex-col items-center justify-center">
@@ -70,11 +66,11 @@ import { Toast } from 'primeng/toast';
                         <div>
                             <div>
                                 <div class="flex flex-col items-center justify-center">
-                                    <input pInputText type="text" placeholder="Username" class="w-full md:w-[30rem] mb-4" [(ngModel)]="username" />
-                                    <input pInputText type="email" placeholder="Email" class="w-full md:w-[30rem] mb-4" [(ngModel)]="email" />
-                                    <input pInputText type="text" placeholder="Access Token" class="w-full md:w-[30rem] mb-4" [(ngModel)]="token" />
-                                    <p-password id="password" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" [feedback]="false" [fluid]="true" styleClass="w-full md:w-[30rem] mb-8"> </p-password>
-                                    <p-button label="Join now!" styleClass="w-full md:w-[30rem]" (onClick)="register()" [disabled]="isSubmitting"></p-button>
+                                    <input matInput type="text" placeholder="Username" class="w-full md:w-[30rem] mb-4" [(ngModel)]="username" />
+                                    <input matInput type="email" placeholder="Email" class="w-full md:w-[30rem] mb-4" [(ngModel)]="email" />
+                                    <input matInput type="text" placeholder="Access Token" class="w-full md:w-[30rem] mb-4" [(ngModel)]="token" />
+                                    <app-password inputId="password" [(ngModel)]="password" placeholder="Password" styleClass="w-full md:w-[30rem] mb-8"> </app-password>
+                                    <app-action label="Join now!" styleClass="w-full md:w-[30rem]" (onClick)="register()" [disabled]="isSubmitting"></app-action>
                                 </div>
                             </div>
                         </div>
@@ -94,7 +90,7 @@ export class JoinComponent {
     constructor(
         private dataService: DataService,
         private router: Router,
-        private toast: MessageService
+        private toast: NotificationService
     ) {}
 
     register(): void {

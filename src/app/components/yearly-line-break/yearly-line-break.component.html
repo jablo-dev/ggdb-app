@@ -7,7 +7,7 @@
         <span class="text-sm text-default font-normal">
             — {{ count }} finished game{{ count === 1 ? '' : 's' }}
         </span>
-        <i class="pi text-xs text-primary ml-1" [ngClass]="isCollapsed ? 'pi-chevron-down' : 'pi-chevron-up'"></i>
+        <i aria-hidden="true" class="bi text-xs text-primary ml-1" [ngClass]="isCollapsed ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
     </div>
     <div class="flex-grow h-px bg-gray-600"></div>
     <button
@@ -17,7 +17,7 @@
         (click)="onFlipAll($event)"
         [title]="'overview.flip_all' | translate"
     >
-        <i class="pi pi-refresh text-xs"></i>
+        <i aria-hidden="true" class="bi bi-arrow-clockwise text-xs"></i>
         <span>{{ (allFlipped ? 'overview.unflip_all' : 'overview.flip_all') | translate }}</span>
     </button>
 </div>

@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [RouterModule, HttpClientModule],
+    imports: [RouterModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `<router-outlet></router-outlet>`
 })
 export class AppComponent {
